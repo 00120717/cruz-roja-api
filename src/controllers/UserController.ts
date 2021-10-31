@@ -1,0 +1,268 @@
+import { Request, Response } from 'express';
+import { validate } from 'class-validator';
+import { User } from '../entities/User';
+import { Person } from '../entities/Person';
+import { RoleService } from '../services/RoleService';
+import { SedeService } from '../services/SedeService';
+import { SubjectService } from '../services/SubjectService';
+import { UserService } from '../services/UserService';
+import { Container } from "typedi";
+
+class UserController {
+  static fetch = async (req: Request, res: Response) => {
+    const userService = Container.get(UserService);
+    const users = await userService.findAll();
+    users.data = (users.data as User[]).map((user) => {
+      const { person, ...rest } = user;
+      return {
+        ...rest,
+        ...person,
+        id: rest.id,
+      }
+    })
+    res.status(200).send(users);
+  };
+
+  static show = async (req: Request, res: Response) => {
+    const userService = Container.get(UserService);
+    //Get the ID from the url
+    const id: number = Number(req.params.id);
+
+    //Get the user from database
+      const user = await userService.findByIdWithRelations(id);
+      if (!user) {
+        res.status(404).json({ message: 'Usuario no encontrado '});
+        return;
+      }
+      const { person, ...rest } = user;
+      res.status(200).send({
+        ...rest,
+        ...person,
+        id: rest.id,
+      });
+  };
+
+  static store = async (req: Request, res: Response) => {
+    const userService = Container.get(UserService);
+    const subjectService = Container.get(SubjectService);
+    const sedeService = Container.get(SedeService);
+    const roleService = Container.get(RoleService);
+    //Get parameters from the body
+    const {
+      username,
+      email,
+      phoneNumber,
+      altPhoneNumber,
+      password,
+      roleId,
+      firstName,
+      lastName,
+      sedeId,
+      status,
+      subjectId,
+    }: {
+      username: string;
+      password: string;
+      email: string;
+      phoneNumber: string;
+      altPhoneNumber: string;
+      roleId: number;
+      firstName: string;
+      lastName: string;
+      sedeId: number;
+      status: boolean;
+      subjectId: number;
+    } = req.body;
+
+    //Getting role information
+    const role = await roleService.findById(roleId);
+    if (!role) {
+      res.status(400).json({ message: 'El rol que intenta asignar no existe' });
+      return;
+    }
+
+    //Getting sede information
+    const sede = await sedeService.findById(sedeId);
+    if (!sede) {
+      res.status(400).json({ message: 'La sede que intenta asignar no existe' });
+      return;
+    }
+
+    //Getting subject information
+    let subject;
+    if (subjectId !== 0) {
+      subject = await subjectService.findById(subjectId);
+      if (!subject) {
+        res.status(400).json({ message: 'La materia que intenta asignar no existe' });
+        return;
+      }
+    }
+    //Setting person information
+    const person = new Person();
+    person.username = username;
+    person.firstName = firstName;
+    person.lastName = lastName;
+    person.status = status;
+    person.email = email ? email : null;
+    person.phoneNumber = phoneNumber ? phoneNumber : null;
+    person.altPhoneNumber = altPhoneNumber ? phoneNumber : null;
+    person.sede = sede;
+
+    //Validate person entity
+    const personErrors = await validate(person);
+
+    if (personErrors.length > 0) {
+      res.status(400).json({ message: 'No se pudo crear el usuario', error: personErrors });
+      return;
+    }
+
+    const user = new User();
+    user.password = password;
+    if (subject) {
+      user.subject = subject;
+    }
+    user.person = person;
+    user.role = role;
+
+    //Validate if the parameters are ok
+    const errors = await validate(user);
+    if (errors.length > 0) {
+      res.status(400).json({ message: 'No se pudo crear el usuario', error: errors });
+      return;
+    }
+
+    await user.hashPassword();
+
+    // Try to save.
+    try {
+      await userService.create(user);
+    } catch (error) {
+      res.status(400).json({ message: 'No se pudo crear el usuario', error });
+      return;
+    }
+
+    //If everything is ok, send 201 response
+    res.status(201).json({ message: 'Usuario creado correctamente' });
+  };
+
+  static update = async (req: Request, res: Response) => {
+    const userService = Container.get(UserService);
+    const subjectService = Container.get(SubjectService);
+    const sedeService = Container.get(SedeService);
+    const roleService = Container.get(RoleService);
+    const id = Number(req.params.id);
+
+    const {
+      username,
+      email,
+      phoneNumber,
+      altPhoneNumber,
+      password,
+      roleId,
+      firstName,
+      lastName,
+      sedeId,
+      status,
+      subjectId,
+    }: {
+      username: string;
+      password: string;
+      email: string;
+      phoneNumber: string;
+      altPhoneNumber: string;
+      roleId: number;
+      firstName: string;
+      lastName: string;
+      sedeId: number;
+      status: boolean;
+      subjectId: number;
+    } = req.body;
+
+    //Getting user information
+    const user = await userService.findById(id);
+    if (!user) {
+      res.status(404).json({ message: 'Usuario no encontrado '})
+      return;
+    }
+
+    //Getting role information
+    const role = await roleService.findById(roleId);
+    if (!role) {
+      res.status(400).json({ message: 'El rol que intenta asignar no existe' });
+      return;
+    }
+
+    //Getting sede information
+    const sede = await sedeService.findById(sedeId);
+    if (!sede) {
+      res.status(400).json({ message: 'La sede que intenta asignar no existe' });
+      return;
+    }
+
+    //Getting subject information
+    const subject = await subjectService.findById(subjectId);
+    if (!subject) {
+      res.status(400).json({ message: 'La materia que intenta asignar no existe' });
+      return;
+    }
+
+    user.person.username = username;
+    user.person.firstName = firstName;
+    user.person.lastName = lastName;
+    user.person.status = status;
+    user.person.email = email;
+    user.person.phoneNumber = phoneNumber;
+    user.person.altPhoneNumber = altPhoneNumber;
+    user.person.sede = sede;
+
+
+    //Validate person entity
+    const personErrors = await validate(user.person);
+
+    if (personErrors.length > 0) {
+      res.status(400).send(personErrors);
+      return;
+    }
+
+    if (password) {
+      user.password = password;
+    }
+    user.subject = subject;
+    user.role = role;
+
+    //Validate if the parameters are ok
+    const errors = await validate(user);
+    if (errors.length > 0) {
+      res.status(400).send(errors);
+      return;
+    }
+
+    if (password) {
+      await user.hashPassword();
+    }
+
+    try {
+      await userService.update(user);
+    } catch (e) {
+      res.status(400).json({ message: 'No se pudo actualizar el usuario '});
+      return;
+    }
+
+    res.status(200).send('Usuario actualizado correctamente');
+  };
+
+  static destroy = async (req: Request, res: Response) => {
+    const userService = Container.get(UserService);
+    const id: number = Number(req.params.id);
+
+    const user = await userService.findById(id);
+    if (!user) {
+      res.status(404).json({ message: 'Usuario no encontrado '})
+    }
+
+    await userService.delete(id);
+    res.status(204).send();
+  };
+}
+
+export default UserController;
