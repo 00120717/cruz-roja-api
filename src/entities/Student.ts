@@ -61,7 +61,7 @@ export class Student {
   @IsString()
   code: string;
 
-  @Column({ name: 'student_firstTime', type: 'boolean', default: 'true' })
+  @Column({ name: 'student_firstTime', type: 'boolean', default: true })
   @IsNotEmpty()
   @IsBoolean()
   firstTime: boolean;

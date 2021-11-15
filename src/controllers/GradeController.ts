@@ -52,7 +52,7 @@ class GradeController {
 
   static update = async (req: Request, res: Response) => {
     const gradeService = Container.get(GradeService);
-    const id: number = Number(req.params.id);
+    const id: string = String(req.params.id);
 
     const {
       name,
@@ -92,7 +92,7 @@ class GradeController {
 
   static show = async (req: Request, res: Response) => {
     const gradeService = Container.get(GradeService);
-    const id: number = Number(req.params.id);
+    const id: string = String(req.params.id);
 
     const grade = await gradeService.findByIdWithRelations(id);
     if (!grade) {
@@ -104,7 +104,7 @@ class GradeController {
 
   static destroy = async (req: Request, res: Response) => {
     const gradeService = Container.get(GradeService);
-    const id: number = Number(req.params.id);
+    const id: string = String(req.params.id);
 
     const grade = await gradeService.findById(id);
     if (!grade) {

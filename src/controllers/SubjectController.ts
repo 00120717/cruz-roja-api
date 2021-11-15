@@ -21,7 +21,7 @@ class SubjectController {
   static store = async (req: Request, res: Response) => {
     const gradeService = Container.get(GradeService);
     const subjectService = Container.get(SubjectService);
-    const { name, gradeId, isExternalTest }: { name: string; gradeId: number; isExternalTest: boolean } = req.body;
+    const { name, gradeId, isExternalTest }: { name: string; gradeId: string; isExternalTest: boolean } = req.body;
 
     //Getting grade information
     const grade = await gradeService.findById(gradeId);
@@ -56,7 +56,7 @@ class SubjectController {
     const subjectService = Container.get(SubjectService);
     const id: number = Number(req.params.id);
 
-    const { name, gradeId, isExternalTest }: { name: string; gradeId: number; isExternalTest: boolean } = req.body;
+    const { name, gradeId, isExternalTest }: { name: string; gradeId: string; isExternalTest: boolean } = req.body;
 
     const subject = await subjectService.findById(id);
     if (!subject) {

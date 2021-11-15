@@ -11,16 +11,16 @@ export class GradeService {
     protected gradeRepository: Repository<Grade>
   ) { }
 
-  public async findById(id: number): Promise<Grade | undefined> {
+  public async findById(id: string): Promise<Grade | undefined> {
     return await this.gradeRepository.findOne(id);
   }
 
-  public async findByIdWithRelations(id: number): Promise<Grade | undefined> {
+  public async findByIdWithRelations(id: string): Promise<Grade | undefined> {
     return await this.gradeRepository
       .createQueryBuilder('grade')
       .leftJoinAndSelect('grade.subjects', 'subjects')
       .loadRelationCountAndMap('grade.studentCount', 'grade.students')
-      .where('grade.id = :id', { id })
+      .where('grade.id = CAST(:id AS INTEGER)', { id })
       .getOne();
   }
 
@@ -46,7 +46,7 @@ export class GradeService {
     return await this.gradeRepository.update(newGrade.id, newGrade);
   }
 
-  public async delete(id: number): Promise<DeleteResult> {
+  public async delete(id: string): Promise<DeleteResult> {
     return await this.gradeRepository.delete(id);
   }
 }

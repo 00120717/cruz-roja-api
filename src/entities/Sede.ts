@@ -1,40 +1,46 @@
-import { IsNotEmpty, IsString, IsOptional, IsBoolean } from 'class-validator';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { IsNotEmpty, IsString, IsOptional, IsNotEmptyObject } from 'class-validator';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Person } from './Person';
+import { TipoSede } from './TipoSede';
+import { Voluntario } from './Voluntario';
 
-@Entity()
+@Entity({name:'sede'})
 export class Sede {
-  @PrimaryGeneratedColumn({ name: 'sede_id', type: 'int' })
+  @PrimaryGeneratedColumn({ name: 'id_sede', type: 'int', unsigned: true })
   id: number;
 
-  @Column({ name: 'sede_name', type: 'text' })
+  @Column({ name: 'sede_nombre', type: 'text' })
   @IsNotEmpty()
   @IsString()
-  name: string;
+  nombre: string;
 
-  @Column({ name: 'sede_logo', type: 'text', nullable: true })
+  @Column({ name: 'sede_direccion', type: 'text', nullable: true })
   @IsOptional()
   @IsString()
-  logo: string;
-
-  @Column({ name: 'sede_code', type: 'text' })
+  direccion: string;
+  
+  @Column({ name: 'sede_codigo', type: 'text' })
   @IsNotEmpty()
   @IsString()
-  code: string;
+  codigo: string;
 
-  @Column({ name: 'sede_address', type: 'text', nullable: true })
-  @IsOptional()
-  @IsString()
-  address: string;
-
-  @Column({ name: 'sede_active', type: 'boolean', default: false })
-  @IsNotEmpty()
-  @IsBoolean()
-  active: boolean;
+  @ManyToOne(
+    (type) => TipoSede,
+    (tipoSede) => tipoSede.sedes
+  )
+  @JoinColumn({ name: 'id_tipo_sede' })
+  @IsNotEmptyObject()
+  tipoSede: TipoSede;
 
   @OneToMany(
     (type) => Person,
     (person) => person.sede
   )
   persons: Person[];
+
+  @OneToMany(
+    (type) => Voluntario,
+    (voluntario) => voluntario.sede
+  )
+  voluntarios: Voluntario[];
 }

@@ -1,4 +1,5 @@
 import { SedeService } from './../services/SedeService';
+import { TipoSedeService } from './../services/TipoSedeService';
 import { Request, Response } from 'express';
 import { Container } from 'typedi';
 import { Sede } from '../entities/Sede';
@@ -19,14 +20,13 @@ class SedeController {
 
   static store = async (req: Request, res: Response) => {
     const sedeService = Container.get(SedeService);
-    const { name, logo, code, address, active }: { name: string, logo: string, code: string, address: string, active: boolean } = req.body;
+    const tipoSedeService = Container.get(TipoSedeService);
+    const { name, direccion, code, tipoSedeId, active }: { name: string, direccion: string, code: string, tipoSedeId: number, active: boolean } = req.body;
 
     const sede = new Sede();
-    sede.name = name;
-    sede.logo = logo;
-    sede.code = code;
-    sede.address = address;
-    sede.active = active;
+    sede.nombre = name;
+    sede.direccion = direccion;
+    sede.codigo = code;
 
     const sedeErrors = await validate(sede);
     if (sedeErrors.length > 0) {
@@ -34,10 +34,15 @@ class SedeController {
       return;
     }
 
+    const tipoSede = await tipoSedeService.findById(tipoSedeId);
+    if (!tipoSede) {
+      res.status(400).json({ message: 'La sede que intenta asignar no existe' });
+      return;
+    }
+
     if (active) {
       const currentActive = await sedeService.findActive();
-      if (currentActive && currentActive.active) {
-        currentActive.active = false;
+      if (currentActive) {
 
         await sedeService.update(currentActive);
       }
@@ -55,7 +60,7 @@ class SedeController {
   static update = async (req: Request, res: Response) => {
     const sedeService = Container.get(SedeService);
     const id: number = Number(req.params.id);
-    const { name, logo, code, address, active }: { name: string, logo: string, code: string, address: string, active: boolean } = req.body;
+    const { name, code, address, active }: { name: string, logo: string, code: string, address: string, active: boolean } = req.body;
 
     const sede = await sedeService.findById(id);
     if (!sede) {
@@ -63,11 +68,9 @@ class SedeController {
       return;
     }
 
-    sede.name = name;
-    sede.logo = logo;
-    sede.code = code;
-    sede.address = address;
-    sede.active = active;
+    sede.nombre = name;
+    sede.codigo = code;
+    sede.direccion = address;
 
     const sedeErrors = await validate(sede);
     if (sedeErrors.length > 0) {
@@ -77,8 +80,7 @@ class SedeController {
 
     if (active) {
       const currentActive = await sedeService.findActive();
-      if (currentActive && currentActive.active) {
-        currentActive.active = false;
+      if (currentActive) {
 
         await sedeService.update(currentActive);
       }

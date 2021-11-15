@@ -5,8 +5,8 @@ import { Subject } from './Subject';
 
 @Entity()
 export class Grade {
-  @PrimaryGeneratedColumn({ name: 'grade_id', type: 'int' })
-  id: number;
+  @PrimaryGeneratedColumn({ name: 'grade_id', type: 'bigint', unsigned: true })
+  id: string;
 
   @Column({ name: 'grade_grade', type: 'varchar', length: '40' })
   @IsNotEmpty()

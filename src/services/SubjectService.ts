@@ -47,7 +47,7 @@ export class SubjectService {
         .getMany();
   }
 
-  public async listAllByGrade(id: number): Promise<Subject[]> {
+  public async listAllByGrade(id: string): Promise<Subject[]> {
     return await this.subjectRepository
         .createQueryBuilder('subject')
         .innerJoin('subject.grade', 'grade')

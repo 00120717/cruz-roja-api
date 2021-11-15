@@ -43,7 +43,7 @@ export class Person {
   @Length(8, 8)
   altPhoneNumber: string | null;
 
-  @Column({ name: 'person_status', type: 'boolean', default: 'true' })
+  @Column({ name: 'person_status', type: 'boolean', default: true })
   @IsNotEmpty()
   @IsBoolean()
   status: boolean;

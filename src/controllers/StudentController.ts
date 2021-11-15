@@ -70,7 +70,7 @@ class StudentController {
       sedeId: number,
       modalityId: number,
       sectionId: number,
-      gradeId: number,
+      gradeId: string,
     } = req.body;
 
     //Getting sede information
@@ -237,7 +237,7 @@ class StudentController {
       sedeId: number,
       modalityId: number,
       sectionId: number,
-      gradeId: number,
+      gradeId: string,
       username?: string,
       code?: string,
     } = req.body;
