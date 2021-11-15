@@ -3,14 +3,16 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Emergencia } from './Emergencia';
+import { Voluntario } from './Voluntario';
 
 @Entity({name:'emergencia_realizada'})
 export class EmergenciaRealizada {
-  @PrimaryGeneratedColumn({ name: 'id_emergencia_realizada', type: 'int', unsigned: true  })
+  @PrimaryGeneratedColumn({ name: 'id_emergencia_realizada', type: 'bigint', unsigned: true  })
   id: number;
 
   @Column({ name: 'identificador_formulario', type: 'bigint', unsigned: true })
@@ -49,4 +51,6 @@ export class EmergenciaRealizada {
   @IsNotEmptyObject()
   emergencia: Emergencia;
 
+  @ManyToMany((type) => Voluntario)
+  voluntarios: Voluntario[];
 }

@@ -3,6 +3,8 @@ import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   //OneToMany,
@@ -16,6 +18,7 @@ import { CuerpoFilial } from './CuerpoFilial';
 import { Sede } from './Sede';
 import { Persona } from './Persona';
 import { EmergenciasAsignadas } from './EmergenciasAsignadas';
+import { EmergenciaRealizada } from './EmergenciaRealizada';
 //import { SubjectToStudent } from './SubjectToStudent';
 
 @Entity({name:'voluntario'})
@@ -83,6 +86,20 @@ export class Voluntario {
     (emergenciasAsignadas) => emergenciasAsignadas.voluntario
   )
   emergenciasAsignadas: EmergenciasAsignadas[];
+
+  @ManyToMany((type) => EmergenciaRealizada)
+  @JoinTable({
+    name: 'emergencia_realizadaXvoluntario',
+    joinColumn: {
+        name: 'id_voluntario',
+        referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+        name: 'id_emergencia_realizada',
+        referencedColumnName: 'id'
+    }
+})
+  emergenciasRealizadas: EmergenciaRealizada[];
 
   /*@OneToMany(
     (type) => SubjectToStudent,

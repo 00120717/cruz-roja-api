@@ -1,4 +1,5 @@
 import { DefaultNamingStrategy, Table, NamingStrategyInterface } from "typeorm";
+import * as crypto from 'crypto';
 
 export class CustomNamingStrategy extends DefaultNamingStrategy implements NamingStrategyInterface {
     foreignKeyName(tableOrName: Table | string, columnNames: string[], referencedTablePath?: string, referencedColumnNames?: string[]): string {
@@ -11,6 +12,6 @@ export class CustomNamingStrategy extends DefaultNamingStrategy implements Namin
             `${tableOrName}_${referencedTablePath}`,
         );
 
-        return`fk_${(name)}`
+        return`fk_${crypto.createHash('md5').update(name).digest("hex")}`
     }
 }

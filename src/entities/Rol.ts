@@ -10,7 +10,7 @@ import {
 import { Permiso } from './Permiso';
 import { Usuario } from './Usuario';
 
-@Entity({name:'rol'})
+@Entity({ name: 'rol' })
 export class Rol {
   @PrimaryGeneratedColumn({ name: 'id_rol', type: 'int' })
   id: number;
@@ -28,7 +28,17 @@ export class Rol {
   tipo: string;
 
   @ManyToMany((type) => Permiso)
-  @JoinTable()
+  @JoinTable({
+    name: 'rolXpermiso',
+    joinColumn: {
+      name: 'id_rol',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'id_permiso',
+      referencedColumnName: 'id'
+    }
+  })
   permisos: Permiso[];
 
   @OneToMany(

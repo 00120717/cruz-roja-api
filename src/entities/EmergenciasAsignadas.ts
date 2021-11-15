@@ -1,5 +1,5 @@
 import { IsNotEmptyObject } from 'class-validator';
-import { Column, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, JoinColumn, ManyToOne } from 'typeorm';
 import { Entity } from "typeorm";
 import { Emergencia } from './Emergencia';
 import { Voluntario } from './Voluntario';
@@ -7,16 +7,13 @@ import { Voluntario } from './Voluntario';
 @Entity({ name: 'emergencias_asignadas' })
 export class EmergenciasAsignadas {
 
-    @PrimaryGeneratedColumn({ name: 'id_emergencias_asignadas', type: 'bigint', unsigned: true })
-    id: number;
-
     @Column({ name: 'union_emergencia', type: 'datetime' })
     unionEmergencia: Date
 
     @ManyToOne(
         (type) => Voluntario,
         (voluntario) => voluntario.emergenciasAsignadas
-        , { onDelete: 'CASCADE' }
+        , { onDelete: 'CASCADE', primary: true }
     )
     @JoinColumn({ name: 'id_voluntario' })
     @IsNotEmptyObject()
@@ -25,6 +22,7 @@ export class EmergenciasAsignadas {
     @ManyToOne(
         (type) => Emergencia,
         (emergencia) => emergencia.emergenciasAsignadas
+        , { primary: true }
     )
     @JoinColumn({ name: 'id_emergencia' })
     @IsNotEmptyObject()
