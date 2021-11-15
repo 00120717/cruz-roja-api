@@ -1,29 +1,29 @@
 import { validate } from 'class-validator';
-import { Permission } from './../entities/Permission';
-import { PermissionService } from './../services/PermissionService';
+import { Permiso } from '../entities/Permiso';
+import { PermisoService } from '../services/PermisoService';
 import { Request, Response } from 'express';
 import Container from "typedi"
 
-class PermissionController {
+class PermisoController {
   static fetch = async (req: Request, res: Response) => {
-    const permissionService = Container.get(PermissionService);
+    const permissionService = Container.get(PermisoService);
     const permissions = await permissionService.findAll();
     res.status(200).send(permissions);
   }
 
   static list = async (req: Request, res: Response) => {
-    const permissionService = Container.get(PermissionService);
+    const permissionService = Container.get(PermisoService);
     const permissions = await permissionService.listAll();
     res.status(200).send(permissions);
   }
 
   static store = async (req: Request, res: Response) => {
-    const permissionService = Container.get(PermissionService);
+    const permissionService = Container.get(PermisoService);
     const { name }: { name: string } = req.body;
 
-    const permission = new Permission();
+    const permission = new Permiso();
 
-    permission.name = name;
+    permission.nombre = name;
 
     const permissionErrors = await validate(permission);
     if (permissionErrors.length > 0) {
@@ -42,7 +42,7 @@ class PermissionController {
   }
 
   static update = async (req: Request, res: Response) => {
-    const permissionService = Container.get(PermissionService);
+    const permissionService = Container.get(PermisoService);
     const id = +req.params.id;
 
     const { name }: { name: string } = req.body;
@@ -53,7 +53,7 @@ class PermissionController {
       return;
     }
 
-    permission.name = name;
+    permission.nombre = name;
 
     const permissionErrors = await validate(permission);
     if (permissionErrors.length > 0) {
@@ -71,7 +71,7 @@ class PermissionController {
   }
 
   static show = async (req: Request, res: Response) => {
-    const permissionService = Container.get(PermissionService);
+    const permissionService = Container.get(PermisoService);
     const id = +req.params.id;
 
     const permission = await permissionService.findById(id);
@@ -83,7 +83,7 @@ class PermissionController {
   }
 
   static destroy = async (req: Request, res: Response) => {
-    const permissionService = Container.get(PermissionService);
+    const permissionService = Container.get(PermisoService);
     const id = +req.params.id;
 
     const permission = await permissionService.findById(id);
@@ -96,4 +96,4 @@ class PermissionController {
   }
 }
 
-export default PermissionController;
+export default PermisoController;

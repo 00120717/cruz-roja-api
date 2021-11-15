@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Permiso } from './Permiso';
-import { User } from './User';
+import { Usuario } from './Usuario';
 
 @Entity({name:'rol'})
 export class Rol {
@@ -32,8 +32,8 @@ export class Rol {
   permisos: Permiso[];
 
   @OneToMany(
-    (type) => User,
-    (user) => user.role
+    (type) => Usuario,
+    (usuario) => usuario.rol
   )
-  users: User[];
+  users: Usuario[];
 }

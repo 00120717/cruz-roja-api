@@ -1,6 +1,6 @@
 import { createConnection, useContainer, ConnectionOptions, getConnectionOptions } from 'typeorm';
 import { Container } from 'typedi';
-
+import {CustomNamingStrategy} from "./naming-strategy/CustomNamingStrategy";
 const getOptions = async () => {
   let connectionOptions: ConnectionOptions;
   connectionOptions = {
@@ -15,10 +15,14 @@ const getOptions = async () => {
     database: process.env.DATABASE_NAME,
     entities: ['src/entities/**/*.ts', 'dist/entities/**/*.js'],
     migrations: ['src/migrations/**/*.ts', 'dist/migrations/**/*.ts'],
+    namingStrategy: new CustomNamingStrategy(),
     cli: {
       migrationsDir: 'src/migrations',
       entitiesDir: 'src/entities'
-    }
+    },
+    extra: {
+      charset: 'utf8mb4_unicode_ci'
+  }
   };
   if (process.env.DATABASE_URL) {
     Object.assign(connectionOptions);

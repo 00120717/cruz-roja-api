@@ -1,5 +1,5 @@
 import { Repository, DeleteResult } from "typeorm";
-import { User } from "../entities/User";
+import { Usuario } from "../entities/Usuario";
 import { PaginationAwareObject } from "typeorm-pagination/dist/helpers/pagination";
 import { InjectRepository } from "typeorm-typedi-extensions";
 import { Service } from "typedi";
@@ -7,11 +7,11 @@ import { Service } from "typedi";
 @Service()
 export class UserService {
   constructor(
-    @InjectRepository(User)
-    protected userRepository: Repository<User>,
+    @InjectRepository(Usuario)
+    protected userRepository: Repository<Usuario>,
   ) {}
 
-  public async findByUsernameWithRole(username: string): Promise<User | undefined> {
+  public async findByUsernameWithRole(username: string): Promise<Usuario | undefined> {
     return await this.userRepository
       .createQueryBuilder('user')
       .addSelect('user.password')
@@ -21,13 +21,13 @@ export class UserService {
       .getOne();
   }
 
-  public async findById(id: number): Promise<User | undefined> {
+  public async findById(id: number): Promise<Usuario | undefined> {
     return await this.userRepository.createQueryBuilder('user')
         .where('user.id = :id', { id })
         .getOne()
   }
 
-  public async findByIdWithRelations(id: number): Promise<User | undefined> {
+  public async findByIdWithRelations(id: number): Promise<Usuario | undefined> {
     return await this.userRepository.createQueryBuilder('user')
         .leftJoinAndSelect('user.role', 'role')
         .leftJoinAndSelect('user.person', 'person')
@@ -46,11 +46,11 @@ export class UserService {
       .paginate(10);
   }
 
-  public async create(user: User): Promise<User> {
+  public async create(user: Usuario): Promise<Usuario> {
     return await this.userRepository.save(user);
   }
 
-  public async update(newUser: User): Promise<User | undefined> {
+  public async update(newUser: Usuario): Promise<Usuario | undefined> {
     const user = await this.userRepository.findOneOrFail(newUser.id);
     if (!user.id) {
       return new Promise((resolve, reject) => {

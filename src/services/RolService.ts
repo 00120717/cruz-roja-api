@@ -1,23 +1,23 @@
 import { DeleteResult, Repository } from 'typeorm';
-import { Role } from '../entities/Role';
+import { Rol } from '../entities/Rol';
 import { InjectRepository } from "typeorm-typedi-extensions";
 import { Service } from "typedi";
 import { PaginationAwareObject } from "typeorm-pagination/dist/helpers/pagination";
 
 @Service()
-export class RoleService {
+export class RolService {
   constructor(
-    @InjectRepository(Role)
-    protected roleRepository: Repository<Role>,
+    @InjectRepository(Rol)
+    protected roleRepository: Repository<Rol>,
   ) { }
 
-  public async findById(id: number): Promise<Role | undefined> {
+  public async findById(id: number): Promise<Rol | undefined> {
     return await this.roleRepository.createQueryBuilder('role')
         .where('role.id = :id', { id })
         .getOne();
   }
 
-  public async findByIdWithRelations(id: number): Promise<Role | undefined> {
+  public async findByIdWithRelations(id: number): Promise<Rol | undefined> {
     return await this.roleRepository
       .createQueryBuilder('role')
       .leftJoinAndSelect('role.permissions', 'permissions')
@@ -32,17 +32,17 @@ export class RoleService {
       .paginate(10);
   }
 
-  public async listAll(): Promise<Role[]> {
+  public async listAll(): Promise<Rol[]> {
     return await this.roleRepository
         .createQueryBuilder('role')
         .getMany();
   }
 
-  public async create(role: Role): Promise<Role> {
+  public async create(role: Rol): Promise<Rol> {
     return await this.roleRepository.save(role);
   }
 
-  public async update(newRole: Role): Promise<Role> {
+  public async update(newRole: Rol): Promise<Rol> {
     return await this.roleRepository.save(newRole);
   }
 

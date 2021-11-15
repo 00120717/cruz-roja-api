@@ -1,5 +1,5 @@
 import {DeleteResult, Repository} from "typeorm";
-import {Student} from "../entities/Student";
+import {Voluntario} from "../entities/Voluntario";
 import { Service } from "typedi";
 import { InjectRepository } from "typeorm-typedi-extensions";
 import { PaginationAwareObject } from "typeorm-pagination/dist/helpers/pagination";
@@ -7,11 +7,11 @@ import { PaginationAwareObject } from "typeorm-pagination/dist/helpers/paginatio
 @Service()
 export class StudentService {
   constructor(
-    @InjectRepository(Student)
-    private readonly studentRepository: Repository<Student>,
+    @InjectRepository(Voluntario)
+    private readonly studentRepository: Repository<Voluntario>,
   ) { }
 
-  public async findByCode(code: string): Promise<Student | undefined> {
+  public async findByCode(code: string): Promise<Voluntario | undefined> {
     return await this.studentRepository
       .createQueryBuilder('student')
       .where('student.code = :code', { code })
@@ -20,7 +20,7 @@ export class StudentService {
       .getOne();
   }
 
-  public async findByCodeWithRelation(code: string): Promise<Student | undefined> {
+  public async findByCodeWithRelation(code: string): Promise<Voluntario | undefined> {
     return await this.studentRepository
       .createQueryBuilder('student')
       // .leftJoin('student.subjectQualifications', 'subjectQualifications')
@@ -39,7 +39,7 @@ export class StudentService {
       .getOne();
   }
 
-  public async findById(id: number): Promise<Student | undefined> {
+  public async findById(id: number): Promise<Voluntario | undefined> {
     return await this.studentRepository
       .createQueryBuilder('student')
       .where('student.id = :id', { id })
@@ -48,7 +48,7 @@ export class StudentService {
       .getOne();
   }
 
-  public async findByIdWithRelation(id: number): Promise<Student | undefined> {
+  public async findByIdWithRelation(id: number): Promise<Voluntario | undefined> {
     return await this.studentRepository
       .createQueryBuilder('student')
       .leftJoinAndSelect('student.person', 'person')
@@ -60,7 +60,7 @@ export class StudentService {
       .getOne();
   }
 
-  public async findByIdWithNotesRelations(id: number): Promise<Student | undefined> {
+  public async findByIdWithNotesRelations(id: number): Promise<Voluntario | undefined> {
     return await this.studentRepository
         .createQueryBuilder('student')
         .where('student.id = :id', { id })
@@ -86,11 +86,11 @@ export class StudentService {
       .paginate(10);
   }
 
-  public async create(student: Student): Promise<Student> {
+  public async create(student: Voluntario): Promise<Voluntario> {
     return await this.studentRepository.save(student);
   }
 
-  public async update(newStudent: Student): Promise<Student> {
+  public async update(newStudent: Voluntario): Promise<Voluntario> {
     return await this.studentRepository.save(newStudent);
   }
 

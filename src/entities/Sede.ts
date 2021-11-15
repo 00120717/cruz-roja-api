@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString, IsOptional, IsNotEmptyObject } from 'class-validator';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Person } from './Person';
+import { Usuario } from './Usuario';
 import { TipoSede } from './TipoSede';
 import { Voluntario } from './Voluntario';
 
@@ -33,14 +33,14 @@ export class Sede {
   tipoSede: TipoSede;
 
   @OneToMany(
-    (type) => Person,
-    (person) => person.sede
-  )
-  persons: Person[];
-
-  @OneToMany(
     (type) => Voluntario,
     (voluntario) => voluntario.sede
   )
   voluntarios: Voluntario[];
+
+  @OneToMany(
+    (type) => Usuario,
+    (usuario) => usuario.sede
+  )
+  usuarios: Usuario[];
 }

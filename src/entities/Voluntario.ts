@@ -5,6 +5,7 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  //OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -14,7 +15,8 @@ import { Modalidad } from './Modalidad';
 import { CuerpoFilial } from './CuerpoFilial';
 import { Sede } from './Sede';
 import { Persona } from './Persona';
-import { SubjectToStudent } from './SubjectToStudent';
+import { EmergenciasAsignadas } from './EmergenciasAsignadas';
+//import { SubjectToStudent } from './SubjectToStudent';
 
 @Entity({name:'voluntario'})
 export class Voluntario {
@@ -77,8 +79,14 @@ export class Voluntario {
   sede: Sede;
 
   @OneToMany(
+    (type) => EmergenciasAsignadas,
+    (emergenciasAsignadas) => emergenciasAsignadas.voluntario
+  )
+  emergenciasAsignadas: EmergenciasAsignadas[];
+
+  /*@OneToMany(
     (type) => SubjectToStudent,
     (subjectxstudent) => subjectxstudent.student
   )
-  subjectQualifications: SubjectToStudent[];
+  subjectQualifications: SubjectToStudent[];*/
 }

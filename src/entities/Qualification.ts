@@ -7,7 +7,6 @@ import {
   UpdateDateColumn,
   JoinColumn,
 } from 'typeorm';
-import { Module } from './Module';
 import { IsBoolean, IsNotEmpty, IsNotEmptyObject, IsNumber, IsOptional, IsString } from 'class-validator';
 import { SubjectToStudent } from './SubjectToStudent';
 
@@ -66,11 +65,11 @@ export class Qualification {
   @IsNotEmptyObject()
   subjectStudent: SubjectToStudent;
 
-  @ManyToOne(
+  /*@ManyToOne(
     (type) => Module,
     (module) => module.qualifications
   )
   @JoinColumn({ name: 'module_id' })
   @IsNotEmptyObject()
-  module: Module;
+  module: Module;*/
 }

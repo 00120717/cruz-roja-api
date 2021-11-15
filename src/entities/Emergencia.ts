@@ -5,8 +5,11 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  //OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { EmergenciaRealizada } from './EmergenciaRealizada';
+import { EmergenciasAsignadas } from './EmergenciasAsignadas';
 import { TipoEmergencia } from './TipoEmergencia';
 
 @Entity({name:'emergencia'})
@@ -23,10 +26,14 @@ export class Emergencia {
   @IsString()
   emergenciaNombre: string;
 
-  @Column({ name: 'voluntario_codigo', type: 'varchar', length: '15' })
-  @IsOptional()
-  @IsString()
-  voluntarioCodigo: string;
+  @Column({ name: 'emergencia_inicio', type: 'datetime' })
+  emergenciaInicio: Date;
+
+  @Column({ name: 'emergencia_final', type: 'datetime' })
+  emergenciaFinal: Date;
+
+  @Column({ name: 'emergencia_descripcion', type: 'varchar', length: '250' })
+  emergenciaDescripcion: string;
 
   @ManyToOne(
     (type) => TipoEmergencia,
@@ -37,8 +44,15 @@ export class Emergencia {
   tipoEmergencia: TipoEmergencia;
 
   @OneToMany(
-    (type) => SubjectToStudent,
-    (subjectxstudent) => subjectxstudent.student
+    (type) => EmergenciaRealizada,
+    (emergenciaRealizada) => emergenciaRealizada.emergencia
   )
-  subjectQualifications: SubjectToStudent[];
+  emergenciasRealizadas: EmergenciaRealizada[];
+
+  @OneToMany(
+    (type) => EmergenciasAsignadas,
+    (emergenciasAsignadas) => emergenciasAsignadas.emergencia
+  )
+  emergenciasAsignadas: EmergenciasAsignadas[];
+
 }

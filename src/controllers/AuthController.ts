@@ -3,7 +3,7 @@ import * as jwt from 'jsonwebtoken';
 import config from './../../config/config';
 import { UserService } from '../services/UserService';
 import { Container } from "typedi";
-import { StudentService } from '../services/StudentService';
+//import { StudentService } from '../services/StudentService';
 
 class AuthController {
   static login = async (req: Request, res: Response) => {
@@ -30,7 +30,7 @@ class AuthController {
 
     //Sign JWT, valid for 1 hour
     const token = jwt.sign(
-      { userId: user.id, username: user.person.username, role: user.role.name },
+      { userId: user.id, username: user.persona.username, role: user.rol.nombre },
       config.jwtSecret,
       { expiresIn: '1h' }
     );
@@ -44,14 +44,14 @@ class AuthController {
   }
 
   static loginStudent = async (req: Request, res: Response) => {
-    const studentService = Container.get(StudentService);
+    //const studentService = Container.get(StudentService);
     const { code }: { code: string } = req.body;
     if (!code) {
       res.status(400).json({ message: 'El código del estudiante es requerido' });
     }
 
-    const student = await studentService.findByCode(code);
-    if (!student) {
+    //const student = await studentService.findByCode(code);
+    /*if (!student) {
       res.send(400).json({ message: 'El código del estudiante es incorrecto' });
       return;
     }
@@ -62,7 +62,7 @@ class AuthController {
       { expiresIn: '1h' }
     );
 
-    res.status(200).json({ token, type: 'Bearer', firstTime: student.firstTime });
+    res.status(200).json({ token, type: 'Bearer', firstTime: student.firstTime });*/
   }
 
   // static changePassword = async (req: Request, res: Response) => {

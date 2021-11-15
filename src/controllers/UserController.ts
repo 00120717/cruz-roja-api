@@ -1,22 +1,24 @@
 import { Request, Response } from 'express';
 import { validate } from 'class-validator';
-import { User } from '../entities/User';
-import { Person } from '../entities/Person';
-import { RoleService } from '../services/RoleService';
+import { Usuario } from '../entities/Usuario';
+import { Persona } from '../entities/Persona';
+import { RolService } from '../services/RolService';
 import { SedeService } from '../services/SedeService';
-import { SubjectService } from '../services/SubjectService';
+//import { SubjectService } from '../services/SubjectService';
 import { UserService } from '../services/UserService';
 import { Container } from "typedi";
+
+export const UNIQUE_USER_EMAIL_CONSTRAINT = 'unique_user_email_constraint';
 
 class UserController {
   static fetch = async (req: Request, res: Response) => {
     const userService = Container.get(UserService);
     const users = await userService.findAll();
-    users.data = (users.data as User[]).map((user) => {
-      const { person, ...rest } = user;
+    users.data = (users.data as Usuario[]).map((user) => {
+      const { persona, ...rest } = user;
       return {
         ...rest,
-        ...person,
+        ...persona,
         id: rest.id,
       }
     })
@@ -34,31 +36,31 @@ class UserController {
         res.status(404).json({ message: 'Usuario no encontrado '});
         return;
       }
-      const { person, ...rest } = user;
+      const { persona, ...rest } = user;
       res.status(200).send({
         ...rest,
-        ...person,
+        ...persona,
         id: rest.id,
       });
   };
 
   static store = async (req: Request, res: Response) => {
     const userService = Container.get(UserService);
-    const subjectService = Container.get(SubjectService);
+    //const subjectService = Container.get(SubjectService);
     const sedeService = Container.get(SedeService);
-    const roleService = Container.get(RoleService);
+    const roleService = Container.get(RolService);
     //Get parameters from the body
     const {
       username,
       email,
-      phoneNumber,
-      altPhoneNumber,
+     // phoneNumber,
+     // altPhoneNumber,
       password,
       roleId,
       firstName,
       lastName,
       sedeId,
-      status,
+     // status,
       subjectId,
     }: {
       username: string;
@@ -89,24 +91,23 @@ class UserController {
     }
 
     //Getting subject information
-    let subject;
+    //let subject;
     if (subjectId !== 0) {
-      subject = await subjectService.findById(subjectId);
+      /*subject = await subjectService.findById(subjectId);
       if (!subject) {
         res.status(400).json({ message: 'La materia que intenta asignar no existe' });
         return;
-      }
+      }*/
     }
     //Setting person information
-    const person = new Person();
+    const person = new Persona();
     person.username = username;
     person.firstName = firstName;
     person.lastName = lastName;
-    person.status = status;
     person.email = email ? email : null;
-    person.phoneNumber = phoneNumber ? phoneNumber : null;
-    person.altPhoneNumber = altPhoneNumber ? phoneNumber : null;
-    person.sede = sede;
+    //person.phoneNumber = phoneNumber ? phoneNumber : null;
+    //person.altPhoneNumber = altPhoneNumber ? phoneNumber : null;
+    //person.sede = sede;
 
     //Validate person entity
     const personErrors = await validate(person);
@@ -116,13 +117,10 @@ class UserController {
       return;
     }
 
-    const user = new User();
-    user.password = password;
-    if (subject) {
-      user.subject = subject;
-    }
-    user.person = person;
-    user.role = role;
+    const user = new Usuario();
+    user.contrasenia = password;
+    user.persona = person;
+    user.rol = role;
 
     //Validate if the parameters are ok
     const errors = await validate(user);
@@ -137,6 +135,9 @@ class UserController {
     try {
       await userService.create(user);
     } catch (error) {
+      if (error?.constraint === UNIQUE_USER_EMAIL_CONSTRAINT) {
+        res.status(400).json({ message: 'No se pudo crear el usuario', UNIQUE_USER_EMAIL_CONSTRAINT });
+      }
       res.status(400).json({ message: 'No se pudo crear el usuario', error });
       return;
     }
@@ -147,35 +148,35 @@ class UserController {
 
   static update = async (req: Request, res: Response) => {
     const userService = Container.get(UserService);
-    const subjectService = Container.get(SubjectService);
+    //const subjectService = Container.get(SubjectService);
     const sedeService = Container.get(SedeService);
-    const roleService = Container.get(RoleService);
+    const roleService = Container.get(RolService);
     const id = Number(req.params.id);
 
     const {
       username,
       email,
-      phoneNumber,
-      altPhoneNumber,
+      //phoneNumber,
+      //altPhoneNumber,
       password,
       roleId,
       firstName,
       lastName,
       sedeId,
-      status,
-      subjectId,
+      //status,
+      //subjectId,
     }: {
       username: string;
       password: string;
       email: string;
-      phoneNumber: string;
-      altPhoneNumber: string;
+      //phoneNumber: string;
+      //altPhoneNumber: string;
       roleId: number;
       firstName: string;
       lastName: string;
       sedeId: number;
-      status: boolean;
-      subjectId: number;
+      //status: boolean;
+      //subjectId: number;
     } = req.body;
 
     //Getting user information
@@ -200,24 +201,20 @@ class UserController {
     }
 
     //Getting subject information
-    const subject = await subjectService.findById(subjectId);
-    if (!subject) {
+    //const subject = await subjectService.findById(subjectId);
+    /*if (!subject) {
       res.status(400).json({ message: 'La materia que intenta asignar no existe' });
       return;
-    }
+    }*/
 
-    user.person.username = username;
-    user.person.firstName = firstName;
-    user.person.lastName = lastName;
-    user.person.status = status;
-    user.person.email = email;
-    user.person.phoneNumber = phoneNumber;
-    user.person.altPhoneNumber = altPhoneNumber;
-    user.person.sede = sede;
+    user.persona.username = username;
+    user.persona.firstName = firstName;
+    user.persona.lastName = lastName;
+    user.persona.email = email;
 
 
     //Validate person entity
-    const personErrors = await validate(user.person);
+    const personErrors = await validate(user.persona);
 
     if (personErrors.length > 0) {
       res.status(400).send(personErrors);
@@ -225,10 +222,9 @@ class UserController {
     }
 
     if (password) {
-      user.password = password;
+      user.contrasenia = password;
     }
-    user.subject = subject;
-    user.role = role;
+    user.rol = role;
 
     //Validate if the parameters are ok
     const errors = await validate(user);

@@ -1,32 +1,32 @@
 import { DeleteResult, Repository, UpdateResult } from "typeorm";
-import { Permission } from "../entities/Permission";
+import { Permiso } from "../entities/Permiso";
 import { InjectRepository } from "typeorm-typedi-extensions";
 import { Service } from "typedi";
 import { PaginationAwareObject } from "typeorm-pagination/dist/helpers/pagination";
 
 @Service()
-export class PermissionService {
+export class PermisoService {
   constructor(
-    @InjectRepository(Permission)
-    protected permissionRepository: Repository<Permission>,
+    @InjectRepository(Permiso)
+    protected permissionRepository: Repository<Permiso>,
   ) {}
 
-  public async findById(id: number): Promise<Permission | undefined> {
+  public async findById(id: number): Promise<Permiso | undefined> {
     return await this.permissionRepository.findOne(id);
   }
 
-  public async findByIds(ids: Array<number>): Promise<Permission[]> {
+  public async findByIds(ids: Array<number>): Promise<Permiso[]> {
     return await this.permissionRepository.findByIds(ids);
   }
 
-  public async findByName(name: string): Promise<Permission | undefined> {
+  public async findByName(name: string): Promise<Permiso | undefined> {
     return await this.permissionRepository
       .createQueryBuilder('permission')
       .where('permission.name = :name', { name })
       .getOne();
   }
 
-  public async listAll(): Promise<Permission[]> {
+  public async listAll(): Promise<Permiso[]> {
     return await this.permissionRepository
         .createQueryBuilder('permission')
         .getMany();
@@ -38,11 +38,11 @@ export class PermissionService {
       .paginate(10);
   }
 
-  public async create(permission: Permission): Promise<Permission> {
+  public async create(permission: Permiso): Promise<Permiso> {
     return await this.permissionRepository.save(permission);
   }
 
-  public async update(newPermission: Permission): Promise<UpdateResult> {
+  public async update(newPermission: Permiso): Promise<UpdateResult> {
     return await this.permissionRepository.update(newPermission.id, newPermission);
   }
 

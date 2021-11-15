@@ -1,26 +1,26 @@
 import { Request, Response } from 'express';
-import { PermissionService } from "../services/PermissionService";
-import { Role } from '../entities/Role';
+import { PermisoService } from "../services/PermisoService";
+import { Rol } from '../entities/Rol';
 import { validate } from 'class-validator';
-import { RoleService } from '../services/RoleService';
+import { RolService } from '../services/RolService';
 import { Container } from "typedi";
 
-class RoleController {
+class RolController {
   static fetch = async (req: Request, res: Response) => {
-    const roleService = Container.get(RoleService);
+    const roleService = Container.get(RolService);
     const roles = await roleService.findAll();
     res.status(200).send(roles);
   }
 
   static list = async (req: Request, res: Response) => {
-    const roleService = Container.get(RoleService);
+    const roleService = Container.get(RolService);
     const roles = await roleService.listAll();
     res.status(200).send(roles);
   }
 
   static store = async (req: Request, res: Response) => {
-    const permissionService = Container.get(PermissionService);
-    const roleService = Container.get(RoleService);
+    const permissionService = Container.get(PermisoService);
+    const roleService = Container.get(RolService);
     const {
       name,
       type,
@@ -38,10 +38,10 @@ class RoleController {
       return;
     }
 
-    const role = new Role();
-    role.name = name;
-    role.type = type;
-    role.permissions = permissions;
+    const role = new Rol();
+    role.nombre = name;
+    role.tipo = type;
+    role.permisos = permissions;
 
     const roleErrors = await validate(role);
     if (roleErrors.length > 0) {
@@ -60,8 +60,8 @@ class RoleController {
   }
 
   static update = async (req: Request, res: Response) => {
-    const permissionService = Container.get(PermissionService);
-    const roleService = Container.get(RoleService);
+    const permissionService = Container.get(PermisoService);
+    const roleService = Container.get(RolService);
     const id = Number(req.params.id);
 
     const { name, type, permissionId }: { name: string, type: string, permissionId: Array<number> } = req.body;
@@ -73,7 +73,7 @@ class RoleController {
     }
 
     console.log('Role: ', role);
-    console.log('Role Permission: ', role.permissions);
+    console.log('Role Permission: ', role.permisos);
 
     const permissions = await permissionService.findByIds(permissionId);
     if (type === 'tutor' && (!permissions || permissions.length <= 0)) {
@@ -83,9 +83,9 @@ class RoleController {
 
     console.log('New permissions: ', permissions);
 
-    role.name = name;
-    role.type = type;
-    role.permissions = permissions;
+    role.nombre = name;
+    role.tipo = type;
+    role.permisos = permissions;
 
     const roleErrors = await validate(role);
     if (roleErrors.length > 0) {
@@ -104,7 +104,7 @@ class RoleController {
   }
 
   static show = async (req: Request, res: Response) => {
-    const roleService = Container.get(RoleService);
+    const roleService = Container.get(RolService);
     const id: number = Number(req.params.id);
 
     const role = await roleService.findByIdWithRelations(id);
@@ -116,7 +116,7 @@ class RoleController {
   }
 
   static destroy = async (req: Request, res: Response) => {
-    const roleService = Container.get(RoleService);
+    const roleService = Container.get(RolService);
     const id: number = Number(req.params.id);
 
     const role = await roleService.findById(id);
@@ -129,4 +129,4 @@ class RoleController {
   }
 }
 
-export default RoleController;
+export default RolController;

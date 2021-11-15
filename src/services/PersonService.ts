@@ -1,5 +1,5 @@
 import {DeleteResult, Repository, UpdateResult} from "typeorm";
-import { Person } from "../entities/Person";
+import { Persona } from "../entities/Persona";
 import { Service } from "typedi";
 import { InjectRepository } from "typeorm-typedi-extensions";
 import { PaginationAwareObject } from "typeorm-pagination/dist/helpers/pagination";
@@ -7,18 +7,18 @@ import { PaginationAwareObject } from "typeorm-pagination/dist/helpers/paginatio
 @Service()
 export class PersonService {
     constructor(
-        @InjectRepository(Person)
-        private readonly personRepository: Repository<Person>,
+        @InjectRepository(Persona)
+        private readonly personRepository: Repository<Persona>,
     ) { }
 
-    public async findById(id: number): Promise<Person | undefined> {
+    public async findById(id: number): Promise<Persona | undefined> {
         return await this.personRepository
             .createQueryBuilder('person')
             .where('person.id = :id', { id })
             .getOne();
     }
 
-    public async findByIdWithRelation(id: number): Promise<Person | undefined> {
+    public async findByIdWithRelation(id: number): Promise<Persona | undefined> {
         return await this.personRepository
             .createQueryBuilder('person')
             .where('person.id = :id', { id })
@@ -33,11 +33,11 @@ export class PersonService {
             .paginate(10);
     }
 
-    public async create(person: Person): Promise<Person> {
+    public async create(person: Persona): Promise<Persona> {
         return await this.personRepository.save(person);
     }
 
-    public async update(newPerson: Person): Promise<UpdateResult> {
+    public async update(newPerson: Persona): Promise<UpdateResult> {
         return await this.personRepository.update(newPerson.id, newPerson);
     }
 

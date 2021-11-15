@@ -1,9 +1,7 @@
 import { Column } from 'typeorm';
 // import { Qualification } from './Qualification';
-import { Student } from './Student';
-import { Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Subject } from './Subject';
-import { IsNotEmptyObject } from 'class-validator';
+import { Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+//import { IsNotEmptyObject } from 'class-validator';
 import { Qualification } from './Qualification';
 
 @Entity()
@@ -14,7 +12,7 @@ export class SubjectToStudent {
     @Column({ name: 'student_code', type: 'varchar', length: '15' })
     student_code: string
 
-    @ManyToOne(
+    /*@ManyToOne(
         (type) => Student,
         (student) => student.subjectQualifications
         , { onDelete: 'CASCADE' }
@@ -29,7 +27,7 @@ export class SubjectToStudent {
     )
     @JoinColumn({ name: 'subject_id' })
     @IsNotEmptyObject()
-    subject: Subject;
+    subject: Subject;*/
 
     @OneToMany(
       (type) => Qualification,
