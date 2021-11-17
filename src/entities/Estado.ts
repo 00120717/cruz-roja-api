@@ -2,7 +2,7 @@ import { IsNotEmpty, IsString, Length } from 'class-validator';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Voluntario } from './Voluntario';
 
-@Entity({name:'estado'})
+@Entity({ name: 'estado' })
 export class Estado {
   @PrimaryGeneratedColumn({ name: 'id_estado', type: 'int', unsigned: true })
   id: string;

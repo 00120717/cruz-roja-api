@@ -8,11 +8,11 @@ import { IsBoolean, IsEmail, IsNotEmpty, IsOptional, IsNumber, Length, MaxLength
 
 export const UNIQUE_USER_EMAIL_CONSTRAINT = 'unique_user_email_constraint';
 
-@Entity({name:'persona'})
+@Entity({ name: 'persona' })
 @Unique(UNIQUE_USER_EMAIL_CONSTRAINT, ['email'])
 export class Persona {
   @PrimaryGeneratedColumn({ name: 'id_persona', type: 'bigint', unsigned: true })
-  id: number;
+  id: string;
 
   @Column({ name: 'persona_username', type: 'varchar', length: '30' })
   @Length(3, 30)

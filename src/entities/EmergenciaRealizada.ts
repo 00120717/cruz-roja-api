@@ -5,15 +5,19 @@ import {
   JoinColumn,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Emergencia } from './Emergencia';
+import { EmergenciaPaciente } from './EmergenciaPaciente';
+import { EmergenciaSeccional } from './EmergenciaSeccional';
 import { Voluntario } from './Voluntario';
 
-@Entity({name:'emergencia_realizada'})
+@Entity({ name: 'emergencia_realizada' })
 export class EmergenciaRealizada {
-  @PrimaryGeneratedColumn({ name: 'id_emergencia_realizada', type: 'bigint', unsigned: true  })
-  id: number;
+  
+  @PrimaryGeneratedColumn({ name: 'id_emergencia_paciente', type: 'bigint', unsigned: true })
+  id: string;
 
   @Column({ name: 'identificador_formulario', type: 'bigint', unsigned: true })
   @IsNotEmpty()
@@ -53,4 +57,16 @@ export class EmergenciaRealizada {
 
   @ManyToMany((type) => Voluntario)
   voluntarios: Voluntario[];
+
+  @OneToMany(
+    (type) => EmergenciaSeccional,
+    (emergenciaSeccional) => emergenciaSeccional.emergenciaRealizada
+  )
+  emergenciaSeccional: EmergenciaSeccional[];
+
+  @OneToMany(
+    (type) => EmergenciaPaciente,
+    (emergenciaPaciente) => emergenciaPaciente.emergenciaRealizada
+  )
+  emergenciaPaciente: EmergenciaPaciente[];
 }

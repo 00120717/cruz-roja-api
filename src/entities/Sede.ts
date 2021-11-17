@@ -4,10 +4,10 @@ import { Usuario } from './Usuario';
 import { TipoSede } from './TipoSede';
 import { Voluntario } from './Voluntario';
 
-@Entity({name:'sede'})
+@Entity({ name: 'sede' })
 export class Sede {
   @PrimaryGeneratedColumn({ name: 'id_sede', type: 'int', unsigned: true })
-  id: number;
+  id: string;
 
   @Column({ name: 'sede_nombre', type: 'text' })
   @IsNotEmpty()
@@ -18,7 +18,7 @@ export class Sede {
   @IsOptional()
   @IsString()
   direccion: string;
-  
+
   @Column({ name: 'sede_codigo', type: 'text' })
   @IsNotEmpty()
   @IsString()

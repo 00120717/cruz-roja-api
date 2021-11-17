@@ -52,7 +52,7 @@ class RolController {
     try {
       await roleService.create(role);
     } catch (e) {
-      res.status(400).json({ message: 'No se pudo crear el rol '});
+      res.status(400).json({ message: 'No se pudo crear el rol ' });
       return;
     }
 
@@ -77,7 +77,7 @@ class RolController {
 
     const permissions = await permissionService.findByIds(permissionId);
     if (type === 'tutor' && (!permissions || permissions.length <= 0)) {
-      res.status(400).json({ message: 'No se puede asiginar un rol sin permisos '});
+      res.status(400).json({ message: 'No se puede asiginar un rol sin permisos ' });
       return;
     }
 
@@ -96,7 +96,7 @@ class RolController {
     try {
       await roleService.update(role);
     } catch (e) {
-      res.status(400).json({ message: 'No se pudo actualizar el rol '});
+      res.status(400).json({ message: 'No se pudo actualizar el rol ' });
       return;
     }
 
@@ -109,7 +109,7 @@ class RolController {
 
     const role = await roleService.findByIdWithRelations(id);
     if (!role) {
-      res.status(404).json({ message: 'Rol no encontrado '});
+      res.status(404).json({ message: 'Rol no encontrado ' });
       return;
     }
     res.status(200).send(role);

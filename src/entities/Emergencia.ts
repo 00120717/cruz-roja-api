@@ -12,10 +12,10 @@ import { EmergenciaRealizada } from './EmergenciaRealizada';
 import { EmergenciasAsignadas } from './EmergenciasAsignadas';
 import { TipoEmergencia } from './TipoEmergencia';
 
-@Entity({name:'emergencia'})
+@Entity({ name: 'emergencia' })
 export class Emergencia {
-  @PrimaryGeneratedColumn({ name: 'id_emergencia', type: 'int', unsigned: true  })
-  id: number;
+  @PrimaryGeneratedColumn({ name: 'id_emergencia', type: 'int', unsigned: true })
+  id: string;
 
   @Column({ name: 'emergencia_codigo', type: 'text', unique: true })
   @IsNotEmpty()

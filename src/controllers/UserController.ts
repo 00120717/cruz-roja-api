@@ -31,17 +31,17 @@ class UserController {
     const id: number = Number(req.params.id);
 
     //Get the user from database
-      const user = await userService.findByIdWithRelations(id);
-      if (!user) {
-        res.status(404).json({ message: 'Usuario no encontrado '});
-        return;
-      }
-      const { persona, ...rest } = user;
-      res.status(200).send({
-        ...rest,
-        ...persona,
-        id: rest.id,
-      });
+    const user = await userService.findByIdWithRelations(id);
+    if (!user) {
+      res.status(404).json({ message: 'Usuario no encontrado ' });
+      return;
+    }
+    const { persona, ...rest } = user;
+    res.status(200).send({
+      ...rest,
+      ...persona,
+      id: rest.id,
+    });
   };
 
   static store = async (req: Request, res: Response) => {
@@ -53,14 +53,14 @@ class UserController {
     const {
       username,
       email,
-     // phoneNumber,
-     // altPhoneNumber,
+      // phoneNumber,
+      // altPhoneNumber,
       password,
       roleId,
       firstName,
       lastName,
       sedeId,
-     // status,
+      // status,
       subjectId,
     }: {
       username: string;
@@ -182,7 +182,7 @@ class UserController {
     //Getting user information
     const user = await userService.findById(id);
     if (!user) {
-      res.status(404).json({ message: 'Usuario no encontrado '})
+      res.status(404).json({ message: 'Usuario no encontrado ' })
       return;
     }
 
@@ -240,7 +240,7 @@ class UserController {
     try {
       await userService.update(user);
     } catch (e) {
-      res.status(400).json({ message: 'No se pudo actualizar el usuario '});
+      res.status(400).json({ message: 'No se pudo actualizar el usuario ' });
       return;
     }
 
@@ -253,7 +253,7 @@ class UserController {
 
     const user = await userService.findById(id);
     if (!user) {
-      res.status(404).json({ message: 'Usuario no encontrado '})
+      res.status(404).json({ message: 'Usuario no encontrado ' })
     }
 
     await userService.delete(id);

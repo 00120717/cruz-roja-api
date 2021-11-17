@@ -3,17 +3,17 @@ import {
   Column,
   Entity,
   JoinColumn,
-  //OneToMany,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { EmergenciaPaciente } from './EmergenciaPaciente';
 import { Persona } from './Persona';
-//import { SubjectToStudent } from './SubjectToStudent';
 
-@Entity({name:'paciente'})
+@Entity({ name: 'paciente' })
 export class Paciente {
-  @PrimaryGeneratedColumn({ name: 'id_paciente', type: 'bigint', unsigned: true  })
-  id: number;
+  @PrimaryGeneratedColumn({ name: 'id_paciente', type: 'bigint', unsigned: true })
+  id: string;
 
   @Column({ name: 'menor_edad', type: 'boolean', default: true })
   @IsNotEmpty()
@@ -46,15 +46,15 @@ export class Paciente {
 
   @Column({ name: 'fecha_creacion', type: 'datetime' })
   fechaCreacion: Date;
-  
+
   @OneToOne((type) => Persona, { cascade: ['insert'], onDelete: 'CASCADE' })
   @JoinColumn({ name: 'id_persona' })
   @IsNotEmptyObject()
   persona: Persona;
 
-  /*@OneToMany(
-    (type) => SubjectToStudent,
-    (subjectxstudent) => subjectxstudent.student
+  @OneToMany(
+    (type) => EmergenciaPaciente,
+    (emergenciaPaciente) => emergenciaPaciente.paciente
   )
-  subjectQualifications: SubjectToStudent[];*/
+  emergenciaPaciente: EmergenciaPaciente[];
 }

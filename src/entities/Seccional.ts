@@ -1,8 +1,8 @@
 import { IsNotEmpty, IsString, Length } from 'class-validator';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Voluntario } from './Voluntario';
+import { EmergenciaSeccional } from './EmergenciaSeccional';
 
-@Entity({name:'seccional'})
+@Entity({ name: 'seccional' })
 export class Seccional {
   @PrimaryGeneratedColumn({ name: 'id_seccional', type: 'int', unsigned: true })
   id: string;
@@ -26,8 +26,8 @@ export class Seccional {
   codigo: string;
 
   @OneToMany(
-    (type) => Voluntario,
-    (voluntario) => voluntario.cuerpoFilial
+    (type) => EmergenciaSeccional,
+    (emergenciaSeccional) => emergenciaSeccional.seccional
   )
-  voluntarios: Voluntario[];
+  emergenciaSeccional: EmergenciaSeccional[];
 }

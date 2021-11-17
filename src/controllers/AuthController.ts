@@ -3,7 +3,6 @@ import * as jwt from 'jsonwebtoken';
 import config from './../../config/config';
 import { UserService } from '../services/UserService';
 import { Container } from "typedi";
-//import { StudentService } from '../services/StudentService';
 
 class AuthController {
   static login = async (req: Request, res: Response) => {

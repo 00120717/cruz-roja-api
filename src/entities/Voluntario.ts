@@ -7,7 +7,6 @@ import {
   ManyToMany,
   ManyToOne,
   OneToMany,
-  //OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -19,12 +18,13 @@ import { Sede } from './Sede';
 import { Persona } from './Persona';
 import { EmergenciasAsignadas } from './EmergenciasAsignadas';
 import { EmergenciaRealizada } from './EmergenciaRealizada';
-//import { SubjectToStudent } from './SubjectToStudent';
+import { CursoXVoluntario } from './CursoXVoluntario';
+import { VehiculoXEmergenciaPaciente } from './VehiculoXEmergenciaPaciente';
 
-@Entity({name:'voluntario'})
+@Entity({ name: 'voluntario' })
 export class Voluntario {
-  @PrimaryGeneratedColumn({ name: 'id_voluntario', type: 'bigint', unsigned: true  })
-  id: number;
+  @PrimaryGeneratedColumn({ name: 'id_voluntario', type: 'bigint', unsigned: true })
+  id: string;
 
   @Column({ name: 'años_servicio', type: 'smallint' })
   @IsOptional()
@@ -91,19 +91,25 @@ export class Voluntario {
   @JoinTable({
     name: 'emergencia_realizadaXvoluntario',
     joinColumn: {
-        name: 'id_voluntario',
-        referencedColumnName: 'id',
+      name: 'id_voluntario',
+      referencedColumnName: 'id',
     },
     inverseJoinColumn: {
-        name: 'id_emergencia_realizada',
-        referencedColumnName: 'id'
+      name: 'id_emergencia_realizada',
+      referencedColumnName: 'id'
     }
-})
+  })
   emergenciasRealizadas: EmergenciaRealizada[];
 
-  /*@OneToMany(
-    (type) => SubjectToStudent,
-    (subjectxstudent) => subjectxstudent.student
+  @OneToMany(
+    (type) => CursoXVoluntario,
+    (cursoXVoluntario) => cursoXVoluntario.voluntario
   )
-  subjectQualifications: SubjectToStudent[];*/
+  cursoXVoluntario: CursoXVoluntario[];
+
+  @OneToMany(
+    (type) => VehiculoXEmergenciaPaciente,
+    (vehiculoXEmergenciaPaciente) => vehiculoXEmergenciaPaciente.voluntario
+  )
+  vehiculoXEmergenciaPaciente: VehiculoXEmergenciaPaciente[];
 }

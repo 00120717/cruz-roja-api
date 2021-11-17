@@ -51,7 +51,7 @@ class SedeController {
     try {
       await sedeService.create(sede);
     } catch (e) {
-      res.status(400).json({ message: 'No se pudo crear la sede'});
+      res.status(400).json({ message: 'No se pudo crear la sede' });
       return;
     }
     res.status(201).json({ message: 'Sede creada correctamente' });
@@ -64,7 +64,7 @@ class SedeController {
 
     const sede = await sedeService.findById(id);
     if (!sede) {
-      res.status(404).json({ message: 'Sede no encontrada '});
+      res.status(404).json({ message: 'Sede no encontrada ' });
       return;
     }
 
@@ -89,7 +89,7 @@ class SedeController {
     try {
       await sedeService.update(sede);
     } catch (e) {
-      res.status(400).json({ message: 'No se pudo actualizar la sede'});
+      res.status(400).json({ message: 'No se pudo actualizar la sede' });
       return;
     }
 
@@ -101,7 +101,7 @@ class SedeController {
     const sedeService = Container.get(SedeService);
     const sede = await sedeService.findById(id);
     if (!sede) {
-      res.status(404).json({ message: 'Sede no encontrada '});
+      res.status(404).json({ message: 'Sede no encontrada ' });
       return;
     }
     res.status(200).send(sede);
@@ -122,7 +122,7 @@ class SedeController {
     const id: number = Number(req.params.id);
     const sede = await sedeService.findById(id);
     if (!sede) {
-      res.status(404).json({ message: 'Sede no encontrada'});
+      res.status(404).json({ message: 'Sede no encontrada' });
       return;
     }
     await sedeService.delete(id);
