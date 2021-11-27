@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
 import { Container } from 'typedi';
-import { StudentService } from '../services/StudentService';
+import {  VoluntarioService } from '../services/VoluntarioService';
 
 export const checkStudentCode = async (req: Request, res: Response, next: NextFunction) => {
   const code = res.locals.jwtPayload.code;
-  const studentService = Container.get(StudentService);
+  const voluntarioService = Container.get(VoluntarioService);
 
-  const student = await studentService.findByCode(code);
+  const student = await voluntarioService.findByCode(code);
   if (!student) {
     res.sendStatus(401);
     return;

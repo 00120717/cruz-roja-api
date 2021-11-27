@@ -5,15 +5,15 @@ import { Persona } from '../entities/Persona';
 import { RolService } from '../services/RolService';
 import { SedeService } from '../services/SedeService';
 //import { SubjectService } from '../services/SubjectService';
-import { UserService } from '../services/UserService';
+import { UsuarioService } from '../services/UsuarioService';
 import { Container } from "typedi";
 
 export const UNIQUE_USER_EMAIL_CONSTRAINT = 'unique_user_email_constraint';
 
 class UserController {
   static fetch = async (req: Request, res: Response) => {
-    const userService = Container.get(UserService);
-    const users = await userService.findAll();
+    const usuarioService = Container.get(UsuarioService);
+    const users = await usuarioService.findAll();
     users.data = (users.data as Usuario[]).map((user) => {
       const { persona, ...rest } = user;
       return {
@@ -26,12 +26,12 @@ class UserController {
   };
 
   static show = async (req: Request, res: Response) => {
-    const userService = Container.get(UserService);
+    const usuarioService = Container.get(UsuarioService);
     //Get the ID from the url
     const id: number = Number(req.params.id);
 
     //Get the user from database
-    const user = await userService.findByIdWithRelations(id);
+    const user = await usuarioService.findByIdWithRelations(id);
     if (!user) {
       res.status(404).json({ message: 'Usuario no encontrado ' });
       return;
@@ -45,7 +45,7 @@ class UserController {
   };
 
   static store = async (req: Request, res: Response) => {
-    const userService = Container.get(UserService);
+    const usuarioService = Container.get(UsuarioService);
     //const subjectService = Container.get(SubjectService);
     const sedeService = Container.get(SedeService);
     const roleService = Container.get(RolService);
@@ -133,7 +133,7 @@ class UserController {
 
     // Try to save.
     try {
-      await userService.create(user);
+      await usuarioService.create(user);
     } catch (error) {
       if (error?.constraint === UNIQUE_USER_EMAIL_CONSTRAINT) {
         res.status(400).json({ message: 'No se pudo crear el usuario', UNIQUE_USER_EMAIL_CONSTRAINT });
@@ -147,7 +147,7 @@ class UserController {
   };
 
   static update = async (req: Request, res: Response) => {
-    const userService = Container.get(UserService);
+    const usuarioService = Container.get(UsuarioService);
     //const subjectService = Container.get(SubjectService);
     const sedeService = Container.get(SedeService);
     const roleService = Container.get(RolService);
@@ -180,7 +180,7 @@ class UserController {
     } = req.body;
 
     //Getting user information
-    const user = await userService.findById(id);
+    const user = await usuarioService.findById(id);
     if (!user) {
       res.status(404).json({ message: 'Usuario no encontrado ' })
       return;
@@ -238,7 +238,7 @@ class UserController {
     }
 
     try {
-      await userService.update(user);
+      await usuarioService.update(user);
     } catch (e) {
       res.status(400).json({ message: 'No se pudo actualizar el usuario ' });
       return;
@@ -248,15 +248,15 @@ class UserController {
   };
 
   static destroy = async (req: Request, res: Response) => {
-    const userService = Container.get(UserService);
+    const usuarioService = Container.get(UsuarioService);
     const id: number = Number(req.params.id);
 
-    const user = await userService.findById(id);
+    const user = await usuarioService.findById(id);
     if (!user) {
       res.status(404).json({ message: 'Usuario no encontrado ' })
     }
 
-    await userService.delete(id);
+    await usuarioService.delete(id);
     res.status(204).send();
   };
 }

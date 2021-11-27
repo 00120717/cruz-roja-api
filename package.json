@@ -1,7 +1,7 @@
 {
   "name": "ufg-sede-api",
   "version": "1.0.0",
-  "description": "Sede Margarita Durán",
+  "description": "Api Cruz Roja Aplicativo Registro de Emergencias",
   "main": "index.ts",
   "scripts": {
     "start": "node ./dist/src/index.js",
@@ -13,7 +13,11 @@
     "typeorm:sync": "typeorm schema:sync"
   },
   "keywords": [],
-  "author": "Rodrigo Alvarenga <raalvarenga423@gmail.com>",
+  "author": "Mario Cecilio De Leon Recinos <00353715@uca.edu.sv>",
+  "contributors": [
+    "Mario Cecilio De Leon Recinos <00353715@uca.edu.sv>",
+    "Miguel Ernesto Gonzalez Yanes <00145016@uca.edu.sv>"
+  ],
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",

@@ -26,7 +26,7 @@ export class Voluntario {
   @PrimaryGeneratedColumn({ name: 'id_voluntario', type: 'bigint', unsigned: true })
   id: string;
 
-  @Column({ name: 'años_servicio', type: 'smallint' })
+  @Column({ name: 'anios_servicio', type: 'smallint' })
   @IsOptional()
   @IsNumber()
   aniosServicio: number;

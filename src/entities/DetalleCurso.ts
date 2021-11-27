@@ -4,7 +4,7 @@ import { CursoXVoluntario } from './CursoXVoluntario';
 
 @Entity({ name: 'detalle_curso' })
 export class DetalleCurso {
-  @PrimaryGeneratedColumn({ name: 'id_detalle_curso', type: 'int', unsigned: true })
+  @PrimaryGeneratedColumn({ name: 'id_detalle_curso', type: 'bigint', unsigned: true })
   id: string;
 
   @Column({ name: 'aprovado', type: 'boolean', default: false })

@@ -16,7 +16,7 @@ import { Voluntario } from './Voluntario';
 @Entity({ name: 'emergencia_realizada' })
 export class EmergenciaRealizada {
   
-  @PrimaryGeneratedColumn({ name: 'id_emergencia_paciente', type: 'bigint', unsigned: true })
+  @PrimaryGeneratedColumn({ name: 'id_emergencia_realizada', type: 'bigint', unsigned: true })
   id: string;
 
   @Column({ name: 'identificador_formulario', type: 'bigint', unsigned: true })
@@ -51,7 +51,7 @@ export class EmergenciaRealizada {
     (type) => Emergencia,
     (emergencia) => emergencia.emergenciasRealizadas
   )
-  @JoinColumn({ name: 'id_emergencia_realizada' })
+  @JoinColumn({ name: 'id_emergencia' })
   @IsNotEmptyObject()
   emergencia: Emergencia;
 

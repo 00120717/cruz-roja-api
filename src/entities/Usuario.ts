@@ -14,8 +14,8 @@ import { Persona } from './Persona';
 
 @Entity({ name: 'usuario' })
 export class Usuario {
-  @PrimaryGeneratedColumn({ name: 'id_usuario', type: 'bigint', unsigned: true })
-  id: string;
+  @PrimaryGeneratedColumn({ name: 'id_usuario', type: 'int', unsigned: true })
+  id: number;
 
   @Column({ name: 'contrasenia', type: 'varchar', length: '200', select: false })
   @Length(4, 200)

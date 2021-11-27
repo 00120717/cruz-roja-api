@@ -5,7 +5,7 @@ import { InjectRepository } from "typeorm-typedi-extensions";
 import { PaginationAwareObject } from "typeorm-pagination/dist/helpers/pagination";
 
 @Service()
-export class PersonService {
+export class PersonaService {
     constructor(
         @InjectRepository(Persona)
         private readonly personRepository: Repository<Persona>,

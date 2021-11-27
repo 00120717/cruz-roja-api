@@ -46,10 +46,10 @@ export class EmergenciaPaciente {
     @IsString()
     peloColorEstilo: string;
 
-    @Column({ name: 'comentario_señal_especial', type: 'text' })
+    @Column({ name: 'comentario_senial_especial', type: 'text' })
     @IsNotEmpty()
     @IsString()
-    comentarioSennalEspecial: string;
+    comentarioSenialEspecial: string;
 
     @Column({ name: 'fecha_atencion_inicial', type: 'datetime' })
     fechaAtencionInicial: Date

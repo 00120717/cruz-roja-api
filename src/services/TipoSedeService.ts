@@ -15,13 +15,6 @@ export class TipoSedeService {
     return await this.sedeRepository.findOne(id);
   }
 
-  public async findActive(): Promise<TipoSede | undefined> {
-    return await this.sedeRepository
-      .createQueryBuilder('sede')
-      .where('sede.active = :active', { active: true })
-      .getOne();
-  }
-
   public async findAll(): Promise<PaginationAwareObject> {
     return await this.sedeRepository
       .createQueryBuilder('sede')

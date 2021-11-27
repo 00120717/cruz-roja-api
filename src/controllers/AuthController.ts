@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
 import * as jwt from 'jsonwebtoken';
 import config from './../../config/config';
-import { UserService } from '../services/UserService';
+import { UsuarioService } from '../services/UsuarioService';
 import { Container } from "typedi";
 
 class AuthController {
   static login = async (req: Request, res: Response) => {
-    const userService = Container.get(UserService);
+    const usuarioService = Container.get(UsuarioService);
     // Check if username and password are set
     let { username, password } = req.body;
     if (!(username && password)) {
@@ -15,7 +15,7 @@ class AuthController {
 
     // Get user form database
 
-    const user = await userService.findByUsernameWithRole(username);
+    const user = await usuarioService.findByUsernameWithRole(username);
     if (!user) {
       res.status(400).json({ message: 'Usuario incorrecto' });
       return

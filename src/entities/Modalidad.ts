@@ -5,7 +5,7 @@ import { Voluntario } from './Voluntario';
 @Entity({ name: 'modalidad' })
 export class Modalidad {
   @PrimaryGeneratedColumn({ name: 'id_modalidad', type: 'int', unsigned: true })
-  id: string;
+  id: number;
 
   @Column({ name: 'modalidad', type: 'varchar', length: '20' })
   @IsNotEmpty()

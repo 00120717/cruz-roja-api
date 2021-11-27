@@ -5,7 +5,7 @@ import { EmergenciaSeccional } from './EmergenciaSeccional';
 @Entity({ name: 'seccional' })
 export class Seccional {
   @PrimaryGeneratedColumn({ name: 'id_seccional', type: 'int', unsigned: true })
-  id: string;
+  id: number;
 
   @Column({ name: 'departamento', type: 'varchar', length: '30' })
   @IsNotEmpty()

@@ -5,7 +5,7 @@ import { InjectRepository } from "typeorm-typedi-extensions";
 import { Service } from "typedi";
 
 @Service()
-export class UserService {
+export class UsuarioService {
   constructor(
     @InjectRepository(Usuario)
     protected userRepository: Repository<Usuario>,
@@ -14,10 +14,10 @@ export class UserService {
   public async findByUsernameWithRole(username: string): Promise<Usuario | undefined> {
     return await this.userRepository
       .createQueryBuilder('user')
-      .addSelect('user.password')
-      .innerJoinAndSelect('user.role', 'role')
-      .innerJoinAndSelect('user.person', 'person')
-      .where('person.username = :username', { username })
+      .addSelect('user.contrasenia')
+      .innerJoinAndSelect('user.rol', 'rol')
+      .innerJoinAndSelect('user.persona', 'persona')
+      .where('persona.username = :username', { username })
       .getOne();
   }
 
@@ -40,9 +40,8 @@ export class UserService {
   public async findAll(): Promise<PaginationAwareObject> {
     return await this.userRepository
       .createQueryBuilder('user')
-      .leftJoinAndSelect('user.role', 'role')
-      .leftJoinAndSelect('user.person', 'person')
-      .leftJoinAndSelect('user.subject', 'subject')
+      .leftJoinAndSelect('user.rol', 'rol')
+      .leftJoinAndSelect('user.persona', 'persona')
       .paginate(10);
   }
 

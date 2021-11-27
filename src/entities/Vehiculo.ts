@@ -5,7 +5,7 @@ import { VehiculoXEmergenciaPaciente } from './VehiculoXEmergenciaPaciente';
 @Entity({ name: 'vehiculo' })
 export class Vehiculo {
   @PrimaryGeneratedColumn({ name: 'id_vehiculo', type: 'int', unsigned: true })
-  id: string;
+  id: number;
 
   @Column({ name: 'vehiculo', type: 'text' })
   @IsNotEmpty()

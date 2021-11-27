@@ -12,8 +12,8 @@ import { Usuario } from './Usuario';
 
 @Entity({ name: 'rol' })
 export class Rol {
-  @PrimaryGeneratedColumn({ name: 'id_rol', type: 'int' })
-  id: string;
+  @PrimaryGeneratedColumn({ name: 'id_rol', type: 'int', unsigned: true  })
+  id: number;
 
   @Column({ name: 'rol_nombre', type: 'varchar', length: '20' })
   @IsNotEmpty()
