@@ -8,45 +8,45 @@ import { PaginationAwareObject } from "typeorm-pagination/dist/helpers/paginatio
 export class PermisoService {
   constructor(
     @InjectRepository(Permiso)
-    protected permissionRepository: Repository<Permiso>,
+    protected permisoRepository: Repository<Permiso>,
   ) {}
 
   public async findById(id: number): Promise<Permiso | undefined> {
-    return await this.permissionRepository.findOne(id);
+    return await this.permisoRepository.findOne(id);
   }
 
   public async findByIds(ids: Array<number>): Promise<Permiso[]> {
-    return await this.permissionRepository.findByIds(ids);
+    return await this.permisoRepository.findByIds(ids);
   }
 
   public async findByName(name: string): Promise<Permiso | undefined> {
-    return await this.permissionRepository
-      .createQueryBuilder('permission')
-      .where('permission.name = :name', { name })
+    return await this.permisoRepository
+      .createQueryBuilder('permiso')
+      .where('permiso.nombre = :name', { name })
       .getOne();
   }
 
   public async listAll(): Promise<Permiso[]> {
-    return await this.permissionRepository
-        .createQueryBuilder('permission')
+    return await this.permisoRepository
+        .createQueryBuilder('permiso')
         .getMany();
   }
 
   public async findAll(): Promise<PaginationAwareObject> {
-    return await this.permissionRepository
-      .createQueryBuilder('permission')
+    return await this.permisoRepository
+      .createQueryBuilder('permiso')
       .paginate(10);
   }
 
-  public async create(permission: Permiso): Promise<Permiso> {
-    return await this.permissionRepository.save(permission);
+  public async create(permiso: Permiso): Promise<Permiso> {
+    return await this.permisoRepository.save(permiso);
   }
 
-  public async update(newPermission: Permiso): Promise<UpdateResult> {
-    return await this.permissionRepository.update(newPermission.id, newPermission);
+  public async update(updatePermiso: Permiso): Promise<UpdateResult> {
+    return await this.permisoRepository.update(updatePermiso.id, updatePermiso);
   }
 
   public async delete(id: number): Promise<DeleteResult> {
-    return await this.permissionRepository.delete(id);
+    return await this.permisoRepository.delete(id);
   }
 }

@@ -21,7 +21,7 @@ class SedeController {
   static store = async (req: Request, res: Response) => {
     const sedeService = Container.get(SedeService);
     const tipoSedeService = Container.get(TipoSedeService);
-    const { name, direccion, code, tipoSedeId, active }: { name: string, direccion: string, code: string, tipoSedeId: number, active: boolean } = req.body;
+    const { name, direccion, code, tipoSedeId }: { name: string, direccion: string, code: string, tipoSedeId: number } = req.body;
 
     const sede = new Sede();
     sede.nombre = name;
@@ -40,13 +40,7 @@ class SedeController {
       return;
     }
 
-    if (active) {
-      const currentActive = await sedeService.findActive();
-      if (currentActive) {
-
-        await sedeService.update(currentActive);
-      }
-    }
+    sede.tipoSede = tipoSede;
 
     try {
       await sedeService.create(sede);
@@ -60,7 +54,7 @@ class SedeController {
   static update = async (req: Request, res: Response) => {
     const sedeService = Container.get(SedeService);
     const id: number = Number(req.params.id);
-    const { name, code, address, active }: { name: string, logo: string, code: string, address: string, active: boolean } = req.body;
+    const { name, code, address }: { name: string, logo: string, code: string, address: string } = req.body;
 
     const sede = await sedeService.findById(id);
     if (!sede) {
@@ -76,14 +70,6 @@ class SedeController {
     if (sedeErrors.length > 0) {
       res.status(400).send(sedeErrors);
       return;
-    }
-
-    if (active) {
-      const currentActive = await sedeService.findActive();
-      if (currentActive) {
-
-        await sedeService.update(currentActive);
-      }
     }
 
     try {
@@ -109,7 +95,7 @@ class SedeController {
 
   static sedeInformation = async (req: Request, res: Response) => {
     const sedeService = Container.get(SedeService);
-    const sede = await sedeService.findActive();
+    const sede = await sedeService.findOne();
     if (!sede) {
       res.status(404).json({ message: 'Sede no encontrada' });
       return;

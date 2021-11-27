@@ -8,45 +8,45 @@ import { PaginationAwareObject } from "typeorm-pagination/dist/helpers/paginatio
 export class RolService {
   constructor(
     @InjectRepository(Rol)
-    protected roleRepository: Repository<Rol>,
+    protected rolRepository: Repository<Rol>,
   ) { }
 
   public async findById(id: number): Promise<Rol | undefined> {
-    return await this.roleRepository.createQueryBuilder('role')
+    return await this.rolRepository.createQueryBuilder('role')
         .where('role.id = :id', { id })
         .getOne();
   }
 
   public async findByIdWithRelations(id: number): Promise<Rol | undefined> {
-    return await this.roleRepository
-      .createQueryBuilder('role')
-      .leftJoinAndSelect('role.permissions', 'permissions')
-      .where('role.id = :id', { id })
+    return await this.rolRepository
+      .createQueryBuilder('rol')
+      .leftJoinAndSelect('rol.permisos', 'permisos')
+      .where('rol.id = :id', { id })
       .getOne();
   }
 
   public async findAll(): Promise<PaginationAwareObject> {
-    return await this.roleRepository
-      .createQueryBuilder('role')
-      .leftJoinAndSelect('role.permissions', 'permissions')
+    return await this.rolRepository
+      .createQueryBuilder('rol')
+      .leftJoinAndSelect('rol.permisos', 'permisos')
       .paginate(10);
   }
 
   public async listAll(): Promise<Rol[]> {
-    return await this.roleRepository
-        .createQueryBuilder('role')
+    return await this.rolRepository
+        .createQueryBuilder('rol')
         .getMany();
   }
 
-  public async create(role: Rol): Promise<Rol> {
-    return await this.roleRepository.save(role);
+  public async create(rol: Rol): Promise<Rol> {
+    return await this.rolRepository.save(rol);
   }
 
-  public async update(newRole: Rol): Promise<Rol> {
-    return await this.roleRepository.save(newRole);
+  public async update(updateRol: Rol): Promise<Rol> {
+    return await this.rolRepository.save(updateRol);
   }
 
   public async delete(id: number): Promise<DeleteResult> {
-    return await this.roleRepository.delete(id);
+    return await this.rolRepository.delete(id);
   }
 }

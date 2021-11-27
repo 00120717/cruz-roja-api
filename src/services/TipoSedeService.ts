@@ -8,35 +8,35 @@ import { PaginationAwareObject } from "typeorm-pagination/dist/helpers/paginatio
 export class TipoSedeService {
   constructor(
     @InjectRepository(TipoSede)
-    protected sedeRepository: Repository<TipoSede>
+    protected tipoSedeRepository: Repository<TipoSede>
   ) { }
 
   public async findById(id: number): Promise<TipoSede | undefined> {
-    return await this.sedeRepository.findOne(id);
+    return await this.tipoSedeRepository.findOne(id);
   }
 
   public async findAll(): Promise<PaginationAwareObject> {
-    return await this.sedeRepository
-      .createQueryBuilder('sede')
-      .orderBy('sede.id', 'ASC')
+    return await this.tipoSedeRepository
+      .createQueryBuilder('tipoSede')
+      .orderBy('tipoSede.id', 'ASC')
       .paginate(10);
   }
 
   public async listAll(): Promise<TipoSede[]> {
-    return await this.sedeRepository
-        .createQueryBuilder('sede')
+    return await this.tipoSedeRepository
+        .createQueryBuilder('tipoSede')
         .getMany()
   }
 
-  public async create(sede: TipoSede): Promise<TipoSede> {
-    return await this.sedeRepository.save(sede);
+  public async create(tipoSede: TipoSede): Promise<TipoSede> {
+    return await this.tipoSedeRepository.save(tipoSede);
   }
 
-  public async update(newSede: TipoSede): Promise<UpdateResult> {
-    return await this.sedeRepository.update(newSede.id, newSede);
+  public async update(updateTipoSede: TipoSede): Promise<UpdateResult> {
+    return await this.tipoSedeRepository.update(updateTipoSede.id, updateTipoSede);
   }
 
   public async delete(id: number): Promise<DeleteResult> {
-    return await this.sedeRepository.delete(id);
+    return await this.tipoSedeRepository.delete(id);
   }
 }

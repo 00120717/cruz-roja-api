@@ -15,11 +15,8 @@ export class SedeService {
     return await this.sedeRepository.findOne(id);
   }
 
-  public async findActive(): Promise<Sede | undefined> {
-    return await this.sedeRepository
-      .createQueryBuilder('sede')
-      .where('sede.active = :active', { active: true })
-      .getOne();
+  public async findOne(): Promise<Sede | undefined> {
+    return await this.sedeRepository.createQueryBuilder('sede').getOne();
   }
 
   public async findAll(): Promise<PaginationAwareObject> {
@@ -31,16 +28,16 @@ export class SedeService {
 
   public async listAll(): Promise<Sede[]> {
     return await this.sedeRepository
-        .createQueryBuilder('sede')
-        .getMany()
+      .createQueryBuilder('sede')
+      .getMany()
   }
 
   public async create(sede: Sede): Promise<Sede> {
     return await this.sedeRepository.save(sede);
   }
 
-  public async update(newSede: Sede): Promise<UpdateResult> {
-    return await this.sedeRepository.update(newSede.id, newSede);
+  public async update(updateSede: Sede): Promise<UpdateResult> {
+    return await this.sedeRepository.update(updateSede.id, updateSede);
   }
 
   public async delete(id: number): Promise<DeleteResult> {

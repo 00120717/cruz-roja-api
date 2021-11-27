@@ -8,50 +8,49 @@ import { Service } from "typedi";
 export class UsuarioService {
   constructor(
     @InjectRepository(Usuario)
-    protected userRepository: Repository<Usuario>,
+    protected usuarioRepository: Repository<Usuario>,
   ) {}
 
   public async findByUsernameWithRole(username: string): Promise<Usuario | undefined> {
-    return await this.userRepository
-      .createQueryBuilder('user')
-      .addSelect('user.contrasenia')
-      .innerJoinAndSelect('user.rol', 'rol')
-      .innerJoinAndSelect('user.persona', 'persona')
+    return await this.usuarioRepository
+      .createQueryBuilder('usuario')
+      .addSelect('usuario.contrasenia')
+      .innerJoinAndSelect('usuario.rol', 'rol')
+      .innerJoinAndSelect('usuario.persona', 'persona')
       .where('persona.username = :username', { username })
       .getOne();
   }
 
   public async findById(id: number): Promise<Usuario | undefined> {
-    return await this.userRepository.createQueryBuilder('user')
-        .where('user.id = :id', { id })
+    return await this.usuarioRepository.createQueryBuilder('usuario')
+        .where('usuario.id = :id', { id })
         .getOne()
   }
 
   public async findByIdWithRelations(id: number): Promise<Usuario | undefined> {
-    return await this.userRepository.createQueryBuilder('user')
-        .leftJoinAndSelect('user.role', 'role')
-        .leftJoinAndSelect('user.person', 'person')
-        .leftJoinAndSelect('user.subject', 'subject')
-        .leftJoinAndSelect('person.sede', 'sede')
-        .where('user.id = :id', { id })
+    return await this.usuarioRepository.createQueryBuilder('usuario')
+        .leftJoinAndSelect('usuario.rol', 'rol')
+        .leftJoinAndSelect('usuario.persoan', 'persona')
+        .leftJoinAndSelect('persona.sede', 'sede')
+        .where('usuario.id = :id', { id })
         .getOne()
   }
 
   public async findAll(): Promise<PaginationAwareObject> {
-    return await this.userRepository
-      .createQueryBuilder('user')
-      .leftJoinAndSelect('user.rol', 'rol')
-      .leftJoinAndSelect('user.persona', 'persona')
+    return await this.usuarioRepository
+      .createQueryBuilder('usuario')
+      .leftJoinAndSelect('usuario.rol', 'rol')
+      .leftJoinAndSelect('usuario.persona', 'persona')
       .paginate(10);
   }
 
   public async create(user: Usuario): Promise<Usuario> {
-    return await this.userRepository.save(user);
+    return await this.usuarioRepository.save(user);
   }
 
-  public async update(newUser: Usuario): Promise<Usuario | undefined> {
-    const user = await this.userRepository.findOneOrFail(newUser.id);
-    if (!user.id) {
+  public async update(updateUsuario: Usuario): Promise<Usuario | undefined> {
+    const usuario = await this.usuarioRepository.findOneOrFail(updateUsuario.id);
+    if (!usuario.id) {
       return new Promise((resolve, reject) => {
           setTimeout(function () {
             reject({
@@ -61,11 +60,11 @@ export class UsuarioService {
           }, 250);
       });
     }
-    await this.userRepository.update(newUser.id, newUser);
-    return await this.userRepository.findOne(newUser.id);
+    await this.usuarioRepository.update(updateUsuario.id, updateUsuario);
+    return await this.usuarioRepository.findOne(updateUsuario.id);
   }
 
   public async delete(id: number): Promise<DeleteResult> {
-    return await this.userRepository.delete(id);
+    return await this.usuarioRepository.delete(id);
   }
 }

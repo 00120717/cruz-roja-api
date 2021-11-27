@@ -1,5 +1,5 @@
-import {DeleteResult, Repository} from "typeorm";
-import {Voluntario} from "../entities/Voluntario";
+import { DeleteResult, Repository } from "typeorm";
+import { Voluntario } from "../entities/Voluntario";
 import { Service } from "typedi";
 import { InjectRepository } from "typeorm-typedi-extensions";
 import { PaginationAwareObject } from "typeorm-pagination/dist/helpers/pagination";
@@ -14,30 +14,26 @@ export class VoluntarioService {
   public async findByCode(code: string): Promise<Voluntario | undefined> {
     return await this.voluntarioRepository
       .createQueryBuilder('voluntario')
-      .where('voluntario.code = :code', { code })
+      .where('voluntario.id = :code', { code })
       .leftJoinAndSelect('voluntario.persona', 'persona')
       .leftJoinAndSelect('voluntario.sede', 'sede')
       .leftJoinAndSelect('voluntario.tipoVoluntario', 'tipoVoluntario')
       .leftJoinAndSelect('voluntario.cuerpoFilial', 'cuerpoFilial')
+      .leftJoinAndSelect('voluntario.estado', 'estado')
+      .leftJoinAndSelect('voluntario.modalidad', 'modalidad')
       .getOne();
   }
 
   public async findByCodeWithRelation(code: string): Promise<Voluntario | undefined> {
     return await this.voluntarioRepository
       .createQueryBuilder('voluntario')
-      // .leftJoin('voluntario.subjectQualifications', 'subjectQualifications')
-      // .leftJoin('subjectQualifications.qualifications', 'qualifications')
-      // .leftJoinAndMapOne('voluntario.modules', 'qualifications.module', 'modules')
-      .where('voluntario.code = :code', { code })
-      .leftJoinAndSelect('voluntario.person', 'person')
-      .leftJoinAndSelect('person.sede', 'sede')
-      .leftJoinAndSelect('voluntario.modality', 'modality')
-      .leftJoinAndSelect('voluntario.section', 'section')
-      .leftJoinAndSelect('voluntario.grade', 'grade')
-      .leftJoinAndSelect('voluntario.subjectQualifications', 'subjectQualifications')
-      .leftJoinAndSelect('subjectQualifications.subject', 'subject')
-      .leftJoinAndSelect('subjectQualifications.qualifications', 'qualifications')
-      .leftJoinAndSelect('qualifications.module', 'module')
+      .where('voluntario.id = :code', { code })
+      .leftJoinAndSelect('voluntario.persona', 'persona')
+      .leftJoinAndSelect('voluntario.sede', 'sede')
+      .leftJoinAndSelect('voluntario.tipoVoluntario', 'tipoVoluntario')
+      .leftJoinAndSelect('voluntario.cuerpoFilial', 'cuerpoFilial')
+      .leftJoinAndSelect('voluntario.estado', 'estado')
+      .leftJoinAndSelect('voluntario.modalidad', 'modalidad')//faltan las tablas nxn
       .getOne();
   }
 
@@ -45,46 +41,46 @@ export class VoluntarioService {
     return await this.voluntarioRepository
       .createQueryBuilder('voluntario')
       .where('voluntario.id = :id', { id })
-      .leftJoinAndSelect('voluntario.person', 'person')
-      .leftJoinAndSelect('person.sede', 'sede')
+      .leftJoinAndSelect('voluntario.persona', 'persona')
+      .leftJoinAndSelect('voluntario.sede', 'sede')
       .getOne();
   }
 
-  public async findByIdWithRelation(id: number): Promise<Voluntario | undefined> {
+  public async findByIdWithRelation(id: string): Promise<Voluntario | undefined> {
     return await this.voluntarioRepository
       .createQueryBuilder('voluntario')
-      .leftJoinAndSelect('voluntario.person', 'person')
-      .leftJoinAndSelect('person.sede', 'sede')
-      .leftJoinAndSelect('voluntario.modality', 'modality')
-      .leftJoinAndSelect('voluntario.section', 'section')
-      .leftJoinAndSelect('voluntario.grade', 'grade')
+      .leftJoinAndSelect('voluntario.persona', 'persona')
+      .leftJoinAndSelect('voluntario.sede', 'sede')
+      .leftJoinAndSelect('voluntario.tipoVoluntario', 'tipoVoluntario')
+      .leftJoinAndSelect('voluntario.cuerpoFilial', 'cuerpoFilial')
+      .leftJoinAndSelect('voluntario.estado', 'estado')
+      .leftJoinAndSelect('voluntario.modalidad', 'modalidad')
       .where('voluntario.id = :id', { id })
       .getOne();
   }
 
-  public async findByIdWithNotesRelations(id: number): Promise<Voluntario | undefined> {
+  public async findByIdWithNotesRelations(id: string): Promise<Voluntario | undefined> {
     return await this.voluntarioRepository
-        .createQueryBuilder('voluntario')
-        .where('voluntario.id = :id', { id })
-        .leftJoinAndSelect('voluntario.person', 'person')
-        .leftJoinAndSelect('person.sede', 'sede')
-        .leftJoinAndSelect('voluntario.modality', 'modality')
-        .leftJoinAndSelect('voluntario.section', 'section')
-        .leftJoinAndSelect('voluntario.grade', 'grade')
-        .leftJoinAndSelect('voluntario.subjectQualifications', 'subjectQualifications')
-        .leftJoinAndSelect('subjectQualifications.subject', 'subject')
-        .leftJoinAndSelect('subjectQualifications.qualifications', 'qualifications')
-        .leftJoinAndSelect('qualifications.module', 'module')
-        .getOne();
+      .createQueryBuilder('voluntario')
+      .where('voluntario.id = :id', { id })
+      .leftJoinAndSelect('voluntario.persona', 'persona')
+      .leftJoinAndSelect('voluntario.sede', 'sede')
+      .leftJoinAndSelect('voluntario.tipoVoluntario', 'tipoVoluntario')
+      .leftJoinAndSelect('voluntario.cuerpoFilial', 'cuerpoFilial')
+      .leftJoinAndSelect('voluntario.estado', 'estado')
+      .leftJoinAndSelect('voluntario.modalidad', 'modalidad')
+      .getOne();
   }
 
   public async findAll(): Promise<PaginationAwareObject> {
     return await this.voluntarioRepository
       .createQueryBuilder('voluntario')
-      .leftJoinAndSelect('voluntario.person', 'person')
-      .leftJoinAndSelect('voluntario.modality', 'modality')
-      .leftJoinAndSelect('voluntario.section', 'section')
-      .leftJoinAndSelect('voluntario.grade', 'grade')
+      .leftJoinAndSelect('voluntario.persona', 'persona')
+      .leftJoinAndSelect('voluntario.sede', 'sede')
+      .leftJoinAndSelect('voluntario.tipoVoluntario', 'tipoVoluntario')
+      .leftJoinAndSelect('voluntario.cuerpoFilial', 'cuerpoFilial')
+      .leftJoinAndSelect('voluntario.estado', 'estado')
+      .leftJoinAndSelect('voluntario.modalidad', 'modalidad')
       .paginate(10);
   }
 
@@ -92,8 +88,8 @@ export class VoluntarioService {
     return await this.voluntarioRepository.save(voluntario);
   }
 
-  public async update(newvoluntario: Voluntario): Promise<Voluntario> {
-    return await this.voluntarioRepository.save(newvoluntario);
+  public async update(updateVoluntario: Voluntario): Promise<Voluntario> {
+    return await this.voluntarioRepository.save(updateVoluntario);
   }
 
   public async delete(id: number): Promise<DeleteResult> {
