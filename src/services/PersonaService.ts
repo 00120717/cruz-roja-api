@@ -11,14 +11,14 @@ export class PersonaService {
         private readonly personaRepository: Repository<Persona>,
     ) { }
 
-    public async findById(id: number): Promise<Persona | undefined> {
+    public async findById(id: string): Promise<Persona | undefined> {
         return await this.personaRepository
             .createQueryBuilder('persona')
             .where('persona.id = :id', { id })
             .getOne();
     }
 
-    public async findByIdWithRelation(id: number): Promise<Persona | undefined> {
+    public async findByIdWithRelation(id: string): Promise<Persona | undefined> {
         return await this.personaRepository
             .createQueryBuilder('persona')
             .where('persona.id = :id', { id })
@@ -27,7 +27,7 @@ export class PersonaService {
 
     public async findAll(): Promise<PaginationAwareObject> {
         return await this.personaRepository
-            .createQueryBuilder('person')
+            .createQueryBuilder('persona')
             .paginate(10);
     }
 
@@ -39,7 +39,7 @@ export class PersonaService {
         return await this.personaRepository.update(updatePersona.id, updatePersona);
     }
 
-    public async delete(id: number): Promise<DeleteResult> {
+    public async delete(id: string): Promise<DeleteResult> {
         return await this.personaRepository.delete(id);
     }
 }

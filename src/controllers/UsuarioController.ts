@@ -10,7 +10,7 @@ import { Container } from "typedi";
 
 export const UNIQUE_USER_EMAIL_CONSTRAINT = 'unique_user_email_constraint';
 
-class UserController {
+class UsuarioController {
   static fetch = async (req: Request, res: Response) => {
     const usuarioService = Container.get(UsuarioService);
     const users = await usuarioService.findAll();
@@ -261,4 +261,4 @@ class UserController {
   };
 }
 
-export default UserController;
+export default UsuarioController;

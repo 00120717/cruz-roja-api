@@ -12,8 +12,8 @@ export class RolService {
   ) { }
 
   public async findById(id: number): Promise<Rol | undefined> {
-    return await this.rolRepository.createQueryBuilder('role')
-        .where('role.id = :id', { id })
+    return await this.rolRepository.createQueryBuilder('rol')
+        .where('rol.id = :id', { id })
         .getOne();
   }
 

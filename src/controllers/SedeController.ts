@@ -36,7 +36,7 @@ class SedeController {
 
     const tipoSede = await tipoSedeService.findById(tipoSedeId);
     if (!tipoSede) {
-      res.status(400).json({ message: 'La sede que intenta asignar no existe' });
+      res.status(400).json({ message: 'La tipo sede que intenta asignar no existe' });
       return;
     }
 

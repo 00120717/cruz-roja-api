@@ -37,7 +37,7 @@ export class VoluntarioService {
       .getOne();
   }
 
-  public async findById(id: number): Promise<Voluntario | undefined> {
+  public async findById(id: string): Promise<Voluntario | undefined> {
     return await this.voluntarioRepository
       .createQueryBuilder('voluntario')
       .where('voluntario.id = :id', { id })
@@ -92,7 +92,7 @@ export class VoluntarioService {
     return await this.voluntarioRepository.save(updateVoluntario);
   }
 
-  public async delete(id: number): Promise<DeleteResult> {
+  public async delete(id: string): Promise<DeleteResult> {
     return await this.voluntarioRepository.delete(id);
   }
 }
