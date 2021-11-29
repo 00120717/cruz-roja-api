@@ -42,27 +42,34 @@ class VoluntarioController {
 
         const {
             username,
+            aniosServicio,
+            code,
+            genero,
             firstName,
             lastName,
-            code,
+            email,
             status,
             sedeId,
             modalityId,
-            sectionId,
-            gradeId,
-
+            cuerpoFilialId,
+            tipoVoluntarioId,
+            estadoId,
+            edad
         }: {
             username: string,
+            aniosServicio: number,
             code: string,
-            year: number,
-            report: string,
+            genero: string,
+            email: string,
             firstName: string,
             lastName: string,
             status: boolean,
             sedeId: number,
             modalityId: number,
-            sectionId: number,
-            gradeId: number,
+            cuerpoFilialId: number,
+            tipoVoluntarioId: number,
+            estadoId: number,
+            edad: number
         } = req.body;
 
         //Getting sede information
@@ -80,20 +87,20 @@ class VoluntarioController {
         }
 
         //Getting section information
-        const cuerpoFilial = await cuerpoFilialService.findById(sectionId);
+        const cuerpoFilial = await cuerpoFilialService.findById(cuerpoFilialId);
         if (!cuerpoFilial) {
             res.status(400).json({ message: 'La sección que intenta asignar no existe' });
             return;
         }
 
         //Getting grade information
-        const tipoVoluntario = await tipoVoluntarioService.findById(gradeId);
+        const tipoVoluntario = await tipoVoluntarioService.findById(tipoVoluntarioId);
         if (!tipoVoluntario) {
             res.status(400).json({ message: 'El grado que intenta asignar no existe' });
             return;
         }
 
-        const estado = await estadoService.findById(gradeId);
+        const estado = await estadoService.findById(estadoId);
         if (!estado) {
             res.status(400).json({ message: 'El grado que intenta asignar no existe' });
             return;
@@ -105,6 +112,9 @@ class VoluntarioController {
         persona.firstName = firstName;
         persona.lastName = lastName;
         persona.estado = status;
+        persona.genero = genero;
+        persona.email = email;
+        persona.edad = edad;
 
         const personErrors = await validate(persona);
 
@@ -115,7 +125,7 @@ class VoluntarioController {
 
         const voluntario = new Voluntario();
 
-        voluntario.aniosServicio = 0;
+        voluntario.aniosServicio = aniosServicio;
         voluntario.voluntarioCodigo = code;
         voluntario.tipoVoluntario = tipoVoluntario;
         voluntario.modalidad = modalidad;
