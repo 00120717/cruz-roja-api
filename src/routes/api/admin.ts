@@ -15,14 +15,14 @@ import { checkRole } from '../../middlewares/checkRole';
 const router: Router = Router();
 
 router.use('/auth', AuthRouter);
-router.use('/users',[checkJWT, checkRole], UserRouter);
-router.use('/sede', SedeRouter);
-router.use('/roles', RoleRouter);
-router.use('/permissions', PermissionsRouter);
-router.use('/voluntario', VoluntarioRouter);
-router.use('/cuerpoFilial', CuerpoFilialRouter);
-router.use('/estado', EstadoRouter);
-router.use('/modalidad', ModalidadRouter);
-router.use('/tipoVoluntario', TipoVoluntarioRouter);
+router.use('/users', [checkJWT, checkRole], UserRouter);
+router.use('/sede', [checkJWT, checkRole], SedeRouter);
+router.use('/roles', [checkJWT, checkRole], RoleRouter);
+router.use('/permissions', [checkJWT, checkRole], PermissionsRouter);
+router.use('/voluntario', [checkJWT, checkRole], VoluntarioRouter);
+router.use('/cuerpoFilial', [checkJWT, checkRole], CuerpoFilialRouter);
+router.use('/estado', [checkJWT, checkRole], EstadoRouter);
+router.use('/modalidad', [checkJWT, checkRole], ModalidadRouter);
+router.use('/tipoVoluntario', [checkJWT, checkRole], TipoVoluntarioRouter);
 
 export default router;

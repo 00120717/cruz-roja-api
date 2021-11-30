@@ -53,8 +53,9 @@ class SedeController {
 
   static update = async (req: Request, res: Response) => {
     const sedeService = Container.get(SedeService);
+    const tipoSedeService = Container.get(TipoSedeService);
     const id: number = Number(req.params.id);
-    const { name, code, address }: { name: string, logo: string, code: string, address: string } = req.body;
+    const { name, code, address,tipoSedeId }: { name: string, logo: string, code: string, address: string, tipoSedeId: number } = req.body;
 
     const sede = await sedeService.findById(id);
     if (!sede) {
@@ -71,6 +72,14 @@ class SedeController {
       res.status(400).send(sedeErrors);
       return;
     }
+
+    const tipoSede = await tipoSedeService.findById(tipoSedeId);
+    if (!tipoSede) {
+      res.status(400).json({ message: 'La tipo sede que intenta asignar no existe' });
+      return;
+    }
+
+    sede.tipoSede = tipoSede;
 
     try {
       await sedeService.update(sede);

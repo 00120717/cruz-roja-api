@@ -29,7 +29,13 @@ class VoluntarioController {
             res.status(404).json({ message: 'Estudiante no encontrado ' });
             return;
         }
-        res.status(200).send(student);
+        const { persona, ...rest } = student;
+        res.status(200).send({
+            ...rest,
+            ...persona,
+            id: student.id,
+        });
+        
     }
 
     static store = async (req: Request, res: Response) => {
@@ -360,7 +366,7 @@ class VoluntarioController {
             res.status(404).json({ message: 'Estudiante no encontrado' });
             return;
         }
-        const { sede, persona, tipoVoluntario, cuerpoFilial, modalidad, estado,...rest } = student;
+        const { sede, persona, tipoVoluntario, cuerpoFilial, modalidad, estado, ...rest } = student;
 
         const modules = {}
 

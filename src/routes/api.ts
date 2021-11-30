@@ -3,13 +3,11 @@ import { Router } from 'express';
 import AdminRouter from './api/admin';
 import AuthRouter from './api/AuthRouter';
 import SedeController from "../controllers/SedeController";
-import { checkStudentJWT } from '../middlewares/checkStudentJWT';
-import { checkStudentCode } from '../middlewares/checkStudentCode';
 
 const router: Router = Router();
 
 router.use('/admin', AdminRouter);
-router.use('/auth',[checkStudentJWT, checkStudentCode], AuthRouter);
+router.use('/auth', AuthRouter);
 //router.get('/student/notes', [checkStudentJWT, checkStudentCode], StudentController.showByCode);
 //router.get('/student/me', [checkStudentJWT, checkStudentCode], StudentController.me);
 //router.post('/student/contact', [checkStudentJWT, checkStudentCode], StudentController.updateContact);
