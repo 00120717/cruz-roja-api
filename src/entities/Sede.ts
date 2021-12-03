@@ -3,6 +3,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColum
 import { Usuario } from './Usuario';
 import { TipoSede } from './TipoSede';
 import { Voluntario } from './Voluntario';
+import { DepartamentoXMunicipio } from './DepartamentoXMunicipio';
 
 @Entity({ name: 'sede' })
 export class Sede {
@@ -43,4 +44,12 @@ export class Sede {
     (usuario) => usuario.sede
   )
   usuarios: Usuario[];
+
+  @ManyToOne(
+    (type) => DepartamentoXMunicipio,
+    (departamentoXmunicipio) => departamentoXmunicipio.sede
+  )
+  @JoinColumn({ name: 'id_departamentoxmunicipio' })
+  @IsNotEmptyObject()
+  departamentoXmunicipio: DepartamentoXMunicipio;
 }
