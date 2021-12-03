@@ -30,8 +30,11 @@ export class UsuarioService {
   public async findByIdWithRelations(id: number): Promise<Usuario | undefined> {
     return await this.usuarioRepository.createQueryBuilder('usuario')
         .leftJoinAndSelect('usuario.rol', 'rol')
-        .leftJoinAndSelect('usuario.persoan', 'persona')
-        .leftJoinAndSelect('persona.sede', 'sede')
+        .leftJoinAndSelect('usuario.persona', 'persona')
+        .leftJoinAndSelect('usuario.sede', 'sede')
+        .leftJoinAndSelect('sede.departamentoXmunicipio', 'departamentoXmunicipio')
+        .leftJoinAndSelect('departamentoXmunicipio.municipio', 'municipio')
+        .leftJoinAndSelect('departamentoXmunicipio.departamento', 'departamento')
         .where('usuario.id = :id', { id })
         .getOne()
   }
