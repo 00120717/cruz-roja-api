@@ -3,6 +3,8 @@ import { Voluntario } from "../entities/Voluntario";
 import { Service } from "typedi";
 import { InjectRepository } from "typeorm-typedi-extensions";
 import { PaginationAwareObject } from "typeorm-pagination/dist/helpers/pagination";
+import { VoluntarioYear } from "../auxiliar-models/VoluntarioYear";
+import { VoluntarioFecha } from "../auxiliar-models/VoluntarioFecha";
 
 @Service()
 export class VoluntarioService {
@@ -71,9 +73,39 @@ export class VoluntarioService {
       .getOne();
   }
 
+  public async findByIdYearsOfService(id: string): Promise<VoluntarioYear> {
+    return await this.voluntarioRepository
+    .createQueryBuilder('voluntario')
+    .select('TIMESTAMPDIFF(YEAR, voluntario.fecha_inicio, CURDATE())','aniosServicio')
+    .where('voluntario.id = :id', { id })
+    .printSql()
+    .getRawOne();
+  }
+
+  public async findByIdYearsOldOfService(id: string): Promise<VoluntarioYear> {
+    return await this.voluntarioRepository
+    .createQueryBuilder('voluntario')
+    .leftJoinAndSelect('voluntario.persona', 'persona')
+    .select('TIMESTAMPDIFF(YEAR, persona.fechaNacimiento, CURDATE())','aniosServicio')
+    .where('voluntario.id = :id', { id })
+    .printSql()
+    .getRawOne();
+  }
+
+  public async findByIdFechaInicio(id: string): Promise<VoluntarioFecha> {
+    return await this.voluntarioRepository
+    .createQueryBuilder('voluntario')
+    .select('voluntario.fechaInicio','fecha')
+    .where('voluntario.id = :id', { id })
+    .printSql()
+    .getRawOne();
+  }
+
   public async findByIdWithNotesRelations(id: string): Promise<Voluntario | undefined> {
     return await this.voluntarioRepository
       .createQueryBuilder('voluntario')
+      //.select('voluntario','voluntario')
+      //.addSelect('SUM(voluntario.aniosServicio)','aniosServicio2')
       .where('voluntario.id = :id', { id })
       .leftJoinAndSelect('voluntario.persona', 'persona')
       .leftJoinAndSelect('voluntario.sede', 'sede')
@@ -90,6 +122,8 @@ export class VoluntarioService {
   public async findAll(): Promise<PaginationAwareObject> {
     return await this.voluntarioRepository
       .createQueryBuilder('voluntario')
+      //.select('voluntario','voluntario')
+      //.addSelect('SUM(voluntario.aniosServicio)','aniosServicio2')
       .leftJoinAndSelect('voluntario.persona', 'persona')
       .leftJoinAndSelect('voluntario.sede', 'sede')
       .leftJoinAndSelect('sede.departamentoXmunicipio', 'departamentoXmunicipio')

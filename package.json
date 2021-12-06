@@ -1,5 +1,5 @@
 {
-  "name": "ufg-sede-api",
+  "name": "cruz-roja-sede-api",
   "version": "1.0.0",
   "description": "Api Cruz Roja Aplicativo Registro de Emergencias",
   "main": "index.ts",

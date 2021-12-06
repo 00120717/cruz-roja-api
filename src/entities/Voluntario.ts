@@ -1,4 +1,4 @@
-import { IsNotEmptyObject, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsNotEmptyObject, IsOptional, IsString } from 'class-validator';
 import {
   Column,
   Entity,
@@ -26,10 +26,9 @@ export class Voluntario {
   @PrimaryGeneratedColumn({ name: 'id_voluntario', type: 'bigint', unsigned: true })
   id: string;
 
-  @Column({ name: 'anios_servicio', type: 'smallint' })
+  @Column({ name: 'fecha_inicio', type: 'datetime' })
   @IsOptional()
-  @IsNumber()
-  aniosServicio: number;
+  fechaInicio: Date;
 
   @Column({ name: 'voluntario_codigo', type: 'varchar', length: '15' })
   @IsOptional()

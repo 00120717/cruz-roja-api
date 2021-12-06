@@ -4,11 +4,12 @@ import {
   Unique,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { IsBoolean, IsEmail, IsNotEmpty, IsOptional, IsNumber, Length, MaxLength } from 'class-validator';
+import { IsBoolean, IsEmail, IsNotEmpty, IsOptional, Length, MaxLength } from 'class-validator';
 
 export const UNIQUE_USER_EMAIL_CONSTRAINT = 'unique_user_email_constraint';
 
 @Entity({ name: 'persona' })
+@Unique(['username'])
 @Unique(UNIQUE_USER_EMAIL_CONSTRAINT, ['email'])
 export class Persona {
   @PrimaryGeneratedColumn({ name: 'id_persona', type: 'bigint', unsigned: true })
@@ -31,10 +32,9 @@ export class Persona {
   @Length(1, 1)
   genero: string | null;
 
-  @Column({ name: 'persona_edad', type: 'smallint' })
+  @Column({ name: 'fecha_nacimiento', type: 'datetime' })
   @IsOptional()
-  @IsNumber()
-  edad: number;
+  fechaNacimiento: Date;
 
   @Column({ name: 'person_email', type: 'varchar', length: '60', nullable: true })
   @IsOptional()
@@ -45,5 +45,5 @@ export class Persona {
   @Column({ name: 'persona_estado', type: 'boolean', default: true })
   @IsNotEmpty()
   @IsBoolean()
-  estado: boolean;
+  estadoPersona: boolean;
 }

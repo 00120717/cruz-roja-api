@@ -29,11 +29,19 @@ class VoluntarioController {
             res.status(404).json({ message: 'Estudiante no encontrado ' });
             return;
         }
+        const years = await voluntarioService.findByIdYearsOfService(id);
+        const edad = await voluntarioService.findByIdYearsOldOfService(id);
+
         const { persona, ...rest } = student;
+
         res.status(200).send({
             ...rest,
             ...persona,
             id: student.id,
+            fechaInicio: rest.fechaInicio.toISOString().substr(8,2)+'/'+rest.fechaInicio.toISOString().substr(5,2)+'/'+rest.fechaInicio.toISOString().substr(0,4),
+            fechaNacimiento: persona.fechaNacimiento.toISOString().substr(8,2)+'/'+persona.fechaNacimiento.toISOString().substr(5,2)+'/'+persona.fechaNacimiento.toISOString().substr(0,4),
+            edad: edad.aniosServicio,
+            aniosServicio: years.aniosServicio
         });
         
     }
@@ -48,34 +56,34 @@ class VoluntarioController {
 
         const {
             username,
-            aniosServicio,
-            code,
+            fechaNacimiento,
+            fechaInicio,
+            voluntarioCodigo,
             genero,
             firstName,
             lastName,
             email,
-            status,
+            estadoPersona,
             sedeId,
             modalityId,
             cuerpoFilialId,
             tipoVoluntarioId,
-            estadoId,
-            edad
+            estadoId
         }: {
             username: string,
-            aniosServicio: number,
-            code: string,
+            fechaNacimiento: Date,
+            fechaInicio: Date,
+            voluntarioCodigo: string,
             genero: string,
             email: string,
             firstName: string,
             lastName: string,
-            status: boolean,
+            estadoPersona: boolean,
             sedeId: number,
             modalityId: number,
             cuerpoFilialId: number,
             tipoVoluntarioId: number,
-            estadoId: number,
-            edad: number
+            estadoId: number
         } = req.body;
 
         //Getting sede information
@@ -106,8 +114,8 @@ class VoluntarioController {
             return;
         }
 
-        const estado = await estadoService.findById(estadoId);
-        if (!estado) {
+        const estadoR = await estadoService.findById(estadoId);
+        if (!estadoR) {
             res.status(400).json({ message: 'El grado que intenta asignar no existe' });
             return;
         }
@@ -117,10 +125,10 @@ class VoluntarioController {
         persona.username = username;
         persona.firstName = firstName;
         persona.lastName = lastName;
-        persona.estado = status;
+        persona.estadoPersona = estadoPersona;
         persona.genero = genero;
         persona.email = email;
-        persona.edad = edad;
+        persona.fechaNacimiento = fechaNacimiento;
 
         const personErrors = await validate(persona);
 
@@ -131,11 +139,11 @@ class VoluntarioController {
 
         const voluntario = new Voluntario();
 
-        voluntario.aniosServicio = aniosServicio;
-        voluntario.voluntarioCodigo = code;
+        voluntario.fechaInicio = fechaInicio;
+        voluntario.voluntarioCodigo = voluntarioCodigo;
         voluntario.tipoVoluntario = tipoVoluntario;
         voluntario.modalidad = modalidad;
-        voluntario.estado = estado;
+        voluntario.estado = estadoR;
         voluntario.persona = persona;
         voluntario.cuerpoFilial = cuerpoFilial;
         voluntario.sede = sede;
@@ -163,33 +171,38 @@ class VoluntarioController {
         const modalidadService = Container.get(ModalidadService);
         const estadoService = Container.get(EstadoService);
         const tipoVoluntarioService = Container.get(TipoVoluntarioService);
+        const id: string = String(req.params.id);
 
         const {
-            id,
+            username,
+            fechaNacimiento,
+            fechaInicio,
+            voluntarioCodigo,
+            genero,
             firstName,
             lastName,
+            email,
+            estadoPersona,
             sedeId,
             modalityId,
             cuerpoFilialId,
             tipoVoluntarioId,
-            estadoId,
-            username,
-            code,
+            estadoId
         }: {
-            id: string,
-            year: number,
-            report: string,
-            firstTime: boolean,
+            username: string,
+            fechaNacimiento: Date,
+            fechaInicio: Date,
+            voluntarioCodigo: string,
+            genero: string,
+            email: string,
             firstName: string,
             lastName: string,
-            status: boolean,
+            estadoPersona: boolean,
             sedeId: number,
             modalityId: number,
             cuerpoFilialId: number,
             tipoVoluntarioId: number,
-            estadoId: number,
-            username?: string,
-            code?: string,
+            estadoId: number
         } = req.body;
 
         //Getting student information
@@ -227,8 +240,8 @@ class VoluntarioController {
             return;
         }
 
-        const estado = await estadoService.findById(estadoId);
-        if (!estado) {
+        const estadoR = await estadoService.findById(estadoId);
+        if (!estadoR) {
             res.status(400).json({ message: 'El grado que intenta asignar no existe' });
             return;
         }
@@ -237,9 +250,14 @@ class VoluntarioController {
         if (username) {
             student.persona.username = username;
         }
+
+        student.persona.fechaNacimiento = fechaNacimiento;
         student.persona.firstName = firstName;
         student.persona.lastName = lastName;
-        student.estado = estado;
+        student.persona.genero = genero;
+        student.persona.email = email;
+        student.persona.estadoPersona = estadoPersona;
+        student.estado = estadoR;
         student.sede = sede;
 
         const personErrors = await validate(student.persona);
@@ -249,12 +267,13 @@ class VoluntarioController {
             return;
         }
 
-        if (code) {
-            student.voluntarioCodigo = code;
+        if (voluntarioCodigo) {
+            student.voluntarioCodigo = voluntarioCodigo;
         }
-        student.estado = estado;
+        student.estado = estadoR;
         student.cuerpoFilial = cuerpoFilial;
         student.modalidad = modalidad;
+        student.fechaInicio = fechaInicio;
         student.sede = sede;
         student.tipoVoluntario = tipoVoluntario;
 
