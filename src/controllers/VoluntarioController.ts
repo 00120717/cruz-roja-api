@@ -71,8 +71,8 @@ class VoluntarioController {
             estadoId
         }: {
             username: string,
-            fechaNacimiento: Date,
-            fechaInicio: Date,
+            fechaNacimiento: string,
+            fechaInicio: string,
             voluntarioCodigo: string,
             genero: string,
             email: string,
@@ -128,7 +128,7 @@ class VoluntarioController {
         persona.estadoPersona = estadoPersona;
         persona.genero = genero;
         persona.email = email;
-        persona.fechaNacimiento = fechaNacimiento;
+        persona.fechaNacimiento = new Date(fechaNacimiento.substr(6,4)+'-'+fechaNacimiento.substr(3,2)+'-'+fechaNacimiento.substr(0,2));
 
         const personErrors = await validate(persona);
 
@@ -139,7 +139,7 @@ class VoluntarioController {
 
         const voluntario = new Voluntario();
 
-        voluntario.fechaInicio = fechaInicio;
+        voluntario.fechaInicio = new Date(fechaInicio.substr(6,4)+'-'+fechaInicio.substr(3,2)+'-'+fechaInicio.substr(0,2));
         voluntario.voluntarioCodigo = voluntarioCodigo;
         voluntario.tipoVoluntario = tipoVoluntario;
         voluntario.modalidad = modalidad;
@@ -171,6 +171,7 @@ class VoluntarioController {
         const modalidadService = Container.get(ModalidadService);
         const estadoService = Container.get(EstadoService);
         const tipoVoluntarioService = Container.get(TipoVoluntarioService);
+        const personaService = Container.get(PersonaService);
         const id: string = String(req.params.id);
 
         const {
@@ -190,8 +191,8 @@ class VoluntarioController {
             estadoId
         }: {
             username: string,
-            fechaNacimiento: Date,
-            fechaInicio: Date,
+            fechaNacimiento: string,
+            fechaInicio: string,
             voluntarioCodigo: string,
             genero: string,
             email: string,
@@ -204,6 +205,9 @@ class VoluntarioController {
             tipoVoluntarioId: number,
             estadoId: number
         } = req.body;
+
+        console.log("FECHAINICIO_LOG");
+        console.log(fechaInicio.substr(6,4)+'-'+fechaInicio.substr(3,2)+'-'+fechaInicio.substr(0,2));
 
         //Getting student information
         const student = await voluntarioService.findById(id);
@@ -251,7 +255,7 @@ class VoluntarioController {
             student.persona.username = username;
         }
 
-        student.persona.fechaNacimiento = fechaNacimiento;
+        student.persona.fechaNacimiento = new Date(fechaNacimiento.substr(6,4)+'-'+fechaNacimiento.substr(3,2)+'-'+fechaNacimiento.substr(0,2));
         student.persona.firstName = firstName;
         student.persona.lastName = lastName;
         student.persona.genero = genero;
@@ -273,7 +277,7 @@ class VoluntarioController {
         student.estado = estadoR;
         student.cuerpoFilial = cuerpoFilial;
         student.modalidad = modalidad;
-        student.fechaInicio = fechaInicio;
+        student.fechaInicio = new Date(fechaInicio.substr(6,4)+'-'+fechaInicio.substr(3,2)+'-'+fechaInicio.substr(0,2));
         student.sede = sede;
         student.tipoVoluntario = tipoVoluntario;
 
@@ -285,6 +289,7 @@ class VoluntarioController {
 
         try {
             await voluntarioService.update(student);
+            await personaService.update(student.persona);
         } catch (error) {
             res.status(400).json({ message: 'No se pudo actualizar el estudiante ' })
             return;
