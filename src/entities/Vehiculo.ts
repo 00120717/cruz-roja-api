@@ -10,7 +10,7 @@ export class Vehiculo {
   @Column({ name: 'vehiculo', type: 'text' })
   @IsNotEmpty()
   @IsString()
-  vehiculo: string;
+  nombreVehiculo: string;
 
   @Column({ name: 'kilometraje', type: 'text' })
   @IsNotEmpty()

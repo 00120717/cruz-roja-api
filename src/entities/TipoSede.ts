@@ -11,7 +11,7 @@ export class TipoSede {
   @IsNotEmpty()
   @IsString()
   @Length(0, 20)
-  tipo: string;
+  nombreTipoSede: string;
 
   @OneToMany(
     (type) => Sede,

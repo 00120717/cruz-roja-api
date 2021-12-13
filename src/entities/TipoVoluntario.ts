@@ -11,7 +11,7 @@ export class TipoVoluntario {
   @IsNotEmpty()
   @IsString()
   @Length(0, 20)
-  tipo: string;
+  nombreTipoVoluntario: string;
 
   @OneToMany(
     (type) => Voluntario,

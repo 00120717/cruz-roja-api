@@ -11,7 +11,7 @@ export class Modalidad {
   @IsNotEmpty()
   @IsString()
   @Length(0, 20)
-  modalidad: string;
+  nombreModalidad: string;
 
   @OneToMany(
     (type) => Voluntario,

@@ -21,12 +21,12 @@ class SedeController {
   static store = async (req: Request, res: Response) => {
     const sedeService = Container.get(SedeService);
     const tipoSedeService = Container.get(TipoSedeService);
-    const { name, direccion, code, tipoSedeId }: { name: string, direccion: string, code: string, tipoSedeId: number } = req.body;
+    const { nombre, direccion, codigo, tipoSedeId }: { nombre: string, direccion: string, codigo: string, tipoSedeId: number } = req.body;
 
     const sede = new Sede();
-    sede.nombre = name;
+    sede.nombre = nombre;
     sede.direccion = direccion;
-    sede.codigo = code;
+    sede.codigo = codigo;
 
     const sedeErrors = await validate(sede);
     if (sedeErrors.length > 0) {
@@ -55,7 +55,7 @@ class SedeController {
     const sedeService = Container.get(SedeService);
     const tipoSedeService = Container.get(TipoSedeService);
     const id: number = Number(req.params.id);
-    const { name, code, address,tipoSedeId }: { name: string, logo: string, code: string, address: string, tipoSedeId: number } = req.body;
+    const { nombre, codigo, direccion, tipoSedeId }: { nombre: string, codigo: string, direccion: string, tipoSedeId: number } = req.body;
 
     const sede = await sedeService.findById(id);
     if (!sede) {
@@ -63,9 +63,9 @@ class SedeController {
       return;
     }
 
-    sede.nombre = name;
-    sede.codigo = code;
-    sede.direccion = address;
+    sede.nombre = nombre;
+    sede.codigo = codigo;
+    sede.direccion = direccion;
 
     const sedeErrors = await validate(sede);
     if (sedeErrors.length > 0) {

@@ -9,6 +9,7 @@ import CuerpoFilialRouter from './admin/CuerpoFilialRouter';
 import EstadoRouter from './admin/EstadoRouter';
 import ModalidadRouter from './admin/ModalidadRouter';
 import TipoVoluntarioRouter from './admin/TipoVoluntarioRouter';
+import TipoSedeRouter from './admin/TipoSedeRouter';
 import { checkJWT } from '../../middlewares/checkJWT';
 import { checkRole } from '../../middlewares/checkRole';
 
@@ -23,6 +24,7 @@ router.use('/voluntario', /*[checkJWT, checkRole],*/ VoluntarioRouter);
 router.use('/cuerpoFilial', [checkJWT, checkRole], CuerpoFilialRouter);
 router.use('/estado', [checkJWT, checkRole], EstadoRouter);
 router.use('/modalidad', [checkJWT, checkRole], ModalidadRouter);
+router.use('/tipoSede', [checkJWT, checkRole], TipoSedeRouter);
 router.use('/tipoVoluntario', [checkJWT, checkRole], TipoVoluntarioRouter);
 
 export default router;

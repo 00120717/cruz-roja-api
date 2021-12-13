@@ -12,7 +12,11 @@ export class SedeService {
   ) { }
 
   public async findById(id: number): Promise<Sede | undefined> {
-    return await this.sedeRepository.findOne(id);
+    return await this.sedeRepository
+      .createQueryBuilder('sede')
+      .leftJoinAndSelect('sede.tipoSede', 'tipoSede')
+      .where('sede.id = :id', { id })
+      .getOne();
   }
 
   public async findOne(): Promise<Sede | undefined> {
@@ -22,6 +26,7 @@ export class SedeService {
   public async findAll(): Promise<PaginationAwareObject> {
     return await this.sedeRepository
       .createQueryBuilder('sede')
+      .leftJoinAndSelect('sede.tipoSede', 'tipoSede')
       .orderBy('sede.id', 'ASC')
       .paginate(10);
   }
@@ -29,6 +34,7 @@ export class SedeService {
   public async listAll(): Promise<Sede[]> {
     return await this.sedeRepository
       .createQueryBuilder('sede')
+      .leftJoinAndSelect('sede.tipoSede', 'tipoSede')
       .getMany()
   }
 

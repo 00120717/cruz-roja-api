@@ -398,8 +398,8 @@ class VoluntarioController {
             ...rest,
             ...persona,
             id: rest.id,
-            modality: modalidad.modalidad,
-            tipoVoluntario: tipoVoluntario.tipo,
+            modality: modalidad.nombreModalidad,
+            nombreTipoVoluntario: tipoVoluntario.nombreTipoVoluntario,
             cuerpoFilial: cuerpoFilial.nombreCuerpoFilial,
         }
 

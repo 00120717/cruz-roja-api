@@ -19,10 +19,10 @@ class TipoVoluntarioController {
 
   static store = async (req: Request, res: Response) => {
     const tipoVoluntarioService = Container.get(TipoVoluntarioService);
-    const { tipo }: { tipo: string } = req.body;
+    const { nombreTipoVoluntario }: { nombreTipoVoluntario: string } = req.body;
 
     const tipoVoluntario = new TipoVoluntario();
-    tipoVoluntario.tipo = tipo;
+    tipoVoluntario.nombreTipoVoluntario = nombreTipoVoluntario;
 
     const tipoVoluntarioErrors = await validate(tipoVoluntario);
     if (tipoVoluntarioErrors.length > 0) {
@@ -42,7 +42,7 @@ class TipoVoluntarioController {
   static update = async (req: Request, res: Response) => {
     const tipoVoluntarioService = Container.get(TipoVoluntarioService);
     const id: number = Number(req.params.id);
-    const { tipo }: { tipo : string } = req.body;
+    const { nombreTipoVoluntario }: { nombreTipoVoluntario : string } = req.body;
 
     const tipoVoluntario = await tipoVoluntarioService.findById(id);
     if (!tipoVoluntario) {
@@ -50,7 +50,7 @@ class TipoVoluntarioController {
       return;
     }
 
-    tipoVoluntario.tipo = tipo;
+    tipoVoluntario.nombreTipoVoluntario = nombreTipoVoluntario;
 
     const tipoVoluntarioErrors = await validate(tipoVoluntario);
     if (tipoVoluntarioErrors.length > 0) {

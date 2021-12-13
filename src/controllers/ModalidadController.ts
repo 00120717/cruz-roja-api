@@ -19,10 +19,10 @@ class ModalidadController {
 
   static store = async (req: Request, res: Response) => {
     const modalidadService = Container.get(ModalidadService);
-    const { name }: { name: string} = req.body;
+    const { nombreModalidad }: { nombreModalidad: string} = req.body;
 
     const modalidad = new Modalidad();
-    modalidad.modalidad = name;
+    modalidad.nombreModalidad = nombreModalidad;
 
     const modalidadErrors = await validate(modalidad);
     if (modalidadErrors.length > 0) {
@@ -42,7 +42,7 @@ class ModalidadController {
   static update = async (req: Request, res: Response) => {
     const modalidadService = Container.get(ModalidadService);
     const id: number = Number(req.params.id);
-    const { name }: { name: string } = req.body;
+    const { nombreModalidad }: { nombreModalidad: string } = req.body;
 
     const modalidad = await modalidadService.findById(id);
     if (!modalidad) {
@@ -50,7 +50,7 @@ class ModalidadController {
       return;
     }
 
-    modalidad.modalidad = name;
+    modalidad.nombreModalidad = nombreModalidad;
 
     const modalidadErrors = await validate(modalidad);
     if (modalidadErrors.length > 0) {
