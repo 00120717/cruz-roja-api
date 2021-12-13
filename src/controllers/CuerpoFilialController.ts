@@ -19,10 +19,10 @@ class CuerpoFilialController {
 
   static store = async (req: Request, res: Response) => {
     const cuerpoFilialService = Container.get(CuerpoFilialService);
-    const { name, encargado }: { name: string, encargado : string } = req.body;
+    const { nombreCuerpoFilial, encargado }: { nombreCuerpoFilial: string, encargado : string } = req.body;
 
     const cuerpoFilial = new CuerpoFilial();
-    cuerpoFilial.nombreCuerpoFilial = name;
+    cuerpoFilial.nombreCuerpoFilial = nombreCuerpoFilial;
     cuerpoFilial.encargado = encargado;
 
     const cuerpoFilialErrors = await validate(cuerpoFilial);
@@ -43,7 +43,7 @@ class CuerpoFilialController {
   static update = async (req: Request, res: Response) => {
     const cuerpoFilialService = Container.get(CuerpoFilialService);
     const id: number = Number(req.params.id);
-    const { name, encargado }: { name: string, encargado: string } = req.body;
+    const { nombreCuerpoFilial, encargado }: { nombreCuerpoFilial: string, encargado: string } = req.body;
 
     const cuerpoFilial = await cuerpoFilialService.findById(id);
     if (!cuerpoFilial) {
@@ -51,7 +51,7 @@ class CuerpoFilialController {
       return;
     }
 
-    cuerpoFilial.nombreCuerpoFilial = name;
+    cuerpoFilial.nombreCuerpoFilial = nombreCuerpoFilial;
     cuerpoFilial.encargado = encargado;
 
     const cuerpoFilialErrors = await validate(cuerpoFilial);

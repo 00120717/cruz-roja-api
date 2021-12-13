@@ -1,5 +1,6 @@
 import { SedeService } from './../services/SedeService';
 import { TipoSedeService } from './../services/TipoSedeService';
+import { DepartamentoXMunicipioService } from './../services/DepartamentoXMunicipioService';
 import { Request, Response } from 'express';
 import { Container } from 'typedi';
 import { Sede } from '../entities/Sede';
@@ -21,7 +22,8 @@ class SedeController {
   static store = async (req: Request, res: Response) => {
     const sedeService = Container.get(SedeService);
     const tipoSedeService = Container.get(TipoSedeService);
-    const { nombre, direccion, codigo, tipoSedeId }: { nombre: string, direccion: string, codigo: string, tipoSedeId: number } = req.body;
+    const departamentoXmunicipioService = Container.get(DepartamentoXMunicipioService);
+    const { nombre, direccion, codigo, tipoSedeId, departamentoXmunicipioId }: { nombre: string, direccion: string, codigo: string, tipoSedeId: number, departamentoXmunicipioId: number } = req.body;
 
     const sede = new Sede();
     sede.nombre = nombre;
@@ -42,6 +44,14 @@ class SedeController {
 
     sede.tipoSede = tipoSede;
 
+    const departamentoXmunicipio = await departamentoXmunicipioService.findById(departamentoXmunicipioId);
+    if (!departamentoXmunicipio) {
+      res.status(400).json({ message: 'El departamento y municipio que desea asignar no existe' });
+      return;
+    }
+
+    sede.departamentoXmunicipio = departamentoXmunicipio;
+
     try {
       await sedeService.create(sede);
     } catch (e) {
@@ -54,8 +64,9 @@ class SedeController {
   static update = async (req: Request, res: Response) => {
     const sedeService = Container.get(SedeService);
     const tipoSedeService = Container.get(TipoSedeService);
+    const departamentoXmunicipioService = Container.get(DepartamentoXMunicipioService);
     const id: number = Number(req.params.id);
-    const { nombre, codigo, direccion, tipoSedeId }: { nombre: string, codigo: string, direccion: string, tipoSedeId: number } = req.body;
+    const { nombre, codigo, direccion, tipoSedeId, departamentoXmunicipioId }: { nombre: string, codigo: string, direccion: string, tipoSedeId: number, departamentoXmunicipioId: number } = req.body;
 
     const sede = await sedeService.findById(id);
     if (!sede) {
@@ -80,6 +91,14 @@ class SedeController {
     }
 
     sede.tipoSede = tipoSede;
+
+    const departamentoXmunicipio = await departamentoXmunicipioService.findById(departamentoXmunicipioId);
+    if (!departamentoXmunicipio) {
+      res.status(400).json({ message: 'El departamento y municipio que desea asignar no existe' });
+      return;
+    }
+
+    sede.departamentoXmunicipio = departamentoXmunicipio;
 
     try {
       await sedeService.update(sede);

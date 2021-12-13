@@ -15,6 +15,9 @@ export class SedeService {
     return await this.sedeRepository
       .createQueryBuilder('sede')
       .leftJoinAndSelect('sede.tipoSede', 'tipoSede')
+      .leftJoinAndSelect('sede.departamentoXmunicipio', 'departamentoXmunicipio')
+      .leftJoinAndSelect('departamentoXmunicipio.departamento', 'departamento')
+      .leftJoinAndSelect('departamentoXmunicipio.municipio', 'municipio')
       .where('sede.id = :id', { id })
       .getOne();
   }
@@ -27,6 +30,9 @@ export class SedeService {
     return await this.sedeRepository
       .createQueryBuilder('sede')
       .leftJoinAndSelect('sede.tipoSede', 'tipoSede')
+      .leftJoinAndSelect('sede.departamentoXmunicipio', 'departamentoXmunicipio')
+      .leftJoinAndSelect('departamentoXmunicipio.departamento', 'departamento')
+      .leftJoinAndSelect('departamentoXmunicipio.municipio', 'municipio')
       .orderBy('sede.id', 'ASC')
       .paginate(10);
   }
@@ -35,6 +41,9 @@ export class SedeService {
     return await this.sedeRepository
       .createQueryBuilder('sede')
       .leftJoinAndSelect('sede.tipoSede', 'tipoSede')
+      .leftJoinAndSelect('sede.departamentoXmunicipio', 'departamentoXmunicipio')
+      .leftJoinAndSelect('departamentoXmunicipio.departamento', 'departamento')
+      .leftJoinAndSelect('departamentoXmunicipio.municipio', 'municipio')
       .getMany()
   }
 
