@@ -37,6 +37,8 @@ export class DepartamentoXMunicipioService {
   public async listAll(): Promise<DepartamentoXMunicipio[]> {
     return await this.departamentoXmunicipioRepository
         .createQueryBuilder('departamentoXmunicipio')
+        .leftJoinAndSelect('departamentoXmunicipio.departamento', 'departamento')
+        .leftJoinAndSelect('departamentoXmunicipio.municipio', 'municipio')
         .getMany();
   }
 

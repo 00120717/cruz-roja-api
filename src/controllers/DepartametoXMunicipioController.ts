@@ -12,7 +12,10 @@ class DepartamentoXMunicipioController {
   static list = async (req: Request, res: Response) => {
     const roleService = Container.get(DepartamentoXMunicipioService);
     const roles = await roleService.listAll();
-    res.status(200).send(roles);
+    let aux = roles.map(att =>{
+      return {nombreCompuesto: (att.departamento.departamentoNombre+', '+att.municipio.municipioNombre), ...att };
+    });
+    res.status(200).send(aux);
   }
 
   /*static store = async (req: Request, res: Response) => {

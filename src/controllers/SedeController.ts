@@ -30,12 +30,6 @@ class SedeController {
     sede.direccion = direccion;
     sede.codigo = codigo;
 
-    const sedeErrors = await validate(sede);
-    if (sedeErrors.length > 0) {
-      res.status(400).send(sedeErrors);
-      return;
-    }
-
     const tipoSede = await tipoSedeService.findById(tipoSedeId);
     if (!tipoSede) {
       res.status(400).json({ message: 'La tipo sede que intenta asignar no existe' });
@@ -51,6 +45,12 @@ class SedeController {
     }
 
     sede.departamentoXmunicipio = departamentoXmunicipio;
+
+    const sedeErrors = await validate(sede);
+    if (sedeErrors.length > 0) {
+      res.status(400).send(sedeErrors);
+      return;
+    }
 
     try {
       await sedeService.create(sede);
@@ -78,12 +78,6 @@ class SedeController {
     sede.codigo = codigo;
     sede.direccion = direccion;
 
-    const sedeErrors = await validate(sede);
-    if (sedeErrors.length > 0) {
-      res.status(400).send(sedeErrors);
-      return;
-    }
-
     const tipoSede = await tipoSedeService.findById(tipoSedeId);
     if (!tipoSede) {
       res.status(400).json({ message: 'La tipo sede que intenta asignar no existe' });
@@ -99,6 +93,12 @@ class SedeController {
     }
 
     sede.departamentoXmunicipio = departamentoXmunicipio;
+
+    const sedeErrors = await validate(sede);
+    if (sedeErrors.length > 0) {
+      res.status(400).send(sedeErrors);
+      return;
+    }
 
     try {
       await sedeService.update(sede);

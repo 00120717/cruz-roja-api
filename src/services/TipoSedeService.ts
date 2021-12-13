@@ -12,7 +12,9 @@ export class TipoSedeService {
   ) { }
 
   public async findById(id: number): Promise<TipoSede | undefined> {
-    return await this.tipoSedeRepository.findOne(id);
+    return await this.tipoSedeRepository.createQueryBuilder('tipoSede')
+    .where('tipoSede.id = :id', { id })
+    .getOne();
   }
 
   public async findAll(): Promise<PaginationAwareObject> {

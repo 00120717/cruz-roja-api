@@ -18,14 +18,14 @@ const router: Router = Router();
 
 router.use('/auth', AuthRouter);
 router.use('/users', [checkJWT, checkRole], UserRouter);
-router.use('/sede', [checkJWT, checkRole], SedeRouter);
+router.use('/sede', /*[checkJWT, checkRole],*/ SedeRouter);
 router.use('/roles', [checkJWT, checkRole], RoleRouter);
 router.use('/permissions', [checkJWT, checkRole], PermissionsRouter);
 router.use('/voluntario', [checkJWT, checkRole], VoluntarioRouter);
 router.use('/cuerpoFilial', [checkJWT, checkRole], CuerpoFilialRouter);
 router.use('/estado', [checkJWT, checkRole], EstadoRouter);
 router.use('/modalidad', [checkJWT, checkRole], ModalidadRouter);
-router.use('/departamentoXMunicipio', [checkJWT, checkRole], DepartamentoXMunicipioRouter);
+router.use('/departamentoXMunicipio',/* [checkJWT, checkRole],*/ DepartamentoXMunicipioRouter);
 router.use('/tipoSede', [checkJWT, checkRole], TipoSedeRouter);
 router.use('/tipoVoluntario', [checkJWT, checkRole], TipoVoluntarioRouter);
 
