@@ -38,8 +38,8 @@ class VoluntarioController {
             ...rest,
             ...persona,
             id: student.id,
-            fechaInicio: rest.fechaInicio.toISOString().substr(8,2)+'/'+rest.fechaInicio.toISOString().substr(5,2)+'/'+rest.fechaInicio.toISOString().substr(0,4),
-            fechaNacimiento: persona.fechaNacimiento.toISOString().substr(8,2)+'/'+persona.fechaNacimiento.toISOString().substr(5,2)+'/'+persona.fechaNacimiento.toISOString().substr(0,4),
+            fechaInicio: rest.fechaInicio.toISOString().substring(8,10)+'/'+rest.fechaInicio.toISOString().substring(5,7)+'/'+rest.fechaInicio.toISOString().substring(0,4),
+            fechaNacimiento: persona.fechaNacimiento.toISOString().substring(8,10)+'/'+persona.fechaNacimiento.toISOString().substring(5,7)+'/'+persona.fechaNacimiento.toISOString().substring(0,4),
             edad: edad.aniosServicio,
             aniosServicio: years.aniosServicio
         });
@@ -55,10 +55,11 @@ class VoluntarioController {
         const tipoVoluntarioService = Container.get(TipoVoluntarioService);
 
         const {
-            username,
+            documentoIdentificacion,
+            tipoDocumentoPersona,
             fechaNacimiento,
             fechaInicio,
-            voluntarioCodigo,
+            voluntarioCodigoCarnet,
             genero,
             firstName,
             lastName,
@@ -70,10 +71,11 @@ class VoluntarioController {
             tipoVoluntarioId,
             estadoId
         }: {
-            username: string,
+            documentoIdentificacion: string,
+            tipoDocumentoPersona: string,
             fechaNacimiento: string,
             fechaInicio: string,
-            voluntarioCodigo: string,
+            voluntarioCodigoCarnet: string,
             genero: string,
             email: string,
             firstName: string,
@@ -120,15 +122,41 @@ class VoluntarioController {
             return;
         }
 
+        let split = firstName.split(' ');
+
+        let username = '';
+        split.forEach(x=>{
+            username = username + x.substring(0,2);
+        });
+
+        split = lastName.split(' ');
+
+        split.forEach(x=>{
+            username = username + x.substring(0,2);
+        });
+
+        let flag = true;
+        while(flag){
+            const personaAux = await voluntarioService.findByUsername(username);
+            if (!personaAux) {
+                flag = false;
+            }
+            let min = Math.ceil(0);
+            let max = Math.floor(9);
+            username = username + String(Math.floor(Math.random() * (max - min) + min));
+        }
+
         //Setting person information
         const persona = new Persona();
         persona.username = username;
+        persona.documentoIdentificacion = documentoIdentificacion;
+        persona.tipoDocumentoPersona = tipoDocumentoPersona;
         persona.firstName = firstName;
         persona.lastName = lastName;
         persona.estadoPersona = estadoPersona;
         persona.genero = genero;
         persona.email = email;
-        persona.fechaNacimiento = new Date(fechaNacimiento.substr(6,4)+'-'+fechaNacimiento.substr(3,2)+'-'+fechaNacimiento.substr(0,2));
+        persona.fechaNacimiento = new Date(fechaNacimiento.substring(6,10)+'-'+fechaNacimiento.substring(3,5)+'-'+fechaNacimiento.substring(0,2));
 
         const personErrors = await validate(persona);
 
@@ -139,8 +167,8 @@ class VoluntarioController {
 
         const voluntario = new Voluntario();
 
-        voluntario.fechaInicio = new Date(fechaInicio.substr(6,4)+'-'+fechaInicio.substr(3,2)+'-'+fechaInicio.substr(0,2));
-        voluntario.voluntarioCodigo = voluntarioCodigo;
+        voluntario.fechaInicio = new Date(fechaInicio.substring(6,10)+'-'+fechaInicio.substring(3,5)+'-'+fechaInicio.substring(0,2));
+        voluntario.voluntarioCodigoCarnet = voluntarioCodigoCarnet;
         voluntario.tipoVoluntario = tipoVoluntario;
         voluntario.modalidad = modalidad;
         voluntario.estado = estadoR;
@@ -175,10 +203,11 @@ class VoluntarioController {
         const id: string = String(req.params.id);
 
         const {
-            username,
+            documentoIdentificacion,
+            tipoDocumentoPersona,
             fechaNacimiento,
             fechaInicio,
-            voluntarioCodigo,
+            voluntarioCodigoCarnet,
             genero,
             firstName,
             lastName,
@@ -190,10 +219,11 @@ class VoluntarioController {
             tipoVoluntarioId,
             estadoId
         }: {
-            username: string,
+            documentoIdentificacion: string,
+            tipoDocumentoPersona: string,
             fechaNacimiento: string,
             fechaInicio: string,
-            voluntarioCodigo: string,
+            voluntarioCodigoCarnet: string,
             genero: string,
             email: string,
             firstName: string,
@@ -205,9 +235,6 @@ class VoluntarioController {
             tipoVoluntarioId: number,
             estadoId: number
         } = req.body;
-
-        console.log("FECHAINICIO_LOG");
-        console.log(fechaInicio.substr(6,4)+'-'+fechaInicio.substr(3,2)+'-'+fechaInicio.substr(0,2));
 
         //Getting student information
         const student = await voluntarioService.findById(id);
@@ -250,12 +277,9 @@ class VoluntarioController {
             return;
         }
 
-        //Setting person information
-        if (username) {
-            student.persona.username = username;
-        }
-
-        student.persona.fechaNacimiento = new Date(fechaNacimiento.substr(6,4)+'-'+fechaNacimiento.substr(3,2)+'-'+fechaNacimiento.substr(0,2));
+        student.persona.fechaNacimiento = new Date(fechaNacimiento.substring(6,10)+'-'+fechaNacimiento.substring(3,5)+'-'+fechaNacimiento.substring(0,2));
+        student.persona.documentoIdentificacion = documentoIdentificacion;
+        student.persona.tipoDocumentoPersona = tipoDocumentoPersona;
         student.persona.firstName = firstName;
         student.persona.lastName = lastName;
         student.persona.genero = genero;
@@ -271,13 +295,13 @@ class VoluntarioController {
             return;
         }
 
-        if (voluntarioCodigo) {
-            student.voluntarioCodigo = voluntarioCodigo;
+        if (voluntarioCodigoCarnet) {
+            student.voluntarioCodigoCarnet = voluntarioCodigoCarnet;
         }
         student.estado = estadoR;
         student.cuerpoFilial = cuerpoFilial;
         student.modalidad = modalidad;
-        student.fechaInicio = new Date(fechaInicio.substr(6,4)+'-'+fechaInicio.substr(3,2)+'-'+fechaInicio.substr(0,2));
+        student.fechaInicio = new Date(fechaInicio.substring(6,10)+'-'+fechaInicio.substring(3,5)+'-'+fechaInicio.substring(0,2));
         student.sede = sede;
         student.tipoVoluntario = tipoVoluntario;
 

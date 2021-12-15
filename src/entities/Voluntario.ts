@@ -9,6 +9,7 @@ import {
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
+  Unique,
 } from 'typeorm';
 import { TipoVoluntario } from './TipoVoluntario';
 import { Estado } from './Estado';
@@ -22,6 +23,7 @@ import { CursoXVoluntario } from './CursoXVoluntario';
 import { VehiculoXEmergenciaPaciente } from './VehiculoXEmergenciaPaciente';
 
 @Entity({ name: 'voluntario' })
+@Unique(['voluntarioCodigoCarnet'])
 export class Voluntario {
   @PrimaryGeneratedColumn({ name: 'id_voluntario', type: 'bigint', unsigned: true })
   id: string;
@@ -30,10 +32,10 @@ export class Voluntario {
   @IsOptional()
   fechaInicio: Date;
 
-  @Column({ name: 'voluntario_codigo', type: 'varchar', length: '15' })
+  @Column({ name: 'voluntario_codigo_carnet', type: 'varchar', length: '15' })
   @IsOptional()
   @IsString()
-  voluntarioCodigo: string;
+  voluntarioCodigoCarnet: string;
 
   @OneToOne((type) => Persona, { cascade: ['insert'], onDelete: 'CASCADE' })
   @JoinColumn({ name: 'id_persona' })

@@ -13,6 +13,14 @@ export class VoluntarioService {
     private readonly voluntarioRepository: Repository<Voluntario>,
   ) { }
 
+  public async findByUsername(code: string): Promise<Voluntario | undefined> {
+    return await this.voluntarioRepository
+      .createQueryBuilder('voluntario')
+      .where('persona.username = :code', { code })
+      .leftJoinAndSelect('voluntario.persona', 'persona')
+      .getOne();
+  }
+
   public async findByCode(code: string): Promise<Voluntario | undefined> {
     return await this.voluntarioRepository
       .createQueryBuilder('voluntario')
