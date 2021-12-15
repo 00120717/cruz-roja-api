@@ -141,6 +141,8 @@ export class VoluntarioService {
       .leftJoinAndSelect('voluntario.cuerpoFilial', 'cuerpoFilial')
       .leftJoinAndSelect('voluntario.estado', 'estado')
       .leftJoinAndSelect('voluntario.modalidad', 'modalidad')
+      .orderBy('persona.estadoPersona','DESC')
+      .addOrderBy('voluntario.id','ASC')
       .paginate(10);
   }
 
