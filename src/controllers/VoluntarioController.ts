@@ -324,14 +324,24 @@ class VoluntarioController {
 
     static destroy = async (req: Request, res: Response) => {
         const voluntarioService = Container.get(VoluntarioService);
+        const personaService = Container.get(PersonaService);
         const id: string = String(req.params.id);
 
         const student = await voluntarioService.findById(id);
         if (!student) {
-            res.status(404).json({ message: 'Estudiante no encontrado' });
+            res.status(404).json({ message: 'Estudiante no encontrado ' })
+            return;
         }
 
-        await voluntarioService.delete(id);
+        student.persona.estadoPersona = false;
+
+        try {
+            await voluntarioService.update(student);
+            await personaService.update(student.persona);
+        } catch (error) {
+            res.status(400).json({ message: 'No se pudo eliminar el estudiante ' })
+            return;
+        }
         res.status(204).send();
     }
 
