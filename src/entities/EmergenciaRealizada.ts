@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNotEmptyObject, IsOptional, IsString } from 'class-validator';
+import { IsNotEmptyObject, IsOptional, IsString } from 'class-validator';
 import {
   Column,
   Entity,
