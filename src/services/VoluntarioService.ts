@@ -42,6 +42,7 @@ export class VoluntarioService {
       .createQueryBuilder('voluntario')
       .where('voluntario.id = :code', { code })
       .leftJoinAndSelect('voluntario.persona', 'persona')
+      .leftJoinAndSelect('voluntario.emergenciasAsignadas', 'emergenciasAsignadas')
       .leftJoinAndSelect('voluntario.sede', 'sede')
       .leftJoinAndSelect('sede.departamentoXmunicipio', 'departamentoXmunicipio')
       .leftJoinAndSelect('departamentoXmunicipio.municipio', 'municipio')

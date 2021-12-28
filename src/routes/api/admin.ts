@@ -11,22 +11,32 @@ import DepartamentoXMunicipioRouter from './admin/DepartamentoXMunicipioRouter';
 import ModalidadRouter from './admin/ModalidadRouter';
 import TipoVoluntarioRouter from './admin/TipoVoluntarioRouter';
 import TipoSedeRouter from './admin/TipoSedeRouter';
+import TipoEmergenciaRouter from './admin/TipoEmergenciaRouter';
+import EmergenciaRouter from './admin/EmergenciaRouter';
+import HospitalRouter from './admin/HospitalRouter';
+import VehiculoRouter from './admin/VehiculoRouter';
+import SeccionalRouter from './admin/SeccionalRouter';
 import { checkJWT } from '../../middlewares/checkJWT';
 import { checkRole } from '../../middlewares/checkRole';
 
 const router: Router = Router();
 
 router.use('/auth', AuthRouter);
-router.use('/users', [checkJWT, checkRole], UserRouter);
-router.use('/sede', /*[checkJWT, checkRole],*/ SedeRouter);
-router.use('/roles', [checkJWT, checkRole], RoleRouter);
-router.use('/permissions', [checkJWT, checkRole], PermissionsRouter);
-router.use('/voluntario', /*[checkJWT, checkRole],*/ VoluntarioRouter);
+router.use('/usuario', [checkJWT, checkRole], UserRouter);
+router.use('/sede', [checkJWT, checkRole], SedeRouter);
+router.use('/rol', [checkJWT, checkRole], RoleRouter);
+router.use('/permiso', [checkJWT, checkRole], PermissionsRouter);
+router.use('/voluntario', [checkJWT, checkRole], VoluntarioRouter);
 router.use('/cuerpoFilial', [checkJWT, checkRole], CuerpoFilialRouter);
 router.use('/estado', [checkJWT, checkRole], EstadoRouter);
 router.use('/modalidad', [checkJWT, checkRole], ModalidadRouter);
+router.use('/emergencia', [checkJWT, checkRole], EmergenciaRouter);
+router.use('/vehiculo', [checkJWT, checkRole], VehiculoRouter);
+router.use('/hospital', [checkJWT, checkRole], HospitalRouter);
+router.use('/seccional', [checkJWT, checkRole], SeccionalRouter);
 router.use('/departamentoXMunicipio',/* [checkJWT, checkRole],*/ DepartamentoXMunicipioRouter);
 router.use('/tipoSede', [checkJWT, checkRole], TipoSedeRouter);
 router.use('/tipoVoluntario', [checkJWT, checkRole], TipoVoluntarioRouter);
+router.use('/tipoEmergencia', [checkJWT, checkRole], TipoEmergenciaRouter);
 
 export default router;

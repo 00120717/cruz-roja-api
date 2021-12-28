@@ -46,71 +46,61 @@ class UsuarioController {
 
   static store = async (req: Request, res: Response) => {
     const usuarioService = Container.get(UsuarioService);
-    //const subjectService = Container.get(SubjectService);
     const sedeService = Container.get(SedeService);
     const roleService = Container.get(RolService);
-    //Get parameters from the body
+    
     const {
-      username,
-      email,
-      // phoneNumber,
-      // altPhoneNumber,
-      password,
-      roleId,
-      firstName,
-      lastName,
-      sedeId,
-      // status,
-      subjectId,
-    }: {
-      username: string;
-      password: string;
-      email: string;
-      phoneNumber: string;
-      altPhoneNumber: string;
-      roleId: number;
-      firstName: string;
-      lastName: string;
-      sedeId: number;
-      status: boolean;
-      subjectId: number;
-    } = req.body;
+            documentoIdentificacion,
+            tipoDocumentoPersona,
+            fechaNacimiento,
+            contrasenia,
+            username,
+            genero,
+            firstName,
+            lastName,
+            email,
+            estadoPersona,
+            sedeId,
+            rolId,
+        }: {
+            documentoIdentificacion: string,
+            tipoDocumentoPersona: string,
+            fechaNacimiento: string,
+            contrasenia: string,
+            username: string,
+            genero: string,
+            email: string,
+            firstName: string,
+            lastName: string,
+            estadoPersona: boolean,
+            sedeId: number,
+            rolId: number,
+        } = req.body;
 
-    //Getting role information
-    const role = await roleService.findById(roleId);
+    const role = await roleService.findById(rolId);
     if (!role) {
       res.status(400).json({ message: 'El rol que intenta asignar no existe' });
       return;
     }
 
-    //Getting sede information
     const sede = await sedeService.findById(sedeId);
     if (!sede) {
       res.status(400).json({ message: 'La sede que intenta asignar no existe' });
       return;
     }
 
-    //Getting subject information
-    //let subject;
-    if (subjectId !== 0) {
-      /*subject = await subjectService.findById(subjectId);
-      if (!subject) {
-        res.status(400).json({ message: 'La materia que intenta asignar no existe' });
-        return;
-      }*/
-    }
-    //Setting person information
-    const person = new Persona();
-    person.username = username;
-    person.firstName = firstName;
-    person.lastName = lastName;
-    person.email = email ? email : null;
-    //person.phoneNumber = phoneNumber ? phoneNumber : null;
-    //person.altPhoneNumber = altPhoneNumber ? phoneNumber : null;
-    //person.sede = sede;
+    const persona = new Persona();
+    persona.username = username;
+    persona.documentoIdentificacion = documentoIdentificacion;
+    persona.tipoDocumentoPersona = tipoDocumentoPersona;
+    persona.firstName = firstName;
+    persona.lastName = lastName;
+    persona.estadoPersona = estadoPersona;
+    persona.genero = genero;
+    persona.email = email;
+    persona.fechaNacimiento = new Date(fechaNacimiento.substring(6,10)+'-'+fechaNacimiento.substring(3,5)+'-'+fechaNacimiento.substring(0,2));
 
-    //Validate person entity
-    const personErrors = await validate(person);
+    const personErrors = await validate(persona);
 
     if (personErrors.length > 0) {
       res.status(400).json({ message: 'No se pudo crear el usuario', error: personErrors });
@@ -118,8 +108,8 @@ class UsuarioController {
     }
 
     const user = new Usuario();
-    user.contrasenia = password;
-    user.persona = person;
+    user.contrasenia = contrasenia;
+    user.persona = persona;
     user.rol = role;
 
     //Validate if the parameters are ok
@@ -148,70 +138,65 @@ class UsuarioController {
 
   static update = async (req: Request, res: Response) => {
     const usuarioService = Container.get(UsuarioService);
-    //const subjectService = Container.get(SubjectService);
     const sedeService = Container.get(SedeService);
     const roleService = Container.get(RolService);
     const id = Number(req.params.id);
 
     const {
+      documentoIdentificacion,
+      tipoDocumentoPersona,
+      fechaNacimiento,
+      contrasenia,
       username,
-      email,
-      //phoneNumber,
-      //altPhoneNumber,
-      password,
-      roleId,
+      genero,
       firstName,
       lastName,
+      email,
+      estadoPersona,
       sedeId,
-      //status,
-      //subjectId,
-    }: {
-      username: string;
-      password: string;
-      email: string;
-      //phoneNumber: string;
-      //altPhoneNumber: string;
-      roleId: number;
-      firstName: string;
-      lastName: string;
-      sedeId: number;
-      //status: boolean;
-      //subjectId: number;
-    } = req.body;
+      rolId,
+  }: {
+      documentoIdentificacion: string,
+      tipoDocumentoPersona: string,
+      fechaNacimiento: string,
+      contrasenia: string,
+      username: string,
+      genero: string,
+      email: string,
+      firstName: string,
+      lastName: string,
+      estadoPersona: boolean,
+      sedeId: number,
+      rolId: number,
+  } = req.body;
 
-    //Getting user information
     const user = await usuarioService.findById(id);
     if (!user) {
       res.status(404).json({ message: 'Usuario no encontrado ' })
       return;
     }
 
-    //Getting role information
-    const role = await roleService.findById(roleId);
+    const role = await roleService.findById(rolId);
     if (!role) {
       res.status(400).json({ message: 'El rol que intenta asignar no existe' });
       return;
     }
 
-    //Getting sede information
     const sede = await sedeService.findById(sedeId);
     if (!sede) {
       res.status(400).json({ message: 'La sede que intenta asignar no existe' });
       return;
     }
 
-    //Getting subject information
-    //const subject = await subjectService.findById(subjectId);
-    /*if (!subject) {
-      res.status(400).json({ message: 'La materia que intenta asignar no existe' });
-      return;
-    }*/
-
     user.persona.username = username;
+    user.persona.documentoIdentificacion = documentoIdentificacion;
+    user.persona.tipoDocumentoPersona = tipoDocumentoPersona;
     user.persona.firstName = firstName;
     user.persona.lastName = lastName;
+    user.persona.estadoPersona = estadoPersona;
+    user.persona.genero = genero;
     user.persona.email = email;
-
+    user.persona.fechaNacimiento = new Date(fechaNacimiento.substring(6,10)+'-'+fechaNacimiento.substring(3,5)+'-'+fechaNacimiento.substring(0,2));
 
     //Validate person entity
     const personErrors = await validate(user.persona);
@@ -221,8 +206,8 @@ class UsuarioController {
       return;
     }
 
-    if (password) {
-      user.contrasenia = password;
+    if (contrasenia) {
+      user.contrasenia = contrasenia;
     }
     user.rol = role;
 
@@ -233,7 +218,7 @@ class UsuarioController {
       return;
     }
 
-    if (password) {
+    if (contrasenia) {
       await user.hashPassword();
     }
 

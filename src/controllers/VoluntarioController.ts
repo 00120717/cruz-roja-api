@@ -10,6 +10,9 @@ import { Persona } from "../entities/Persona";
 import { validate } from "class-validator";
 import { Container } from "typedi";
 import { PersonaService } from "../services/PersonaService";
+import { EmergenciasAsignadas } from '../entities/EmergenciasAsignadas';
+import { EmergenciasAsignadasService } from '../services/EmergenciasAsignadasService';
+import { EmergenciaService } from '../services/EmergenciaService';
 //import { UsuarioService } from '../services/UsuarioService';
 //import { TipoVoluntario } from '../entities/TipoVoluntario';
 
@@ -478,40 +481,59 @@ class VoluntarioController {
             ...modules,
         });
     }*/
-    /*
     static saveNotes = async (req: Request, res: Response) => {
-        const qualificationService = Container.get(QualificationService);
-        const userService = Container.get(UserService);
+        const qualificationService = Container.get(EmergenciasAsignadasService);
+        const emergenciaService = Container.get(EmergenciaService);
+        const userService = Container.get(VoluntarioService);
         // const id: number = Number(req.params.id);
-        const { qualificationId, userId, note, recoveryLink, recoveryEnabled }: { qualificationId: number, userId: number, note: number, recoveryLink: string, recoveryEnabled: boolean } = req.body;
+        const { qualificationId, userId, note, recoveryLink, recoveryEnabled }: { qualificationId: number, userId: string, note: number, recoveryLink: string, recoveryEnabled: boolean } = req.body;
 
-        const user = await userService.findByIdWithRelations(+userId);
+        const user = await userService.findByCodeWithRelation(userId);
+
+        let emergenciaAsignadaAux = new EmergenciasAsignadas();
 
         const qualification = await qualificationService.findById(qualificationId);
         if (!qualification) {
             res.status(400).json({ message: 'Error al actualizar la nota', error: 'Qualification not found' });
             return;
         }
+        
+        const emergencia = await emergenciaService.findById(qualificationId);
+        if (!emergencia) {
+            res.status(400).json({ message: 'Error al actualizar la nota', error: 'Qualification not found' });
+            return;
+        }
 
-        qualification.note = note;
-        qualification.approved = +note >= 6.0;
-        if (recoveryLink) {
-            qualification.recoverLink = recoveryLink;
+        if(!user){
+            res.status(400).json({ message: 'Error al actualizar la nota', error: 'Qualification not found' });
+            return;
         }
-        qualification.recoverEnabled = recoveryEnabled ? recoveryEnabled : false;
-        if (user) {
-            qualification.updatedBy = `${user.person.firstName} ${user.person.lastName}`
+
+        if(!user.emergenciasAsignadas){
+            res.status(400).json({ message: 'Error al actualizar la nota', error: 'Qualification not found' });
+            return;
         }
+
+        user.emergenciasAsignadas.find(emergenciaAsignada => emergenciaAsignada.emergencia.id = qualificationId);
+        user.emergenciasAsignadas = user.emergenciasAsignadas.filter(category => {
+            return category.emergencia.id !== qualificationId;
+        });
+
+        
+        emergenciaAsignadaAux.emergencia = emergencia;
+        emergenciaAsignadaAux.voluntario = user;
+
+        user.emergenciasAsignadas.push(emergenciaAsignadaAux);
 
         try {
-            await qualificationService.update(qualification);
+            await userService.update(user);
         } catch (e) {
             res.status(400).json({ message: 'No se pudo actualizar la nota' });
             return;
         }
 
         res.status(200).json({ message: 'Nota actualizada correctamente' });
-    }*/
+    }
 
     /*static subjects = async (req: Request, res: Response) => {
         const voluntarioService = Container.get(voluntarioService);

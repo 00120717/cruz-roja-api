@@ -17,29 +17,32 @@ export class Persona {
   id: string;
 
   @Column({ name: 'persona_username', type: 'varchar', length: '30' })
+  @IsOptional()
   @Length(3, 30)
   username: string;
 
   @Column({ name: 'persona_firstName', type: 'varchar', length: '40' })
+  @IsOptional()
   @Length(3, 40)
   firstName: string;
 
   @Column({ name: 'persona_lastName', type: 'varchar', length: '40' })
+  @IsOptional()
   @Length(3, 40)
   lastName: string;
 
   @Column({ name: 'persona_genero', type: 'varchar', length: '1', nullable: false })
-  @IsNotEmpty()
+  @IsOptional()
   @Length(1, 1)
   genero: string | null;
 
   @Column({ name: 'persona_documento_identificacion', type: 'text' })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   documentoIdentificacion: string;
 
   @Column({ name: 'persona_tipo_documento', type: 'varchar', length: '1', nullable: false })
-  @IsNotEmpty()
+  @IsOptional()
   @Length(1, 1)
   tipoDocumentoPersona: string | null;
 

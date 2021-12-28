@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNotEmptyObject, IsString } from 'class-validator';
+import { IsNotEmptyObject, IsString } from 'class-validator';
 import { Column, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Entity } from "typeorm";
 import { EmergenciaRealizada } from './EmergenciaRealizada';
@@ -12,42 +12,34 @@ export class EmergenciaPaciente {
     id: string;
 
     @Column({ name: 'tratamientos_realizados', type: 'text' })
-    @IsNotEmpty()
     @IsString()
     tratamientosRealizados: string;
 
     @Column({ name: 'diagnostico', type: 'text' })
-    @IsNotEmpty()
     @IsString()
     diagnostico: string;
 
     @Column({ name: 'prenda_superior', type: 'text' })
-    @IsNotEmpty()
     @IsString()
     prendaSuperior: string;
 
     @Column({ name: 'prenda_inferior', type: 'text' })
-    @IsNotEmpty()
     @IsString()
     prendaInferior: string;
 
     @Column({ name: 'calzado', type: 'text' })
-    @IsNotEmpty()
     @IsString()
     calzado: string;
 
     @Column({ name: 'estatura', type: 'text' })
-    @IsNotEmpty()
     @IsString()
     estatura: string;
 
     @Column({ name: 'pelo_color_estilo', type: 'text' })
-    @IsNotEmpty()
     @IsString()
     peloColorEstilo: string;
 
     @Column({ name: 'comentario_senial_especial', type: 'text' })
-    @IsNotEmpty()
     @IsString()
     comentarioSenialEspecial: string;
 

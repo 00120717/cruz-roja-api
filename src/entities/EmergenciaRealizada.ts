@@ -20,7 +20,7 @@ export class EmergenciaRealizada {
   id: string;
 
   @Column({ name: 'identificador_formulario', type: 'bigint', unsigned: true })
-  @IsNotEmpty()
+  @IsOptional()
   identificadorFormulario: string;
 
   @Column({ name: 'ubicacion_exacta', type: 'text' })
