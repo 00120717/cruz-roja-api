@@ -88,7 +88,10 @@ export class Voluntario {
   )
   emergenciasAsignadas: EmergenciasAsignadas[];
 
-  @ManyToMany((type) => EmergenciaRealizada)
+  @ManyToMany(
+    (type) => EmergenciaRealizada,
+    (emergenciasRealizadas) => emergenciasRealizadas.voluntarios
+  )
   @JoinTable({
     name: 'emergencia_realizadaXvoluntario',
     joinColumn: {

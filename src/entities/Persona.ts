@@ -16,17 +16,17 @@ export class Persona {
   @PrimaryGeneratedColumn({ name: 'id_persona', type: 'bigint', unsigned: true })
   id: string;
 
-  @Column({ name: 'persona_username', type: 'varchar', length: '30' })
+  @Column({ name: 'persona_username', type: 'varchar', length: '30', nullable: true })
   @IsOptional()
   @Length(3, 30)
   username: string;
 
-  @Column({ name: 'persona_firstName', type: 'varchar', length: '40' })
+  @Column({ name: 'persona_firstName', type: 'varchar', length: '40', nullable: true })
   @IsOptional()
   @Length(3, 40)
   firstName: string;
 
-  @Column({ name: 'persona_lastName', type: 'varchar', length: '40' })
+  @Column({ name: 'persona_lastName', type: 'varchar', length: '40', nullable: true })
   @IsOptional()
   @Length(3, 40)
   lastName: string;
@@ -36,17 +36,17 @@ export class Persona {
   @Length(1, 1)
   genero: string | null;
 
-  @Column({ name: 'persona_documento_identificacion', type: 'text' })
+  @Column({ name: 'persona_documento_identificacion', type: 'text', nullable: true })
   @IsOptional()
   @IsString()
   documentoIdentificacion: string;
 
-  @Column({ name: 'persona_tipo_documento', type: 'varchar', length: '1', nullable: false })
+  @Column({ name: 'persona_tipo_documento', type: 'varchar', length: '1', nullable: true })
   @IsOptional()
   @Length(1, 1)
   tipoDocumentoPersona: string | null;
 
-  @Column({ name: 'fecha_nacimiento', type: 'datetime' })
+  @Column({ name: 'fecha_nacimiento', type: 'datetime', nullable: true })
   @IsOptional()
   fechaNacimiento: Date;
 

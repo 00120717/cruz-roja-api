@@ -55,7 +55,10 @@ export class EmergenciaRealizada {
   @IsNotEmptyObject()
   emergencia: Emergencia;
 
-  @ManyToMany((type) => Voluntario)
+  @ManyToMany(
+    (type) => Voluntario,
+    (voluntarios) => voluntarios.emergenciasRealizadas
+  )
   voluntarios: Voluntario[];
 
   @OneToMany(

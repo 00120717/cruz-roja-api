@@ -66,6 +66,10 @@ export class VoluntarioService {
       .getOne();
   }
 
+  public async findByIds(ids: Array<number>): Promise<Voluntario[]> {
+    return await this.voluntarioRepository.findByIds(ids);
+  }
+
   public async findByIdWithRelation(id: string): Promise<Voluntario | undefined> {
     return await this.voluntarioRepository
       .createQueryBuilder('voluntario')

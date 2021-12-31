@@ -18,6 +18,8 @@ import VehiculoRouter from './admin/VehiculoRouter';
 import SeccionalRouter from './admin/SeccionalRouter';
 import { checkJWT } from '../../middlewares/checkJWT';
 import { checkRole } from '../../middlewares/checkRole';
+import EmergenciaAsignadaRouter from './admin/EmergenciaAsignadaRouter';
+import EmergenciaRealizadaRouter from './admin/EmergenciaRealizadaRouter';
 
 const router: Router = Router();
 
@@ -30,13 +32,15 @@ router.use('/voluntario', [checkJWT, checkRole], VoluntarioRouter);
 router.use('/cuerpoFilial', [checkJWT, checkRole], CuerpoFilialRouter);
 router.use('/estado', [checkJWT, checkRole], EstadoRouter);
 router.use('/modalidad', [checkJWT, checkRole], ModalidadRouter);
-router.use('/emergencia', [checkJWT, checkRole], EmergenciaRouter);
-router.use('/vehiculo', [checkJWT, checkRole], VehiculoRouter);
-router.use('/hospital', [checkJWT, checkRole], HospitalRouter);
-router.use('/seccional', [checkJWT, checkRole], SeccionalRouter);
+router.use('/emergencia', /*[checkJWT, checkRole],*/ EmergenciaRouter);
+router.use('/emergenciaAsignada', /*[checkJWT, checkRole],*/ EmergenciaAsignadaRouter);
+router.use('/emergenciaRealizada', /*[checkJWT, checkRole],*/ EmergenciaRealizadaRouter);
+router.use('/vehiculo', /*[checkJWT, checkRole],*/ VehiculoRouter);
+router.use('/hospital', /*[checkJWT, checkRole],*/ HospitalRouter);
+router.use('/seccional', /*[checkJWT, checkRole],*/SeccionalRouter);
 router.use('/departamentoXMunicipio',/* [checkJWT, checkRole],*/ DepartamentoXMunicipioRouter);
 router.use('/tipoSede', [checkJWT, checkRole], TipoSedeRouter);
 router.use('/tipoVoluntario', [checkJWT, checkRole], TipoVoluntarioRouter);
-router.use('/tipoEmergencia', [checkJWT, checkRole], TipoEmergenciaRouter);
+router.use('/tipoEmergencia', /*[checkJWT, checkRole],*/ TipoEmergenciaRouter);
 
 export default router;

@@ -1,24 +1,24 @@
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
-import { Seccional } from '../entities/Seccional';
+import { Paciente } from '../entities/Paciente';
 import { Service } from "typedi";
 import { InjectRepository } from "typeorm-typedi-extensions";
 import { PaginationAwareObject } from "typeorm-pagination/dist/helpers/pagination";
 
 @Service()
-export class SeccionalService {
+export class PacienteService {
   constructor(
-    @InjectRepository(Seccional)
-    protected seccionalRepository: Repository<Seccional>
+    @InjectRepository(Paciente)
+    protected seccionalRepository: Repository<Paciente>
   ) { }
 
-  public async findById(id: number): Promise<Seccional | undefined> {
+  public async findById(id: number): Promise<Paciente | undefined> {
     return await this.seccionalRepository
     .createQueryBuilder('seccional')
     .where('seccional.id = :id', { id })
     .getOne();
   }
 
-  public async findByIds(ids: Array<number>): Promise<Seccional[]> {
+  public async findByIds(ids: Array<number>): Promise<Paciente[]> {
     return await this.seccionalRepository.findByIds(ids);
   }
 
@@ -29,17 +29,17 @@ export class SeccionalService {
       .paginate(10);
   }
 
-  public async listAll(): Promise<Seccional[]> {
+  public async listAll(): Promise<Paciente[]> {
     return await this.seccionalRepository
         .createQueryBuilder('seccional')
         .getMany()
   }
 
-  public async create(seccional: Seccional): Promise<Seccional> {
+  public async create(seccional: Paciente): Promise<Paciente> {
     return await this.seccionalRepository.save(seccional);
   }
 
-  public async update(updateSeccional: Seccional): Promise<UpdateResult> {
+  public async update(updateSeccional: Paciente): Promise<UpdateResult> {
     return await this.seccionalRepository.update(updateSeccional.id, updateSeccional);
   }
 

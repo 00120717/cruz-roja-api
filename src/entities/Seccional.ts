@@ -14,7 +14,7 @@ export class Seccional {
   @Length(0, 30)
   codigo: string;
 
-  @Column({ name: 'nombre', type: 'text', unique: true })
+  @Column({ name: 'nombre', type: 'text' })
   @IsNotEmpty()
   nombre: string;
 

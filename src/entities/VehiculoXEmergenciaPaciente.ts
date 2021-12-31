@@ -1,5 +1,5 @@
 import { IsNotEmptyObject } from 'class-validator';
-import { Column, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Entity } from "typeorm";
 import { EmergenciaPaciente } from './EmergenciaPaciente';
 import { Hospital } from './Hospital';
@@ -8,6 +8,9 @@ import { Voluntario } from './Voluntario';
 
 @Entity({ name: 'vehiculoXemergencia_paciente' })
 export class VehiculoXEmergenciaPaciente {
+
+    @PrimaryGeneratedColumn({ name: 'id_vehiculoXemergencia_paciente', type: 'bigint', unsigned: true })
+    id: string;
 
     @Column({ name: 'hora_salida', type: 'datetime' })
     horaSalida: Date
@@ -27,7 +30,6 @@ export class VehiculoXEmergenciaPaciente {
     @ManyToOne(
         (type) => EmergenciaPaciente,
         (emergenciaPaciente) => emergenciaPaciente.vehiculoXEmergenciaPaciente
-        , { primary: true }
     )
     @JoinColumn({ name: 'id_emergencia_paciente' })
     @IsNotEmptyObject()
@@ -36,7 +38,7 @@ export class VehiculoXEmergenciaPaciente {
     @ManyToOne(
         (type) => Vehiculo,
         (vehiculo) => vehiculo.vehiculoXEmergenciaPaciente
-        , { onDelete: 'CASCADE', primary: true }
+        , { onDelete: 'CASCADE'}
     )
     @JoinColumn({ name: 'id_vehiculo' })
     @IsNotEmptyObject()
@@ -45,7 +47,7 @@ export class VehiculoXEmergenciaPaciente {
     @ManyToOne(
         (type) => Hospital,
         (hospital) => hospital.vehiculoXEmergenciaPaciente
-        , { onDelete: 'CASCADE', primary: true }
+        , { onDelete: 'CASCADE' }
     )
     @JoinColumn({ name: 'id_hospital' })
     @IsNotEmptyObject()

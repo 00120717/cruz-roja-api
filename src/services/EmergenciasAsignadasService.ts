@@ -1,4 +1,4 @@
-import { Repository } from "typeorm";
+import { DeleteResult, Repository } from "typeorm";
 import { EmergenciasAsignadas } from "../entities/EmergenciasAsignadas";
 import { InjectRepository } from "typeorm-typedi-extensions";
 import { Service } from "typedi";
@@ -8,51 +8,61 @@ import { PaginationAwareObject } from "typeorm-pagination/dist/helpers/paginatio
 export class EmergenciasAsignadasService {
   constructor(
     @InjectRepository(EmergenciasAsignadas)
-    protected emergenciaRepository: Repository<EmergenciasAsignadas>,
+    protected emergenciaAsignadaRepository: Repository<EmergenciasAsignadas>,
   ) {}
 
-  public async findById(id: number): Promise<EmergenciasAsignadas | undefined> {
-    return await this.emergenciaRepository
+  public async findById(id: string): Promise<EmergenciasAsignadas | undefined> {
+    return await this.emergenciaAsignadaRepository
       .createQueryBuilder('emergenciasAsignadas')
       .leftJoinAndSelect('emergenciasAsignadas.voluntario', 'voluntario')
+      .leftJoinAndSelect('emergenciasAsignadas.emergencia', 'emergencia')
       .where('voluntario.id = :id', { id }).getOne();
   }
 
-  public async findByIdMany(id: number): Promise<EmergenciasAsignadas[] | undefined> {
-    return await this.emergenciaRepository
+  public async findByIdWithRelation(id: string): Promise<EmergenciasAsignadas | undefined> {
+    return await this.emergenciaAsignadaRepository
       .createQueryBuilder('emergenciasAsignadas')
       .leftJoinAndSelect('emergenciasAsignadas.voluntario', 'voluntario')
-      .where('voluntario.id = :id', { id }).getMany();
-  }
-
-  public async findByIds(ids: Array<number>): Promise<EmergenciasAsignadas[]> {
-    return await this.emergenciaRepository
-      .createQueryBuilder('emergenciasAsignadas')
-      .leftJoinAndSelect('emergenciasAsignadas.voluntario', 'voluntario')
-      .where('voluntario.id IN (:ids)', { ids }).getMany();
-  }
-
-  public async findByName(id: number): Promise<EmergenciasAsignadas | undefined> {
-    return await this.emergenciaRepository
-      .createQueryBuilder('emergenciasAsignadas')
-      .leftJoinAndSelect('emergenciasAsignadas.voluntario', 'voluntario')
-      .where('voluntario.id = :id', { id })
+      .leftJoinAndSelect('emergenciasAsignadas.emergencia', 'emergencia')
+      .where('emergenciasAsignadas.id = :id', { id })
       .getOne();
   }
 
+  public async findByIdMany(id: string): Promise<EmergenciasAsignadas[] | undefined> {
+    return await this.emergenciaAsignadaRepository
+      .createQueryBuilder('emergenciasAsignadas')
+      .leftJoinAndSelect('emergenciasAsignadas.voluntario', 'voluntario')
+      .leftJoinAndSelect('emergenciasAsignadas.emergencia', 'emergencia')
+      .where('voluntario.id = :id', { id }).getMany();
+  }
+
+  public async findByIds(ids: Array<string>): Promise<EmergenciasAsignadas[]> {
+    return await this.emergenciaAsignadaRepository
+      .createQueryBuilder('emergenciasAsignadas')
+      .leftJoinAndSelect('emergenciasAsignadas.voluntario', 'voluntario')
+      .leftJoinAndSelect('emergenciasAsignadas.emergencia', 'emergencia')
+      .where('voluntario.id IN (:ids)', { ids }).getMany();
+  }
+
   public async listAll(): Promise<EmergenciasAsignadas[]> {
-    return await this.emergenciaRepository
+    return await this.emergenciaAsignadaRepository
         .createQueryBuilder('emergenciasAsignadas')
         .getMany();
   }
 
   public async findAll(): Promise<PaginationAwareObject> {
-    return await this.emergenciaRepository
+    return await this.emergenciaAsignadaRepository
       .createQueryBuilder('emergenciasAsignadas')
+      .leftJoinAndSelect('emergenciasAsignadas.voluntario', 'voluntario')
+      .leftJoinAndSelect('emergenciasAsignadas.emergencia', 'emergencia')
       .paginate(10);
   }
 
   public async create(emergenciasAsignadas: EmergenciasAsignadas): Promise<EmergenciasAsignadas> {
-    return await this.emergenciaRepository.save(emergenciasAsignadas);
+    return await this.emergenciaAsignadaRepository.save(emergenciasAsignadas);
+  }
+
+  public async delete(id: string): Promise<DeleteResult> {
+    return await this.emergenciaAsignadaRepository.delete(id);
   }
 }
