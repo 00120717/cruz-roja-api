@@ -18,28 +18,39 @@ class VoluntarioController {
         res.status(200).send(students);
     }
 
+    static list = async (req: Request, res: Response) => {
+        const voluntarioService = Container.get(VoluntarioService);
+        const voluntarioList = await voluntarioService.listAll();
+        let aux = voluntarioList.map(att =>{
+            let { ...rest} = att;
+            return {nombreCompuesto: (rest.persona.firstName+' '+rest.persona.lastName), ...rest };
+        });
+        res.status(200).send(aux);
+    }
+
     static show = async (req: Request, res: Response) => {
         const voluntarioService = Container.get(VoluntarioService);
         const id: string = String(req.params.id);
 
-        const student = await voluntarioService.findByIdWithRelation(id);
-        if (!student) {
-            res.status(404).json({ message: 'Estudiante no encontrado ' });
+        const voluntario = await voluntarioService.findByIdWithRelation(id);
+        if (!voluntario) {
+            res.status(404).json({ message: 'Voluntario no encontrado ' });
             return;
         }
         const years = await voluntarioService.findByIdYearsOfService(id);
         const edad = await voluntarioService.findByIdYearsOldOfService(id);
 
-        const { persona, ...rest } = student;
+        const { persona, ...rest } = voluntario;
 
         res.status(200).send({
             ...rest,
             ...persona,
-            id: student.id,
+            id: voluntario.id,
             fechaInicio: rest.fechaInicio.toISOString().substring(8,10)+'/'+rest.fechaInicio.toISOString().substring(5,7)+'/'+rest.fechaInicio.toISOString().substring(0,4),
             fechaNacimiento: persona.fechaNacimiento.toISOString().substring(8,10)+'/'+persona.fechaNacimiento.toISOString().substring(5,7)+'/'+persona.fechaNacimiento.toISOString().substring(0,4),
             edad: edad.aniosServicio,
-            aniosServicio: years.aniosServicio
+            aniosServicio: years.aniosServicio,
+            nombreCompuesto : persona.firstName + ' ' + persona.lastName,
         });
         
     }
@@ -234,9 +245,9 @@ class VoluntarioController {
             estadoId: number
         } = req.body;
 
-        //Getting student information
-        const student = await voluntarioService.findById(id);
-        if (!student) {
+        //Getting voluntario information
+        const voluntario = await voluntarioService.findById(id);
+        if (!voluntario) {
             res.status(404).json({ message: 'Estudiante no encontrado ' })
             return;
         }
@@ -275,18 +286,18 @@ class VoluntarioController {
             return;
         }
 
-        student.persona.fechaNacimiento = new Date(fechaNacimiento.substring(6,10)+'-'+fechaNacimiento.substring(3,5)+'-'+fechaNacimiento.substring(0,2));
-        student.persona.documentoIdentificacion = documentoIdentificacion;
-        student.persona.tipoDocumentoPersona = tipoDocumentoPersona;
-        student.persona.firstName = firstName;
-        student.persona.lastName = lastName;
-        student.persona.genero = genero;
-        student.persona.email = email;
-        student.persona.estadoPersona = estadoPersona;
-        student.estado = estadoR;
-        student.sede = sede;
+        voluntario.persona.fechaNacimiento = new Date(fechaNacimiento.substring(6,10)+'-'+fechaNacimiento.substring(3,5)+'-'+fechaNacimiento.substring(0,2));
+        voluntario.persona.documentoIdentificacion = documentoIdentificacion;
+        voluntario.persona.tipoDocumentoPersona = tipoDocumentoPersona;
+        voluntario.persona.firstName = firstName;
+        voluntario.persona.lastName = lastName;
+        voluntario.persona.genero = genero;
+        voluntario.persona.email = email;
+        voluntario.persona.estadoPersona = estadoPersona;
+        voluntario.estado = estadoR;
+        voluntario.sede = sede;
 
-        const personErrors = await validate(student.persona);
+        const personErrors = await validate(voluntario.persona);
 
         if (personErrors.length > 0) {
             res.status(400).send(personErrors);
@@ -294,24 +305,24 @@ class VoluntarioController {
         }
 
         if (voluntarioCodigoCarnet) {
-            student.voluntarioCodigoCarnet = voluntarioCodigoCarnet;
+            voluntario.voluntarioCodigoCarnet = voluntarioCodigoCarnet;
         }
-        student.estado = estadoR;
-        student.cuerpoFilial = cuerpoFilial;
-        student.modalidad = modalidad;
-        student.fechaInicio = new Date(fechaInicio.substring(6,10)+'-'+fechaInicio.substring(3,5)+'-'+fechaInicio.substring(0,2));
-        student.sede = sede;
-        student.tipoVoluntario = tipoVoluntario;
+        voluntario.estado = estadoR;
+        voluntario.cuerpoFilial = cuerpoFilial;
+        voluntario.modalidad = modalidad;
+        voluntario.fechaInicio = new Date(fechaInicio.substring(6,10)+'-'+fechaInicio.substring(3,5)+'-'+fechaInicio.substring(0,2));
+        voluntario.sede = sede;
+        voluntario.tipoVoluntario = tipoVoluntario;
 
-        const studentErrors = await validate(student);
+        const studentErrors = await validate(voluntario);
         if (studentErrors.length > 0) {
             res.status(400).send(studentErrors);
             return;
         }
 
         try {
-            await voluntarioService.update(student);
-            await personaService.update(student.persona);
+            await voluntarioService.update(voluntario);
+            await personaService.update(voluntario.persona);
         } catch (error) {
             res.status(400).json({ message: 'No se pudo actualizar el estudiante ' })
             return;
@@ -325,17 +336,17 @@ class VoluntarioController {
         const personaService = Container.get(PersonaService);
         const id: string = String(req.params.id);
 
-        const student = await voluntarioService.findById(id);
-        if (!student) {
+        const voluntario = await voluntarioService.findById(id);
+        if (!voluntario) {
             res.status(404).json({ message: 'Estudiante no encontrado ' })
             return;
         }
 
-        student.persona.estadoPersona = false;
+        voluntario.persona.estadoPersona = false;
 
         try {
-            await voluntarioService.update(student);
-            await personaService.update(student.persona);
+            await voluntarioService.update(voluntario);
+            await personaService.update(voluntario.persona);
         } catch (error) {
             res.status(400).json({ message: 'No se pudo eliminar el estudiante ' })
             return;
@@ -347,13 +358,13 @@ class VoluntarioController {
         const voluntarioService = Container.get(VoluntarioService);
         const code = res.locals.jwtPayload.code;
 
-        const student = await voluntarioService.findByCode(code);
-        if (!student) {
+        const voluntario = await voluntarioService.findByCode(code);
+        if (!voluntario) {
             res.status(404).json({ message: 'Estudiante no encontrado' });
             return;
         }
 
-        const { persona, ...rest } = student;
+        const { persona, ...rest } = voluntario;
 
         res.status(200).send({
             ...rest,
@@ -366,12 +377,12 @@ class VoluntarioController {
         const voluntarioService = Container.get(VoluntarioService);
         const code = res.locals.jwtPayload.code;
 
-        const student = await voluntarioService.findByCodeWithRelation(code);
-        if (!student) {
+        const voluntario = await voluntarioService.findByCodeWithRelation(code);
+        if (!voluntario) {
             res.status(404).json({ message: 'Estudiante no encontrado' });
             return;
         }
-        const { sede, persona, tipoVoluntario, cuerpoFilial, modalidad, estado, ...rest } = student;
+        const { sede, persona, tipoVoluntario, cuerpoFilial, modalidad, estado, ...rest } = voluntario;
 
         const modules = {}
 

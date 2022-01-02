@@ -12,7 +12,11 @@ export class EmergenciaService {
   ) {}
 
   public async findById(id: number): Promise<Emergencia | undefined> {
-    return await this.emergenciaRepository.findOne(id);
+    return await this.emergenciaRepository
+    .createQueryBuilder('emergencia')
+    .leftJoinAndSelect('emergencia.tipoEmergencia', 'tipoEmergencia')
+    .where('emergencia.id = :id', { id })
+    .getOne();
   }
 
   public async findByIds(ids: Array<number>): Promise<Emergencia[]> {
@@ -22,6 +26,7 @@ export class EmergenciaService {
   public async findByName(name: string): Promise<Emergencia | undefined> {
     return await this.emergenciaRepository
       .createQueryBuilder('emergencia')
+      .leftJoinAndSelect('emergencia.tipoEmergencia', 'tipoEmergencia')
       .where('emergencia.emergenciaNombre = :name', { name })
       .getOne();
   }
@@ -29,12 +34,14 @@ export class EmergenciaService {
   public async listAll(): Promise<Emergencia[]> {
     return await this.emergenciaRepository
         .createQueryBuilder('emergencia')
+        .leftJoinAndSelect('emergencia.tipoEmergencia', 'tipoEmergencia')
         .getMany();
   }
 
   public async findAll(): Promise<PaginationAwareObject> {
     return await this.emergenciaRepository
       .createQueryBuilder('emergencia')
+      .leftJoinAndSelect('emergencia.tipoEmergencia', 'tipoEmergencia')
       .paginate(10);
   }
 

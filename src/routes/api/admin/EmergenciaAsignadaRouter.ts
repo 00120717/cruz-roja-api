@@ -3,7 +3,6 @@ import EmergenciaAsignadaController from "../../../controllers/EmergenciaAsignad
 
 const router: Router = Router();
 
-//TODO: implement role and permission middleware
 router.post('/', EmergenciaAsignadaController.store);
 router.get('/', EmergenciaAsignadaController.fetch);
 router.get('/:id', EmergenciaAsignadaController.show);

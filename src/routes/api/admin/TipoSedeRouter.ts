@@ -3,7 +3,6 @@ import TipoSedeController from "../../../controllers/TipoSedeController";
 
 const router: Router = Router();
 
-//TODO: implement role and permission middleware
 router.post('/', TipoSedeController.store);
 router.get('/', TipoSedeController.fetch);
 router.get('/list', TipoSedeController.list)

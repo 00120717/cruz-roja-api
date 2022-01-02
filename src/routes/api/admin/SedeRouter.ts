@@ -3,7 +3,6 @@ import SedeController from "../../../controllers/SedeController";
 
 const router: Router = Router();
 
-//TODO: implement role and permission middleware
 router.post('/', SedeController.store);
 router.get('/', SedeController.fetch);
 router.get('/list', SedeController.list)

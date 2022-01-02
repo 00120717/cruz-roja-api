@@ -18,7 +18,30 @@ export class VoluntarioService {
       .createQueryBuilder('voluntario')
       .where('persona.username = :code', { code })
       .leftJoinAndSelect('voluntario.persona', 'persona')
+      .leftJoinAndSelect('voluntario.sede', 'sede')
+      .leftJoinAndSelect('sede.departamentoXmunicipio', 'departamentoXmunicipio')
+      .leftJoinAndSelect('departamentoXmunicipio.municipio', 'municipio')
+      .leftJoinAndSelect('departamentoXmunicipio.departamento', 'departamento')
+      .leftJoinAndSelect('voluntario.tipoVoluntario', 'tipoVoluntario')
+      .leftJoinAndSelect('voluntario.cuerpoFilial', 'cuerpoFilial')
+      .leftJoinAndSelect('voluntario.estado', 'estado')
+      .leftJoinAndSelect('voluntario.modalidad', 'modalidad')
       .getOne();
+  }
+
+  public async listAll(): Promise<Voluntario[]> {
+    return await this.voluntarioRepository
+        .createQueryBuilder('voluntario')
+        .leftJoinAndSelect('voluntario.persona', 'persona')
+        .leftJoinAndSelect('voluntario.sede', 'sede')
+        .leftJoinAndSelect('sede.departamentoXmunicipio', 'departamentoXmunicipio')
+        .leftJoinAndSelect('departamentoXmunicipio.municipio', 'municipio')
+        .leftJoinAndSelect('departamentoXmunicipio.departamento', 'departamento')
+        .leftJoinAndSelect('voluntario.tipoVoluntario', 'tipoVoluntario')
+        .leftJoinAndSelect('voluntario.cuerpoFilial', 'cuerpoFilial')
+        .leftJoinAndSelect('voluntario.estado', 'estado')
+        .leftJoinAndSelect('voluntario.modalidad', 'modalidad')
+        .getMany();
   }
 
   public async findByCode(code: string): Promise<Voluntario | undefined> {
@@ -63,6 +86,10 @@ export class VoluntarioService {
       .leftJoinAndSelect('sede.departamentoXmunicipio', 'departamentoXmunicipio')
       .leftJoinAndSelect('departamentoXmunicipio.municipio', 'municipio')
       .leftJoinAndSelect('departamentoXmunicipio.departamento', 'departamento')
+      .leftJoinAndSelect('voluntario.tipoVoluntario', 'tipoVoluntario')
+      .leftJoinAndSelect('voluntario.cuerpoFilial', 'cuerpoFilial')
+      .leftJoinAndSelect('voluntario.estado', 'estado')
+      .leftJoinAndSelect('voluntario.modalidad', 'modalidad')
       .getOne();
   }
 

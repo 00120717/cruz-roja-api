@@ -28,23 +28,38 @@ export class EmergenciaRealizadaService {
 
   public async findByIdWithRelation(id: string): Promise<EmergenciaRealizada | undefined> {
     return await this.emergenciaRealizadaRepository
-      .createQueryBuilder('emergenciaRealizada')
-      .leftJoinAndSelect('emergenciaRealizada.voluntarios', 'voluntarios')
-      .leftJoinAndSelect('emergenciaRealizada.emergenciaSeccional', 'emergenciaSeccional')
-      .leftJoinAndSelect('emergenciaRealizada.emergenciaPaciente', 'emergenciaPaciente')
-      .leftJoinAndSelect('emergenciaPaciente.paciente', 'paciente')
-      .leftJoinAndSelect('paciente.persona', 'persona')
-      .leftJoinAndSelect('emergenciaSeccional.seccional', 'seccional')
-      .leftJoinAndSelect('seccional.departamentoXmunicipio', 'departamentoXmunicipio')
-      .leftJoinAndSelect('departamentoXmunicipio.departamento', 'departamento')
-      .leftJoinAndSelect('departamentoXmunicipio.municipio', 'municipio')
+    .createQueryBuilder('emergenciaRealizada')
+    .leftJoinAndSelect('emergenciaRealizada.emergencia', 'emergencia')
+    .leftJoinAndSelect('emergenciaRealizada.voluntarios', 'voluntarios')
+    .leftJoinAndSelect('emergenciaRealizada.emergenciaPaciente', 'emergenciaPaciente')
+    .leftJoinAndSelect('voluntarios.persona', 'persona')
+    .leftJoinAndSelect('emergenciaPaciente.vehiculoXEmergenciaPaciente', 'vehiculoXEmergenciaPaciente')
+    .leftJoinAndSelect('emergenciaPaciente.paciente', 'paciente')
+    .leftJoinAndSelect('paciente.persona', 'personaPaciente')
+    .leftJoinAndSelect('vehiculoXEmergenciaPaciente.vehiculo', 'vehiculo')
+    .leftJoinAndSelect('vehiculoXEmergenciaPaciente.hospital', 'hospital')
+    .leftJoinAndSelect('vehiculoXEmergenciaPaciente.voluntario', 'voluntario')
+    .leftJoinAndSelect('emergenciaRealizada.emergenciaSeccional', 'emergenciaSeccional')
+    .leftJoinAndSelect('emergenciaSeccional.seccional', 'seccional')
+    .leftJoinAndSelect('seccional.departamentoXmunicipio', 'departamentoXmunicipio')
+    .leftJoinAndSelect('departamentoXmunicipio.departamento', 'departamento')
+    .leftJoinAndSelect('departamentoXmunicipio.municipio', 'municipio')
       .where('emergenciaRealizada.id = :id', { id })
       .getOne();
   }
   public async findByIdUbicacion(id: number, fechaInicio: string, fechaFin: string): Promise<EmergenciaRealizada[]> {
     return await this.emergenciaRealizadaRepository
       .createQueryBuilder('emergenciaRealizada')
+      .leftJoinAndSelect('emergenciaRealizada.emergencia', 'emergencia')
       .leftJoinAndSelect('emergenciaRealizada.voluntarios', 'voluntarios')
+      .leftJoinAndSelect('emergenciaRealizada.emergenciaPaciente', 'emergenciaPaciente')
+      .leftJoinAndSelect('voluntarios.persona', 'persona')
+      .leftJoinAndSelect('emergenciaPaciente.vehiculoXEmergenciaPaciente', 'vehiculoXEmergenciaPaciente')
+      .leftJoinAndSelect('emergenciaPaciente.paciente', 'paciente')
+      .leftJoinAndSelect('paciente.persona', 'personaPaciente')
+      .leftJoinAndSelect('vehiculoXEmergenciaPaciente.vehiculo', 'vehiculo')
+      .leftJoinAndSelect('vehiculoXEmergenciaPaciente.hospital', 'hospital')
+      .leftJoinAndSelect('vehiculoXEmergenciaPaciente.voluntario', 'voluntario')
       .leftJoinAndSelect('emergenciaRealizada.emergenciaSeccional', 'emergenciaSeccional')
       .leftJoinAndSelect('emergenciaSeccional.seccional', 'seccional')
       .leftJoinAndSelect('seccional.departamentoXmunicipio', 'departamentoXmunicipio')
@@ -64,7 +79,22 @@ export class EmergenciaRealizadaService {
 
   public async findAll(): Promise<PaginationAwareObject> {
     return await this.emergenciaRealizadaRepository
-      .createQueryBuilder('emergenciaRealizada')
+    .createQueryBuilder('emergenciaRealizada')
+    .leftJoinAndSelect('emergenciaRealizada.emergencia', 'emergencia')
+    .leftJoinAndSelect('emergenciaRealizada.voluntarios', 'voluntarios')
+    .leftJoinAndSelect('emergenciaRealizada.emergenciaPaciente', 'emergenciaPaciente')
+    .leftJoinAndSelect('voluntarios.persona', 'persona')
+    .leftJoinAndSelect('emergenciaPaciente.vehiculoXEmergenciaPaciente', 'vehiculoXEmergenciaPaciente')
+    .leftJoinAndSelect('emergenciaPaciente.paciente', 'paciente')
+    .leftJoinAndSelect('paciente.persona', 'personaPaciente')
+    .leftJoinAndSelect('vehiculoXEmergenciaPaciente.vehiculo', 'vehiculo')
+    .leftJoinAndSelect('vehiculoXEmergenciaPaciente.hospital', 'hospital')
+    .leftJoinAndSelect('vehiculoXEmergenciaPaciente.voluntario', 'voluntario')
+    .leftJoinAndSelect('emergenciaRealizada.emergenciaSeccional', 'emergenciaSeccional')
+    .leftJoinAndSelect('emergenciaSeccional.seccional', 'seccional')
+    .leftJoinAndSelect('seccional.departamentoXmunicipio', 'departamentoXmunicipio')
+    .leftJoinAndSelect('departamentoXmunicipio.departamento', 'departamento')
+    .leftJoinAndSelect('departamentoXmunicipio.municipio', 'municipio')
       .paginate(10);
   }
 

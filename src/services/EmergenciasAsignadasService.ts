@@ -15,14 +15,16 @@ export class EmergenciasAsignadasService {
     return await this.emergenciaAsignadaRepository
       .createQueryBuilder('emergenciasAsignadas')
       .leftJoinAndSelect('emergenciasAsignadas.voluntario', 'voluntario')
+      .leftJoinAndSelect('voluntario.persona', 'persona')
       .leftJoinAndSelect('emergenciasAsignadas.emergencia', 'emergencia')
-      .where('voluntario.id = :id', { id }).getOne();
+      .where('emergenciasAsignadas.id = :id', { id }).getOne();
   }
 
   public async findByIdWithRelation(id: string): Promise<EmergenciasAsignadas | undefined> {
     return await this.emergenciaAsignadaRepository
       .createQueryBuilder('emergenciasAsignadas')
       .leftJoinAndSelect('emergenciasAsignadas.voluntario', 'voluntario')
+      .leftJoinAndSelect('voluntario.persona', 'persona')
       .leftJoinAndSelect('emergenciasAsignadas.emergencia', 'emergencia')
       .where('emergenciasAsignadas.id = :id', { id })
       .getOne();
@@ -32,6 +34,7 @@ export class EmergenciasAsignadasService {
     return await this.emergenciaAsignadaRepository
       .createQueryBuilder('emergenciasAsignadas')
       .leftJoinAndSelect('emergenciasAsignadas.voluntario', 'voluntario')
+      .leftJoinAndSelect('voluntario.persona', 'persona')
       .leftJoinAndSelect('emergenciasAsignadas.emergencia', 'emergencia')
       .where('voluntario.id = :id', { id }).getMany();
   }
@@ -40,6 +43,7 @@ export class EmergenciasAsignadasService {
     return await this.emergenciaAsignadaRepository
       .createQueryBuilder('emergenciasAsignadas')
       .leftJoinAndSelect('emergenciasAsignadas.voluntario', 'voluntario')
+      .leftJoinAndSelect('voluntario.persona', 'persona')
       .leftJoinAndSelect('emergenciasAsignadas.emergencia', 'emergencia')
       .where('voluntario.id IN (:ids)', { ids }).getMany();
   }
@@ -54,6 +58,7 @@ export class EmergenciasAsignadasService {
     return await this.emergenciaAsignadaRepository
       .createQueryBuilder('emergenciasAsignadas')
       .leftJoinAndSelect('emergenciasAsignadas.voluntario', 'voluntario')
+      .leftJoinAndSelect('voluntario.persona', 'persona')
       .leftJoinAndSelect('emergenciasAsignadas.emergencia', 'emergencia')
       .paginate(10);
   }

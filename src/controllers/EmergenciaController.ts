@@ -127,19 +127,24 @@ class EmergenciaController {
   static show = async (req: Request, res: Response) => {
     const id: number = Number(req.params.id);
     const emergenciaService = Container.get(EmergenciaService);
-    const tipoVoluntario = await emergenciaService.findById(id);
-    if (!tipoVoluntario) {
+    const emergencia = await emergenciaService.findById(id);
+    if (!emergencia) {
       res.status(404).json({ message: 'Emergencia no encontrada ' });
       return;
     }
-    res.status(200).send(tipoVoluntario);
+    const { ...rest} = emergencia;
+    res.status(200).send({
+      ...rest,
+      emergenciaInicio: rest.emergenciaInicio.toISOString().substring(8, 10) + '/' + rest.emergenciaInicio.toISOString().substring(5, 7) + '/' + rest.emergenciaInicio.toISOString().substring(0, 4),
+      emergenciaFinal: rest.emergenciaFinal.toISOString().substring(8, 10) + '/' + rest.emergenciaFinal.toISOString().substring(5, 7) + '/' + rest.emergenciaFinal.toISOString().substring(0, 4),
+    });
   }
 
   static destroy = async (req: Request, res: Response) => {
     const emergenciaService = Container.get(EmergenciaService);
     const id: number = Number(req.params.id);
-    const tipoVoluntario = await emergenciaService.findById(id);
-    if (!tipoVoluntario) {
+    const emergencia = await emergenciaService.findById(id);
+    if (!emergencia) {
       res.status(404).json({ message: 'Emergencia no encontrada' });
       return;
     }

@@ -25,6 +25,17 @@ class EmergenciaRealizadaController {
     static fetch = async (req: Request, res: Response) => {
         const emergenciaRealizadaService = Container.get(EmergenciaRealizadaService);
         const emergenciasRealizadas = await emergenciaRealizadaService.findAll();
+        let aux = emergenciasRealizadas.data.map(att => {
+            let { ...rest } = att;
+            return {
+                fechaRealizada: rest.fechaRealizada.toISOString().substring(8, 10) + '/' + rest.fechaRealizada.toISOString().substring(5, 7) + '/' + rest.fechaRealizada.toISOString().substring(0, 4),
+                fechaHoraLlamada: rest.fechaHoraLlamada.toISOString().substring(11, 16),
+                ...rest
+            };
+        });
+
+        emergenciasRealizadas.data = aux;
+
         res.status(200).send(emergenciasRealizadas);
     }
 
@@ -34,20 +45,48 @@ class EmergenciaRealizadaController {
 
         const emergenciaRealizada = await emergenciaRealizadaService.findByIdWithRelation(id);
         if (!emergenciaRealizada) {
-            res.status(404).json({ message: 'Estudiante no encontrado ' });
+            res.status(404).json({ message: 'Emergencia Realizada no encontrada ' });
             return;
         }
 
-        res.status(200).send(emergenciaRealizada);
-        
+        const { ...rest } = emergenciaRealizada;
+
+        res.status(200).send({
+            ...rest,
+            id: emergenciaRealizada.id,
+            fechaRealizada: rest.fechaRealizada.toISOString().substring(8, 10) + '/' + rest.fechaRealizada.toISOString().substring(5, 7) + '/' + rest.fechaRealizada.toISOString().substring(0, 4),
+            fechaHoraLlamada: rest.fechaHoraLlamada.toISOString().substring(11, 16),
+            emergenciaPaciente: rest.emergenciaPaciente.map(
+                att => {
+                    let { ...rest } = att;
+                    return {
+                        ...rest,
+                        vehiculoXEmergenciaPaciente: rest.vehiculoXEmergenciaPaciente.map(
+                            att2 => {
+                                let { ...rest2 } = att2;
+                                return {
+                                    ...rest2,
+                                    horaSalida: rest2.horaSalida.toISOString().substring(11, 16),
+                                    horaRegreso: rest2.horaRegreso.toISOString().substring(11, 16),
+                                    voluntario: { 
+                                        ...rest2.voluntario,
+                                        nombreCompuesto: rest2.voluntario.persona.firstName + ' ' + rest2.voluntario.persona.lastName,
+                                    }
+                                }
+                            }
+                        ),
+                    }
+                }),
+        });
+
     }
 
     static store = async (req: Request, res: Response) => {
         const seccionalService = Container.get(SeccionalService);
         const emergenciaRealizadaService = Container.get(EmergenciaRealizadaService);
         const voluntarioService = Container.get(VoluntarioService);
-        const vehiculoService =  Container.get(VehiculoService);
-        const hospitalService =  Container.get(HospitalService);
+        const vehiculoService = Container.get(VehiculoService);
+        const hospitalService = Container.get(HospitalService);
         const emergenciaPacienteService = Container.get(EmergenciaPacienteService);
         const pacienteService = Container.get(PacienteService);
         const emergenciaService = Container.get(EmergenciaService);
@@ -107,8 +146,8 @@ class EmergenciaRealizadaController {
         emergenciaRealizada.ubicacionExacta = ubicacionExacta;
         emergenciaRealizada.telefono = telefono;
         emergenciaRealizada.emisorEmergencia = emisorEmergencia;
-        emergenciaRealizada.fechaRealizada = new Date(fechaRealizada.substring(6,10)+'-'+fechaRealizada.substring(3,5)+'-'+fechaRealizada.substring(0,2));
-        emergenciaRealizada.fechaHoraLlamada = new Date(fechaRealizada.substring(6,10)+'-'+fechaRealizada.substring(3,5)+'-'+fechaRealizada.substring(0,2)+'T'+fechaHoraLlamada+':00');
+        emergenciaRealizada.fechaRealizada = new Date(fechaRealizada.substring(6, 10) + '-' + fechaRealizada.substring(3, 5) + '-' + fechaRealizada.substring(0, 2));
+        emergenciaRealizada.fechaHoraLlamada = new Date(fechaRealizada.substring(6, 10) + '-' + fechaRealizada.substring(3, 5) + '-' + fechaRealizada.substring(0, 2) + 'T' + fechaHoraLlamada + ':00');
         emergenciaRealizada.emergencia = emergencia;
 
         const emergenciaRealizadaErrors = await validate(emergenciaRealizada);
@@ -122,7 +161,7 @@ class EmergenciaRealizadaController {
         try {
             savedEmergenciaRealizada = await emergenciaRealizadaService.create(emergenciaRealizada);
         } catch (error) {
-            res.status(400).json({ message: 'No se pudo crear la emergencia realizada 1'+ error })
+            res.status(400).json({ message: 'No se pudo crear la emergencia realizada 1' + error })
             return;
         }
 
@@ -131,43 +170,60 @@ class EmergenciaRealizadaController {
             return;
         }
 
-        for(const seccional of seccionales){
+        for (const seccional of seccionales) {
             const emergenciaSeccional = new EmergenciaSeccional();
-            emergenciaSeccional.fechaInicio = new Date(fechaRealizada.substring(6,10)+'-'+fechaRealizada.substring(3,5)+'-'+fechaRealizada.substring(0,2));
+            emergenciaSeccional.fechaInicio = new Date(fechaRealizada.substring(6, 10) + '-' + fechaRealizada.substring(3, 5) + '-' + fechaRealizada.substring(0, 2));
             emergenciaSeccional.seccional = seccional;
             emergenciaSeccional.emergenciaRealizada = savedEmergenciaRealizada;
             await emergenciaSeccionalService.create(emergenciaSeccional);
         }
 
-        for(const voluntario of voluntarios){
+        for (const voluntario of voluntarios) {
             let aux = voluntario.emergenciasRealizadas;
-            if(aux){
+            if (aux) {
                 aux.push(savedEmergenciaRealizada);
             }
-            else{
+            else {
                 aux = [];
                 aux.push(savedEmergenciaRealizada);
             }
             voluntario.emergenciasRealizadas = aux;
             await voluntarioService.update(voluntario);
         }
-        
 
-        for(const pacienteVehiculoHospitalAux of pacienteVehiculoHospital){
+
+        for (const pacienteVehiculoHospitalAux of pacienteVehiculoHospital) {
             const paciente = new Paciente();
             const persona = new Persona();
 
             persona.estadoPersona = true;
+            (pacienteVehiculoHospitalAux.firstName > '') ? persona.firstName = pacienteVehiculoHospitalAux.firstName : "";
+            (pacienteVehiculoHospitalAux.lastName > '') ? persona.lastName = pacienteVehiculoHospitalAux.lastName : "";
+            (pacienteVehiculoHospitalAux.genero > '') ? persona.genero = pacienteVehiculoHospitalAux.genero : "";
+            (pacienteVehiculoHospitalAux.documentoIdentificacion > '') ? persona.documentoIdentificacion = pacienteVehiculoHospitalAux.documentoIdentificacion : "";
+            (pacienteVehiculoHospitalAux.tipoDocumentoPersona > '') ? persona.tipoDocumentoPersona = pacienteVehiculoHospitalAux.tipoDocumentoPersona : "";
+            persona.estadoPersona = pacienteVehiculoHospitalAux.estadoPersona;
+            paciente.menorEdad = pacienteVehiculoHospitalAux.menorEdad;
+            (pacienteVehiculoHospitalAux.alergias > '') ? paciente.alergias = pacienteVehiculoHospitalAux.alergias : "";
+            paciente.identificado = pacienteVehiculoHospitalAux.identificado;
             paciente.persona = persona;
-    
+
             const personErrors = await validate(persona);
-    
+
             if (personErrors.length > 0) {
                 res.status(400).send(personErrors);
                 return;
             }
             const emergenciaPaciente = new EmergenciaPaciente();
             emergenciaPaciente.paciente = paciente;
+            pacienteVehiculoHospitalAux.tratamientosRealizados ? emergenciaPaciente.tratamientosRealizados = pacienteVehiculoHospitalAux.tratamientosRealizados : "";
+            pacienteVehiculoHospitalAux.diagnostico ? emergenciaPaciente.diagnostico = pacienteVehiculoHospitalAux.diagnostico : "";
+            pacienteVehiculoHospitalAux.prendaSuperior ? emergenciaPaciente.prendaSuperior = pacienteVehiculoHospitalAux.prendaSuperior : "";
+            pacienteVehiculoHospitalAux.prendaInferior ? emergenciaPaciente.prendaInferior = pacienteVehiculoHospitalAux.prendaInferior : "";
+            pacienteVehiculoHospitalAux.calzado ? emergenciaPaciente.calzado = pacienteVehiculoHospitalAux.calzado : "";
+            pacienteVehiculoHospitalAux.estatura ? emergenciaPaciente.estatura = pacienteVehiculoHospitalAux.estatura : "";
+            pacienteVehiculoHospitalAux.peloColorEstilo ? emergenciaPaciente.peloColorEstilo = pacienteVehiculoHospitalAux.peloColorEstilo : "";
+            pacienteVehiculoHospitalAux.comentarioSenialEspecial ? emergenciaPaciente.comentarioSenialEspecial = pacienteVehiculoHospitalAux.comentarioSenialEspecial : "";
 
             const vehiculoXemergenciaPaciente = new VehiculoXEmergenciaPaciente();
             const voluntario = await voluntarioService.findById(pacienteVehiculoHospitalAux.voluntarioId);
@@ -184,13 +240,13 @@ class EmergenciaRealizadaController {
                 vehiculoXemergenciaPaciente.hospital = hospital;
             }
 
-            paciente.fechaCreacion = new Date(fechaRealizada.substring(6,10)+'-'+fechaRealizada.substring(3,5)+'-'+fechaRealizada.substring(0,2));
+            paciente.fechaCreacion = new Date(fechaRealizada.substring(6, 10) + '-' + fechaRealizada.substring(3, 5) + '-' + fechaRealizada.substring(0, 2));
             const savedPaciente = await pacienteService.create(paciente);
 
             emergenciaPaciente.paciente = savedPaciente;
             emergenciaPaciente.emergenciaRealizada = savedEmergenciaRealizada;
-            vehiculoXemergenciaPaciente.horaSalida = new Date(fechaRealizada.substring(6,10)+'-'+fechaRealizada.substring(3,5)+'-'+fechaRealizada.substring(0,2)+'T'+pacienteVehiculoHospitalAux.horaSalida+':00');
-            vehiculoXemergenciaPaciente.horaRegreso = new Date(fechaRealizada.substring(6,10)+'-'+fechaRealizada.substring(3,5)+'-'+fechaRealizada.substring(0,2)+'T'+pacienteVehiculoHospitalAux.horaRegreso+':00');
+            vehiculoXemergenciaPaciente.horaSalida = new Date(fechaRealizada.substring(6, 10) + '-' + fechaRealizada.substring(3, 5) + '-' + fechaRealizada.substring(0, 2) + 'T' + pacienteVehiculoHospitalAux.horaSalida + ':00');
+            vehiculoXemergenciaPaciente.horaRegreso = new Date(fechaRealizada.substring(6, 10) + '-' + fechaRealizada.substring(3, 5) + '-' + fechaRealizada.substring(0, 2) + 'T' + pacienteVehiculoHospitalAux.horaRegreso + ':00');
 
             let auxArray: VehiculoXEmergenciaPaciente[] = [];
             auxArray.push(vehiculoXemergenciaPaciente);
@@ -203,7 +259,7 @@ class EmergenciaRealizadaController {
                 res.status(400).json({ message: 'No se pudo crear la emergencia realizada 3' })
                 return;
             }
-            
+
         }
 
         res.status(201).send('Emergencia realizada creada correctamente ');

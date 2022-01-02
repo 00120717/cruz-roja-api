@@ -90,6 +90,7 @@ class EmergenciaAsignadaController {
     const emergenciaAsignada = await emergenciasAsignadasService.findById(id);
     if (!emergenciaAsignada) {
       res.status(404).json({ message: 'Usuario no encontrado ' })
+      return;
     }
 
     await emergenciasAsignadasService.delete(id);

@@ -3,7 +3,6 @@ import CuerpoFilialController from "../../../controllers/CuerpoFilialController"
 
 const router: Router = Router();
 
-//TODO: implement role and permission middleware
 router.post('/', CuerpoFilialController.store);
 router.get('/', CuerpoFilialController.fetch);
 router.get('/list', CuerpoFilialController.list)

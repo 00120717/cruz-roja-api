@@ -3,7 +3,6 @@ import TipoVoluntarioController from "../../../controllers/TipoVoluntarioControl
 
 const router: Router = Router();
 
-//TODO: implement role and permission middleware
 router.post('/', TipoVoluntarioController.store);
 router.get('/', TipoVoluntarioController.fetch);
 router.get('/list', TipoVoluntarioController.list)

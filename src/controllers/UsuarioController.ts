@@ -50,12 +50,8 @@ class UsuarioController {
     const roleService = Container.get(RolService);
     
     const {
-            documentoIdentificacion,
-            tipoDocumentoPersona,
-            fechaNacimiento,
             contrasenia,
             username,
-            genero,
             firstName,
             lastName,
             email,
@@ -63,12 +59,8 @@ class UsuarioController {
             sedeId,
             rolId,
         }: {
-            documentoIdentificacion: string,
-            tipoDocumentoPersona: string,
-            fechaNacimiento: string,
             contrasenia: string,
             username: string,
-            genero: string,
             email: string,
             firstName: string,
             lastName: string,
@@ -91,15 +83,11 @@ class UsuarioController {
 
     const persona = new Persona();
     persona.username = username;
-    persona.documentoIdentificacion = documentoIdentificacion;
-    persona.tipoDocumentoPersona = tipoDocumentoPersona;
     persona.firstName = firstName;
     persona.lastName = lastName;
     persona.estadoPersona = estadoPersona;
-    persona.genero = genero;
     persona.email = email;
-    persona.fechaNacimiento = new Date(fechaNacimiento.substring(6,10)+'-'+fechaNacimiento.substring(3,5)+'-'+fechaNacimiento.substring(0,2));
-
+    
     const personErrors = await validate(persona);
 
     if (personErrors.length > 0) {
@@ -143,12 +131,8 @@ class UsuarioController {
     const id = Number(req.params.id);
 
     const {
-      documentoIdentificacion,
-      tipoDocumentoPersona,
-      fechaNacimiento,
       contrasenia,
       username,
-      genero,
       firstName,
       lastName,
       email,
@@ -156,12 +140,8 @@ class UsuarioController {
       sedeId,
       rolId,
   }: {
-      documentoIdentificacion: string,
-      tipoDocumentoPersona: string,
-      fechaNacimiento: string,
       contrasenia: string,
       username: string,
-      genero: string,
       email: string,
       firstName: string,
       lastName: string,
@@ -189,14 +169,10 @@ class UsuarioController {
     }
 
     user.persona.username = username;
-    user.persona.documentoIdentificacion = documentoIdentificacion;
-    user.persona.tipoDocumentoPersona = tipoDocumentoPersona;
     user.persona.firstName = firstName;
     user.persona.lastName = lastName;
     user.persona.estadoPersona = estadoPersona;
-    user.persona.genero = genero;
     user.persona.email = email;
-    user.persona.fechaNacimiento = new Date(fechaNacimiento.substring(6,10)+'-'+fechaNacimiento.substring(3,5)+'-'+fechaNacimiento.substring(0,2));
 
     //Validate person entity
     const personErrors = await validate(user.persona);

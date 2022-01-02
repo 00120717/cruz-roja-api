@@ -8,42 +8,45 @@ import { PaginationAwareObject } from "typeorm-pagination/dist/helpers/paginatio
 export class PacienteService {
   constructor(
     @InjectRepository(Paciente)
-    protected seccionalRepository: Repository<Paciente>
+    protected pacienteRepository: Repository<Paciente>
   ) { }
 
-  public async findById(id: number): Promise<Paciente | undefined> {
-    return await this.seccionalRepository
-    .createQueryBuilder('seccional')
-    .where('seccional.id = :id', { id })
+  public async findById(id: string): Promise<Paciente | undefined> {
+    return await this.pacienteRepository
+    .createQueryBuilder('paciente')
+    .leftJoinAndSelect('paciente.persona', 'persona')
+    .where('paciente.id = :id', { id })
     .getOne();
   }
 
-  public async findByIds(ids: Array<number>): Promise<Paciente[]> {
-    return await this.seccionalRepository.findByIds(ids);
+  public async findByIds(ids: Array<string>): Promise<Paciente[]> {
+    return await this.pacienteRepository.findByIds(ids);
   }
 
   public async findAll(): Promise<PaginationAwareObject> {
-    return await this.seccionalRepository
-      .createQueryBuilder('seccional')
-      .orderBy('seccional.id', 'ASC')
+    return await this.pacienteRepository
+      .createQueryBuilder('paciente')
+      .leftJoinAndSelect('paciente.persona', 'persona')
+      .orderBy('paciente.id', 'ASC')
       .paginate(10);
   }
 
   public async listAll(): Promise<Paciente[]> {
-    return await this.seccionalRepository
-        .createQueryBuilder('seccional')
+    return await this.pacienteRepository
+        .createQueryBuilder('paciente')
+        .leftJoinAndSelect('paciente.persona', 'persona')
         .getMany()
   }
 
-  public async create(seccional: Paciente): Promise<Paciente> {
-    return await this.seccionalRepository.save(seccional);
+  public async create(paciente: Paciente): Promise<Paciente> {
+    return await this.pacienteRepository.save(paciente);
   }
 
   public async update(updateSeccional: Paciente): Promise<UpdateResult> {
-    return await this.seccionalRepository.update(updateSeccional.id, updateSeccional);
+    return await this.pacienteRepository.update(updateSeccional.id, updateSeccional);
   }
 
-  public async delete(id: number): Promise<DeleteResult> {
-    return await this.seccionalRepository.delete(id);
+  public async delete(id: string): Promise<DeleteResult> {
+    return await this.pacienteRepository.delete(id);
   }
 }

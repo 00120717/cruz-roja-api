@@ -3,7 +3,6 @@ import EmergenciaController from "../../../controllers/EmergenciaController";
 
 const router: Router = Router();
 
-//TODO: implement role and permission middleware
 router.post('/', EmergenciaController.store);
 router.get('/', EmergenciaController.fetch);
 router.get('/list', EmergenciaController.list)

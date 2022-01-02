@@ -3,7 +3,6 @@ import TipoEmergenciaController from "../../../controllers/TipoEmergenciaControl
 
 const router: Router = Router();
 
-//TODO: implement role and permission middleware
 router.post('/', TipoEmergenciaController.store);
 router.get('/', TipoEmergenciaController.fetch);
 router.get('/list', TipoEmergenciaController.list)

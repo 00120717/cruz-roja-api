@@ -3,7 +3,6 @@ import HospitalController from "../../../controllers/HospitalController";
 
 const router: Router = Router();
 
-//TODO: implement role and permission middleware
 router.post('/', HospitalController.store);
 router.get('/', HospitalController.fetch);
 router.get('/list', HospitalController.list)

@@ -3,7 +3,6 @@ import EstadoController from "../../../controllers/EstadoController";
 
 const router: Router = Router();
 
-//TODO: implement role and permission middleware
 router.post('/', EstadoController.store);
 router.get('/', EstadoController.fetch);
 router.get('/list', EstadoController.list)

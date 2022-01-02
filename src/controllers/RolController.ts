@@ -19,29 +19,28 @@ class RolController {
   }
 
   static store = async (req: Request, res: Response) => {
-    const permissionService = Container.get(PermisoService);
+    const permisoService = Container.get(PermisoService);
     const roleService = Container.get(RolService);
     const {
-      name,
-      type,
-      permissionId
+      nombre,
+      tipo,
+      permisoId
     }: {
-      name: string;
-      type: string;
-      permissionId: Array<number>
+      nombre: string;
+      tipo: string;
+      permisoId: Array<number>
     } = req.body;
 
-    //Getting permissionInformation
-    const permissions = await permissionService.findByIds(permissionId);
-    if (type === 'tutor' && (!permissions || permissions.length <= 0)) {
+    const permisos = await permisoService.findByIds(permisoId);
+    if (tipo === 'tutor' && (!permisos || permisos.length <= 0)) {
       res.status(400).json({ message: 'No se puede asignar un rol sin permisos' })
       return;
     }
 
     const role = new Rol();
-    role.nombre = name;
-    role.tipo = type;
-    role.permisos = permissions;
+    role.nombre = nombre;
+    role.tipo = tipo;
+    role.permisos = permisos;
 
     const roleErrors = await validate(role);
     if (roleErrors.length > 0) {
@@ -60,11 +59,11 @@ class RolController {
   }
 
   static update = async (req: Request, res: Response) => {
-    const permissionService = Container.get(PermisoService);
+    const permisoService = Container.get(PermisoService);
     const roleService = Container.get(RolService);
     const id = Number(req.params.id);
 
-    const { name, type, permissionId }: { name: string, type: string, permissionId: Array<number> } = req.body;
+    const { nombre, tipo, permisoId }: { nombre: string, tipo: string, permisoId: Array<number> } = req.body;
 
     const role = await roleService.findByIdWithRelations(id);
     if (!role) {
@@ -72,20 +71,17 @@ class RolController {
       return;
     }
 
-    console.log('Role: ', role);
-    console.log('Role Permission: ', role.permisos);
-
-    const permissions = await permissionService.findByIds(permissionId);
-    if (type === 'tutor' && (!permissions || permissions.length <= 0)) {
+    const permisos = await permisoService.findByIds(permisoId);
+    if (tipo === 'tutor' && (!permisos || permisos.length <= 0)) {
       res.status(400).json({ message: 'No se puede asiginar un rol sin permisos ' });
       return;
     }
 
-    console.log('New permissions: ', permissions);
+    console.log('New permisos: ', permisos);
 
-    role.nombre = name;
-    role.tipo = type;
-    role.permisos = permissions;
+    role.nombre = nombre;
+    role.tipo = tipo;
+    role.permisos = permisos;
 
     const roleErrors = await validate(role);
     if (roleErrors.length > 0) {

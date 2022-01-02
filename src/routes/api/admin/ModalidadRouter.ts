@@ -3,7 +3,6 @@ import ModalidadController from "../../../controllers/ModalidadController";
 
 const router: Router = Router();
 
-//TODO: implement role and permission middleware
 router.post('/', ModalidadController.store);
 router.get('/', ModalidadController.fetch);
 router.get('/list', ModalidadController.list)

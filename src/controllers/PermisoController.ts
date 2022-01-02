@@ -6,33 +6,33 @@ import Container from "typedi"
 
 class PermisoController {
   static fetch = async (req: Request, res: Response) => {
-    const permissionService = Container.get(PermisoService);
-    const permissions = await permissionService.findAll();
-    res.status(200).send(permissions);
+    const permisoService = Container.get(PermisoService);
+    const permisos = await permisoService.findAll();
+    res.status(200).send(permisos);
   }
 
   static list = async (req: Request, res: Response) => {
-    const permissionService = Container.get(PermisoService);
-    const permissions = await permissionService.listAll();
-    res.status(200).send(permissions);
+    const permisoService = Container.get(PermisoService);
+    const permisos = await permisoService.listAll();
+    res.status(200).send(permisos);
   }
 
   static store = async (req: Request, res: Response) => {
-    const permissionService = Container.get(PermisoService);
+    const permisoService = Container.get(PermisoService);
     const { name }: { name: string } = req.body;
 
-    const permission = new Permiso();
+    const permiso = new Permiso();
 
-    permission.nombre = name;
+    permiso.nombre = name;
 
-    const permissionErrors = await validate(permission);
-    if (permissionErrors.length > 0) {
-      res.status(400).send(permissionErrors);
+    const permisoErrors = await validate(permiso);
+    if (permisoErrors.length > 0) {
+      res.status(400).send(permisoErrors);
       return;
     }
 
     try {
-      await permissionService.create(permission);
+      await permisoService.create(permiso);
     } catch (e) {
       res.status(400).json({ message: 'No se pudo crear el permiso' });
       return;
@@ -42,27 +42,27 @@ class PermisoController {
   }
 
   static update = async (req: Request, res: Response) => {
-    const permissionService = Container.get(PermisoService);
+    const permisoService = Container.get(PermisoService);
     const id = +req.params.id;
 
     const { name }: { name: string } = req.body;
 
-    const permission = await permissionService.findById(id);
-    if (!permission) {
+    const permiso = await permisoService.findById(id);
+    if (!permiso) {
       res.status(404).json({ message: 'Permiso no encontrado' })
       return;
     }
 
-    permission.nombre = name;
+    permiso.nombre = name;
 
-    const permissionErrors = await validate(permission);
-    if (permissionErrors.length > 0) {
-      res.status(400).send(permissionErrors);
+    const permisoErrors = await validate(permiso);
+    if (permisoErrors.length > 0) {
+      res.status(400).send(permisoErrors);
       return;
     }
 
     try {
-      await permissionService.update(permission);
+      await permisoService.update(permiso);
     } catch (e) {
       res.status(400).json({ message: 'No se pudo actualizar el permiso' });
     }
@@ -71,27 +71,27 @@ class PermisoController {
   }
 
   static show = async (req: Request, res: Response) => {
-    const permissionService = Container.get(PermisoService);
+    const permisoService = Container.get(PermisoService);
     const id = +req.params.id;
 
-    const permission = await permissionService.findById(id);
-    if (!permission) {
+    const permiso = await permisoService.findById(id);
+    if (!permiso) {
       res.status(404).json({ message: 'Permiso no encontrado' });
     }
 
-    res.status(200).send(permission);
+    res.status(200).send(permiso);
   }
 
   static destroy = async (req: Request, res: Response) => {
-    const permissionService = Container.get(PermisoService);
+    const permisoService = Container.get(PermisoService);
     const id = +req.params.id;
 
-    const permission = await permissionService.findById(id);
-    if (!permission) {
+    const permiso = await permisoService.findById(id);
+    if (!permiso) {
       res.status(404).json({ message: 'Permiso no encontrado ' });
     }
 
-    await permissionService.delete(id);
+    await permisoService.delete(id);
     res.status(204).send();
   }
 }

@@ -3,7 +3,6 @@ import VehiculoController from "../../../controllers/VehiculoController";
 
 const router: Router = Router();
 
-//TODO: implement role and permission middleware
 router.post('/', VehiculoController.store);
 router.get('/', VehiculoController.fetch);
 router.get('/list', VehiculoController.list)
