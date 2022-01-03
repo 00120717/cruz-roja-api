@@ -44,6 +44,44 @@ export class VoluntarioService {
         .getMany();
   }
 
+  public async findAllSede(): Promise<Voluntario[]> {
+    return await this.voluntarioRepository
+      .createQueryBuilder('voluntario')
+      .leftJoinAndSelect('voluntario.persona', 'persona')
+      .leftJoinAndSelect('voluntario.sede', 'sede')
+      .leftJoinAndSelect('sede.departamentoXmunicipio', 'departamentoXmunicipio')
+      .leftJoinAndSelect('departamentoXmunicipio.municipio', 'municipio')
+      .leftJoinAndSelect('departamentoXmunicipio.departamento', 'departamento')
+      .leftJoinAndSelect('voluntario.tipoVoluntario', 'tipoVoluntario')
+      .leftJoinAndSelect('voluntario.cuerpoFilial', 'cuerpoFilial')
+      .leftJoinAndSelect('voluntario.estado', 'estado')
+      .leftJoinAndSelect('voluntario.modalidad', 'modalidad')
+      .orderBy('sede.id','ASC')
+      .addOrderBy('persona.estadoPersona','DESC')
+      .addOrderBy('persona.firstName','ASC')
+      .addOrderBy('persona.lastName','ASC')
+      .getMany();
+  }
+
+  public async findAllCuerpoFilial(): Promise<Voluntario[]> {
+    return await this.voluntarioRepository
+      .createQueryBuilder('voluntario')
+      .leftJoinAndSelect('voluntario.persona', 'persona')
+      .leftJoinAndSelect('voluntario.sede', 'sede')
+      .leftJoinAndSelect('sede.departamentoXmunicipio', 'departamentoXmunicipio')
+      .leftJoinAndSelect('departamentoXmunicipio.municipio', 'municipio')
+      .leftJoinAndSelect('departamentoXmunicipio.departamento', 'departamento')
+      .leftJoinAndSelect('voluntario.tipoVoluntario', 'tipoVoluntario')
+      .leftJoinAndSelect('voluntario.cuerpoFilial', 'cuerpoFilial')
+      .leftJoinAndSelect('voluntario.estado', 'estado')
+      .leftJoinAndSelect('voluntario.modalidad', 'modalidad')
+      .orderBy('cuerpoFilial.id','ASC')
+      .addOrderBy('persona.estadoPersona','DESC')
+      .addOrderBy('persona.firstName','ASC')
+      .addOrderBy('persona.lastName','ASC')
+      .getMany();
+  }
+
   public async findByCode(code: string): Promise<Voluntario | undefined> {
     return await this.voluntarioRepository
       .createQueryBuilder('voluntario')
@@ -73,7 +111,7 @@ export class VoluntarioService {
       .leftJoinAndSelect('voluntario.tipoVoluntario', 'tipoVoluntario')
       .leftJoinAndSelect('voluntario.cuerpoFilial', 'cuerpoFilial')
       .leftJoinAndSelect('voluntario.estado', 'estado')
-      .leftJoinAndSelect('voluntario.modalidad', 'modalidad')//faltan las tablas nxn
+      .leftJoinAndSelect('voluntario.modalidad', 'modalidad')
       .getOne();
   }
 
@@ -141,29 +179,9 @@ export class VoluntarioService {
     .getRawOne();
   }
 
-  public async findByIdWithNotesRelations(id: string): Promise<Voluntario | undefined> {
-    return await this.voluntarioRepository
-      .createQueryBuilder('voluntario')
-      //.select('voluntario','voluntario')
-      //.addSelect('SUM(voluntario.aniosServicio)','aniosServicio2')
-      .where('voluntario.id = :id', { id })
-      .leftJoinAndSelect('voluntario.persona', 'persona')
-      .leftJoinAndSelect('voluntario.sede', 'sede')
-      .leftJoinAndSelect('sede.departamentoXmunicipio', 'departamentoXmunicipio')
-      .leftJoinAndSelect('departamentoXmunicipio.municipio', 'municipio')
-      .leftJoinAndSelect('departamentoXmunicipio.departamento', 'departamento')
-      .leftJoinAndSelect('voluntario.tipoVoluntario', 'tipoVoluntario')
-      .leftJoinAndSelect('voluntario.cuerpoFilial', 'cuerpoFilial')
-      .leftJoinAndSelect('voluntario.estado', 'estado')
-      .leftJoinAndSelect('voluntario.modalidad', 'modalidad')
-      .getOne();
-  }
-
   public async findAll(): Promise<PaginationAwareObject> {
     return await this.voluntarioRepository
       .createQueryBuilder('voluntario')
-      //.select('voluntario','voluntario')
-      //.addSelect('SUM(voluntario.aniosServicio)','aniosServicio2')
       .leftJoinAndSelect('voluntario.persona', 'persona')
       .leftJoinAndSelect('voluntario.sede', 'sede')
       .leftJoinAndSelect('sede.departamentoXmunicipio', 'departamentoXmunicipio')

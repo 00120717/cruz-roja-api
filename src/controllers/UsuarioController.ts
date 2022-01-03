@@ -4,7 +4,6 @@ import { Usuario } from '../entities/Usuario';
 import { Persona } from '../entities/Persona';
 import { RolService } from '../services/RolService';
 import { SedeService } from '../services/SedeService';
-//import { SubjectService } from '../services/SubjectService';
 import { UsuarioService } from '../services/UsuarioService';
 import { Container } from "typedi";
 
@@ -47,7 +46,7 @@ class UsuarioController {
   static store = async (req: Request, res: Response) => {
     const usuarioService = Container.get(UsuarioService);
     const sedeService = Container.get(SedeService);
-    const roleService = Container.get(RolService);
+    const rolService = Container.get(RolService);
     
     const {
             contrasenia,
@@ -69,7 +68,7 @@ class UsuarioController {
             rolId: number,
         } = req.body;
 
-    const role = await roleService.findById(rolId);
+    const role = await rolService.findById(rolId);
     if (!role) {
       res.status(400).json({ message: 'El rol que intenta asignar no existe' });
       return;
@@ -127,7 +126,7 @@ class UsuarioController {
   static update = async (req: Request, res: Response) => {
     const usuarioService = Container.get(UsuarioService);
     const sedeService = Container.get(SedeService);
-    const roleService = Container.get(RolService);
+    const rolService = Container.get(RolService);
     const id = Number(req.params.id);
 
     const {
@@ -156,7 +155,7 @@ class UsuarioController {
       return;
     }
 
-    const role = await roleService.findById(rolId);
+    const role = await rolService.findById(rolId);
     if (!role) {
       res.status(400).json({ message: 'El rol que intenta asignar no existe' });
       return;

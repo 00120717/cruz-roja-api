@@ -8,11 +8,6 @@ const router: Router = Router();
 
 router.use('/admin', AdminRouter);
 router.use('/auth', AuthRouter);
-//router.get('/student/notes', [checkStudentJWT, checkStudentCode], StudentController.showByCode);
-//router.get('/student/me', [checkStudentJWT, checkStudentCode], StudentController.me);
-//router.post('/student/contact', [checkStudentJWT, checkStudentCode], StudentController.updateContact);
-router.get('/sede-information', SedeController.sedeInformation);
-//router.get('/modules', ModuleController.list);
-//router.post('/enrollment', StudentController.studentInformation);a
+router.get('/sede-informacion', SedeController.sedeInformation);
 
 export default router;

@@ -7,20 +7,20 @@ import { Container } from "typedi";
 
 class RolController {
   static fetch = async (req: Request, res: Response) => {
-    const roleService = Container.get(RolService);
-    const roles = await roleService.findAll();
+    const rolService = Container.get(RolService);
+    const roles = await rolService.findAll();
     res.status(200).send(roles);
   }
 
   static list = async (req: Request, res: Response) => {
-    const roleService = Container.get(RolService);
-    const roles = await roleService.listAll();
+    const rolService = Container.get(RolService);
+    const roles = await rolService.listAll();
     res.status(200).send(roles);
   }
 
   static store = async (req: Request, res: Response) => {
     const permisoService = Container.get(PermisoService);
-    const roleService = Container.get(RolService);
+    const rolService = Container.get(RolService);
     const {
       nombre,
       tipo,
@@ -49,7 +49,7 @@ class RolController {
     }
 
     try {
-      await roleService.create(role);
+      await rolService.create(role);
     } catch (e) {
       res.status(400).json({ message: 'No se pudo crear el rol ' });
       return;
@@ -60,12 +60,12 @@ class RolController {
 
   static update = async (req: Request, res: Response) => {
     const permisoService = Container.get(PermisoService);
-    const roleService = Container.get(RolService);
+    const rolService = Container.get(RolService);
     const id = Number(req.params.id);
 
     const { nombre, tipo, permisoId }: { nombre: string, tipo: string, permisoId: Array<number> } = req.body;
 
-    const role = await roleService.findByIdWithRelations(id);
+    const role = await rolService.findByIdWithRelations(id);
     if (!role) {
       res.status(404).json({ message: 'Rol no encontrado' })
       return;
@@ -90,7 +90,7 @@ class RolController {
     }
 
     try {
-      await roleService.update(role);
+      await rolService.update(role);
     } catch (e) {
       res.status(400).json({ message: 'No se pudo actualizar el rol ' });
       return;
@@ -100,10 +100,10 @@ class RolController {
   }
 
   static show = async (req: Request, res: Response) => {
-    const roleService = Container.get(RolService);
+    const rolService = Container.get(RolService);
     const id: number = Number(req.params.id);
 
-    const role = await roleService.findByIdWithRelations(id);
+    const role = await rolService.findByIdWithRelations(id);
     if (!role) {
       res.status(404).json({ message: 'Rol no encontrado ' });
       return;
@@ -112,15 +112,15 @@ class RolController {
   }
 
   static destroy = async (req: Request, res: Response) => {
-    const roleService = Container.get(RolService);
+    const rolService = Container.get(RolService);
     const id: number = Number(req.params.id);
 
-    const role = await roleService.findById(id);
+    const role = await rolService.findById(id);
     if (!role) {
       res.status(404).json({ message: 'Rol no encontrado' })
     }
 
-    await roleService.delete(id);
+    await rolService.delete(id);
     res.status(204).send();
   }
 }

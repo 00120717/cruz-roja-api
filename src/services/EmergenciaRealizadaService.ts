@@ -47,6 +47,34 @@ export class EmergenciaRealizadaService {
       .where('emergenciaRealizada.id = :id', { id })
       .getOne();
   }
+
+  public async findByIdTipo(id: number, fechaInicio: string, fechaFin: string): Promise<EmergenciaRealizada[]> {
+    return await this.emergenciaRealizadaRepository
+      .createQueryBuilder('emergenciaRealizada')
+      .leftJoinAndSelect('emergenciaRealizada.emergencia', 'emergencia')
+      .leftJoinAndSelect('emergencia.tipoEmergencia', 'tipoEmergencia')
+      .leftJoinAndSelect('emergenciaRealizada.voluntarios', 'voluntarios')
+      .leftJoinAndSelect('emergenciaRealizada.emergenciaPaciente', 'emergenciaPaciente')
+      .leftJoinAndSelect('voluntarios.persona', 'persona')
+      .leftJoinAndSelect('voluntarios.sede', 'sede')
+      .leftJoinAndSelect('emergenciaPaciente.vehiculoXEmergenciaPaciente', 'vehiculoXEmergenciaPaciente')
+      .leftJoinAndSelect('emergenciaPaciente.paciente', 'paciente')
+      .leftJoinAndSelect('paciente.persona', 'personaPaciente')
+      .leftJoinAndSelect('vehiculoXEmergenciaPaciente.vehiculo', 'vehiculo')
+      .leftJoinAndSelect('vehiculoXEmergenciaPaciente.hospital', 'hospital')
+      .leftJoinAndSelect('vehiculoXEmergenciaPaciente.voluntario', 'voluntario')
+      .leftJoinAndSelect('emergenciaRealizada.emergenciaSeccional', 'emergenciaSeccional')
+      .leftJoinAndSelect('emergenciaSeccional.seccional', 'seccional')
+      .leftJoinAndSelect('seccional.departamentoXmunicipio', 'departamentoXmunicipio')
+      .leftJoinAndSelect('departamentoXmunicipio.departamento', 'departamento')
+      .leftJoinAndSelect('departamentoXmunicipio.municipio', 'municipio')
+      .where('tipoEmergencia.id = :id', { id })
+      .andWhere('emergenciaRealizada.fechaRealizada >= :fechaInicio', { fechaInicio })
+      .andWhere('emergenciaRealizada.fechaRealizada <= :fechaFin', { fechaFin })
+      .orderBy('sede.id','ASC')
+      .getMany();
+  }
+
   public async findByIdUbicacion(id: number, fechaInicio: string, fechaFin: string): Promise<EmergenciaRealizada[]> {
     return await this.emergenciaRealizadaRepository
       .createQueryBuilder('emergenciaRealizada')
@@ -66,8 +94,29 @@ export class EmergenciaRealizadaService {
       .leftJoinAndSelect('departamentoXmunicipio.departamento', 'departamento')
       .leftJoinAndSelect('departamentoXmunicipio.municipio', 'municipio')
       .where('departamentoXmunicipio.id = :id', { id })
-      .andWhere('fechaRealizada >= :fechaInicio', { fechaInicio })
-      .andWhere('fechaRealizada <= :fechaFin', { fechaFin })
+      .andWhere('emergenciaRealizada.fechaRealizada >= :fechaInicio', { fechaInicio })
+      .andWhere('emergenciaRealizada.fechaRealizada <= :fechaFin', { fechaFin })
+      .getMany();
+  }
+
+  public async findAllReportes(): Promise<EmergenciaRealizada[]> {
+    return await this.emergenciaRealizadaRepository
+      .createQueryBuilder('emergenciaRealizada')
+      .leftJoinAndSelect('emergenciaRealizada.emergencia', 'emergencia')
+      .leftJoinAndSelect('emergenciaRealizada.voluntarios', 'voluntarios')
+      .leftJoinAndSelect('emergenciaRealizada.emergenciaPaciente', 'emergenciaPaciente')
+      .leftJoinAndSelect('voluntarios.persona', 'persona')
+      .leftJoinAndSelect('emergenciaPaciente.vehiculoXEmergenciaPaciente', 'vehiculoXEmergenciaPaciente')
+      .leftJoinAndSelect('emergenciaPaciente.paciente', 'paciente')
+      .leftJoinAndSelect('paciente.persona', 'personaPaciente')
+      .leftJoinAndSelect('vehiculoXEmergenciaPaciente.vehiculo', 'vehiculo')
+      .leftJoinAndSelect('vehiculoXEmergenciaPaciente.hospital', 'hospital')
+      .leftJoinAndSelect('vehiculoXEmergenciaPaciente.voluntario', 'voluntario')
+      .leftJoinAndSelect('emergenciaRealizada.emergenciaSeccional', 'emergenciaSeccional')
+      .leftJoinAndSelect('emergenciaSeccional.seccional', 'seccional')
+      .leftJoinAndSelect('seccional.departamentoXmunicipio', 'departamentoXmunicipio')
+      .leftJoinAndSelect('departamentoXmunicipio.departamento', 'departamento')
+      .leftJoinAndSelect('departamentoXmunicipio.municipio', 'municipio')
       .getMany();
   }
 

@@ -14,6 +14,7 @@ export class RolService {
   public async findById(id: number): Promise<Rol | undefined> {
     return await this.rolRepository.createQueryBuilder('rol')
         .where('rol.id = :id', { id })
+        .leftJoinAndSelect('rol.permisos', 'permisos')
         .getOne();
   }
 
@@ -35,6 +36,7 @@ export class RolService {
   public async listAll(): Promise<Rol[]> {
     return await this.rolRepository
         .createQueryBuilder('rol')
+        .leftJoinAndSelect('rol.permisos', 'permisos')
         .getMany();
   }
 

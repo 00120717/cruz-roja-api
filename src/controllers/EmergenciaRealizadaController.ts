@@ -39,8 +39,45 @@ class EmergenciaRealizadaController {
         res.status(200).send(emergenciasRealizadas);
     }
 
+    static listFechaUbicacion = async (req: Request, res: Response) => {
+        const emergenciaService = Container.get(EmergenciaRealizadaService);
+        const id: number = Number(req.params.id);
+        const fechaInicio: string = String(req.params.fechaInicio);
+        const fechaFin: string = String(req.params.fechaFin);
+
+        const fechaIniIso = new Date(fechaInicio.substring(6, 10) + '-' + fechaInicio.substring(3, 5) + '-' + fechaInicio.substring(0, 2));
+        const fechaFinIso = new Date(fechaFin.substring(6, 10) + '-' + fechaFin.substring(3, 5) + '-' + fechaFin.substring(0, 2));
+
+        const emergenciasEncontradas = await emergenciaService.findByIdUbicacion(id, fechaIniIso.toISOString(), fechaFinIso.toISOString());
+
+        res.status(200).send(emergenciasEncontradas);
+    }
+
+    static listFechaTipo = async (req: Request, res: Response) => {
+        const emergenciaService = Container.get(EmergenciaRealizadaService);
+        const id: number = Number(req.params.id);
+        const fechaInicio: string = String(req.params.fechaInicio);
+        const fechaFin: string = String(req.params.fechaFin);
+
+        const fechaIniIso = new Date(fechaInicio.substring(6, 10) + '-' + fechaInicio.substring(3, 5) + '-' + fechaInicio.substring(0, 2));
+        const fechaFinIso = new Date(fechaFin.substring(6, 10) + '-' + fechaFin.substring(3, 5) + '-' + fechaFin.substring(0, 2));
+
+        const emergenciasEncontradas = await emergenciaService.findByIdTipo(id, fechaIniIso.toISOString(), fechaFinIso.toISOString());
+
+        res.status(200).send(emergenciasEncontradas);
+    }
+
+    static listAll = async (req: Request, res: Response) => {
+        const emergenciaService = Container.get(EmergenciaRealizadaService);
+        const emergenciasEncontradas = await emergenciaService.findAllReportes();
+
+        res.status(200).send(emergenciasEncontradas);
+    }
+
     static show = async (req: Request, res: Response) => {
         const emergenciaRealizadaService = Container.get(EmergenciaRealizadaService);
+        const voluntarioService = Container.get(VoluntarioService);
+        const pacienteService = Container.get(PacienteService);
         const id: string = String(req.params.id);
 
         const emergenciaRealizada = await emergenciaRealizadaService.findByIdWithRelation(id);
@@ -51,32 +88,28 @@ class EmergenciaRealizadaController {
 
         const { ...rest } = emergenciaRealizada;
 
+        let emergenciaPacienteArray: EmergenciaPaciente[] = [];
+
+        for (const emergenciaPacienteAux of rest.emergenciaPaciente) {
+            let paciente = await pacienteService.findById(emergenciaPacienteAux.paciente.id);
+            if (paciente) {
+                emergenciaPacienteAux.paciente = paciente;
+            }
+            for (const vehiculoXemergenciaPacienteAux of emergenciaPacienteAux.vehiculoXEmergenciaPaciente) {
+                let voluntario = await voluntarioService.findByIdWithRelation(vehiculoXemergenciaPacienteAux.voluntario.id);
+                if (voluntario) {
+                    vehiculoXemergenciaPacienteAux.voluntario = voluntario;
+                }
+            }
+
+            emergenciaPacienteArray.push(emergenciaPacienteAux)
+        }
         res.status(200).send({
             ...rest,
             id: emergenciaRealizada.id,
             fechaRealizada: rest.fechaRealizada.toISOString().substring(8, 10) + '/' + rest.fechaRealizada.toISOString().substring(5, 7) + '/' + rest.fechaRealizada.toISOString().substring(0, 4),
             fechaHoraLlamada: rest.fechaHoraLlamada.toISOString().substring(11, 16),
-            emergenciaPaciente: rest.emergenciaPaciente.map(
-                att => {
-                    let { ...rest } = att;
-                    return {
-                        ...rest,
-                        vehiculoXEmergenciaPaciente: rest.vehiculoXEmergenciaPaciente.map(
-                            att2 => {
-                                let { ...rest2 } = att2;
-                                return {
-                                    ...rest2,
-                                    horaSalida: rest2.horaSalida.toISOString().substring(11, 16),
-                                    horaRegreso: rest2.horaRegreso.toISOString().substring(11, 16),
-                                    voluntario: { 
-                                        ...rest2.voluntario,
-                                        nombreCompuesto: rest2.voluntario.persona.firstName + ' ' + rest2.voluntario.persona.lastName,
-                                    }
-                                }
-                            }
-                        ),
-                    }
-                }),
+            emergenciaPaciente: emergenciaPacienteArray
         });
 
     }

@@ -4,25 +4,25 @@ import { Container } from "typedi";
 
 class DepartamentoXMunicipioController {
   static fetch = async (req: Request, res: Response) => {
-    const roleService = Container.get(DepartamentoXMunicipioService);
-    const roles = await roleService.findAll();
-    res.status(200).send(roles);
+    const departamentoXMunicipioService = Container.get(DepartamentoXMunicipioService);
+    const departamentoXmunicipio = await departamentoXMunicipioService.findAll();
+    res.status(200).send(departamentoXmunicipio);
   }
 
   static list = async (req: Request, res: Response) => {
-    const roleService = Container.get(DepartamentoXMunicipioService);
-    const roles = await roleService.listAll();
-    let aux = roles.map(att =>{
+    const departamentoXMunicipioService = Container.get(DepartamentoXMunicipioService);
+    const departamentoXmunicipio = await departamentoXMunicipioService.listAll();
+    let aux = departamentoXmunicipio.map(att =>{
       return {nombreCompuesto: (att.departamento.departamentoNombre+', '+att.municipio.municipioNombre), ...att };
     });
     res.status(200).send(aux);
   }
 
   static show = async (req: Request, res: Response) => {
-    const roleService = Container.get(DepartamentoXMunicipioService);
+    const departamentoXMunicipioService = Container.get(DepartamentoXMunicipioService);
     const id: number = Number(req.params.id);
 
-    const role = await roleService.findByIdWithRelations(id);
+    const role = await departamentoXMunicipioService.findByIdWithRelations(id);
     if (!role) {
       res.status(404).json({ message: 'Rol no encontrado ' });
       return;
@@ -31,15 +31,15 @@ class DepartamentoXMunicipioController {
   }
 
   static destroy = async (req: Request, res: Response) => {
-    const roleService = Container.get(DepartamentoXMunicipioService);
+    const departamentoXMunicipioService = Container.get(DepartamentoXMunicipioService);
     const id: number = Number(req.params.id);
 
-    const role = await roleService.findById(id);
+    const role = await departamentoXMunicipioService.findById(id);
     if (!role) {
       res.status(404).json({ message: 'Rol no encontrado' })
     }
 
-    await roleService.delete(id);
+    await departamentoXMunicipioService.delete(id);
     res.status(204).send();
   }
 }

@@ -1,9 +1,9 @@
 import { Router } from "express";
-import PermissionController from "../../../controllers/PermisoController";
+import PermisoController from "../../../controllers/PermisoController";
 
 const router: Router = Router();
 
-router.get('/', PermissionController.fetch);
-router.get('/list', PermissionController.list);
+router.get('/', PermisoController.fetch);
+router.get('/list', PermisoController.list);
 
 export default router;

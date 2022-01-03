@@ -28,6 +28,20 @@ class VoluntarioController {
         res.status(200).send(aux);
     }
 
+    static listSede = async (req: Request, res: Response) => {
+        const voluntarioService = Container.get(VoluntarioService);
+        const voluntarioList = await voluntarioService.findAllSede();
+
+        res.status(200).send(voluntarioList);
+    }
+
+    static listCuerpoFilial = async (req: Request, res: Response) => {
+        const voluntarioService = Container.get(VoluntarioService);
+        const voluntarioList = await voluntarioService.findAllSede();
+
+        res.status(200).send(voluntarioList);
+    }
+
     static show = async (req: Request, res: Response) => {
         const voluntarioService = Container.get(VoluntarioService);
         const id: string = String(req.params.id);
