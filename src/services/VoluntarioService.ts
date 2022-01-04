@@ -31,17 +31,18 @@ export class VoluntarioService {
 
   public async listAll(): Promise<Voluntario[]> {
     return await this.voluntarioRepository
-        .createQueryBuilder('voluntario')
-        .leftJoinAndSelect('voluntario.persona', 'persona')
-        .leftJoinAndSelect('voluntario.sede', 'sede')
-        .leftJoinAndSelect('sede.departamentoXmunicipio', 'departamentoXmunicipio')
-        .leftJoinAndSelect('departamentoXmunicipio.municipio', 'municipio')
-        .leftJoinAndSelect('departamentoXmunicipio.departamento', 'departamento')
-        .leftJoinAndSelect('voluntario.tipoVoluntario', 'tipoVoluntario')
-        .leftJoinAndSelect('voluntario.cuerpoFilial', 'cuerpoFilial')
-        .leftJoinAndSelect('voluntario.estado', 'estado')
-        .leftJoinAndSelect('voluntario.modalidad', 'modalidad')
-        .getMany();
+      .createQueryBuilder('voluntario')
+      .leftJoinAndSelect('voluntario.persona', 'persona')
+      .leftJoinAndSelect('voluntario.sede', 'sede')
+      .leftJoinAndSelect('sede.departamentoXmunicipio', 'departamentoXmunicipio')
+      .leftJoinAndSelect('departamentoXmunicipio.municipio', 'municipio')
+      .leftJoinAndSelect('departamentoXmunicipio.departamento', 'departamento')
+      .leftJoinAndSelect('voluntario.tipoVoluntario', 'tipoVoluntario')
+      .leftJoinAndSelect('voluntario.cuerpoFilial', 'cuerpoFilial')
+      .leftJoinAndSelect('voluntario.estado', 'estado')
+      .leftJoinAndSelect('voluntario.modalidad', 'modalidad')
+      .where('persona.estadoPersona = :estado', { estado: true })
+      .getMany();
   }
 
   public async findAllSede(): Promise<Voluntario[]> {
@@ -56,10 +57,11 @@ export class VoluntarioService {
       .leftJoinAndSelect('voluntario.cuerpoFilial', 'cuerpoFilial')
       .leftJoinAndSelect('voluntario.estado', 'estado')
       .leftJoinAndSelect('voluntario.modalidad', 'modalidad')
-      .orderBy('sede.id','ASC')
-      .addOrderBy('persona.estadoPersona','DESC')
-      .addOrderBy('persona.firstName','ASC')
-      .addOrderBy('persona.lastName','ASC')
+      .where('persona.estadoPersona = :estado', { estado: true })
+      .orderBy('sede.id', 'ASC')
+      .addOrderBy('persona.estadoPersona', 'DESC')
+      .addOrderBy('persona.firstName', 'ASC')
+      .addOrderBy('persona.lastName', 'ASC')
       .getMany();
   }
 
@@ -75,10 +77,11 @@ export class VoluntarioService {
       .leftJoinAndSelect('voluntario.cuerpoFilial', 'cuerpoFilial')
       .leftJoinAndSelect('voluntario.estado', 'estado')
       .leftJoinAndSelect('voluntario.modalidad', 'modalidad')
-      .orderBy('cuerpoFilial.id','ASC')
-      .addOrderBy('persona.estadoPersona','DESC')
-      .addOrderBy('persona.firstName','ASC')
-      .addOrderBy('persona.lastName','ASC')
+      .where('persona.estadoPersona = :estado', { estado: true })
+      .orderBy('cuerpoFilial.id', 'ASC')
+      .addOrderBy('persona.estadoPersona', 'DESC')
+      .addOrderBy('persona.firstName', 'ASC')
+      .addOrderBy('persona.lastName', 'ASC')
       .getMany();
   }
 
@@ -153,30 +156,30 @@ export class VoluntarioService {
 
   public async findByIdYearsOfService(id: string): Promise<VoluntarioYear> {
     return await this.voluntarioRepository
-    .createQueryBuilder('voluntario')
-    .select('TIMESTAMPDIFF(YEAR, voluntario.fecha_inicio, CURDATE())','aniosServicio')
-    .where('voluntario.id = :id', { id })
-    .printSql()
-    .getRawOne();
+      .createQueryBuilder('voluntario')
+      .select('TIMESTAMPDIFF(YEAR, voluntario.fecha_inicio, CURDATE())', 'aniosServicio')
+      .where('voluntario.id = :id', { id })
+      .printSql()
+      .getRawOne();
   }
 
   public async findByIdYearsOldOfService(id: string): Promise<VoluntarioYear> {
     return await this.voluntarioRepository
-    .createQueryBuilder('voluntario')
-    .leftJoinAndSelect('voluntario.persona', 'persona')
-    .select('TIMESTAMPDIFF(YEAR, persona.fechaNacimiento, CURDATE())','aniosServicio')
-    .where('voluntario.id = :id', { id })
-    .printSql()
-    .getRawOne();
+      .createQueryBuilder('voluntario')
+      .leftJoinAndSelect('voluntario.persona', 'persona')
+      .select('TIMESTAMPDIFF(YEAR, persona.fechaNacimiento, CURDATE())', 'aniosServicio')
+      .where('voluntario.id = :id', { id })
+      .printSql()
+      .getRawOne();
   }
 
   public async findByIdFechaInicio(id: string): Promise<VoluntarioFecha> {
     return await this.voluntarioRepository
-    .createQueryBuilder('voluntario')
-    .select('voluntario.fechaInicio','fecha')
-    .where('voluntario.id = :id', { id })
-    .printSql()
-    .getRawOne();
+      .createQueryBuilder('voluntario')
+      .select('voluntario.fechaInicio', 'fecha')
+      .where('voluntario.id = :id', { id })
+      .printSql()
+      .getRawOne();
   }
 
   public async findAll(): Promise<PaginationAwareObject> {
@@ -191,8 +194,8 @@ export class VoluntarioService {
       .leftJoinAndSelect('voluntario.cuerpoFilial', 'cuerpoFilial')
       .leftJoinAndSelect('voluntario.estado', 'estado')
       .leftJoinAndSelect('voluntario.modalidad', 'modalidad')
-      .orderBy('persona.estadoPersona','DESC')
-      .addOrderBy('voluntario.id','ASC')
+      .orderBy('persona.estadoPersona', 'DESC')
+      .addOrderBy('voluntario.id', 'ASC')
       .paginate(10);
   }
 
