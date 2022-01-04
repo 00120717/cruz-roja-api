@@ -21,6 +21,9 @@ export class PacienteVehiculoHospital {
     fechaAtencionInicial: string;
     fechaDespacho: string;
     fechaIngresoHospital: string;
+    fechaSalida: string;
+    fechaRegreso: string;
+    vacio: boolean;
 
     voluntarioId: string;
     vehiculoId: number;

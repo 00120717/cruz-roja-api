@@ -11,8 +11,17 @@ export class EmergenciaPacienteService {
     protected emergenciaRepository: Repository<EmergenciaPaciente>,
   ) {}
 
-  public async findById(id: number): Promise<EmergenciaPaciente | undefined> {
-    return await this.emergenciaRepository.findOne(id);
+  public async findById(id: string): Promise<EmergenciaPaciente | undefined> {
+    return await this.emergenciaRepository
+    .createQueryBuilder('emergenciaPaciente')
+    .where('emergenciaPaciente.id = :id', { id })
+    .leftJoinAndSelect('emergenciaPaciente.paciente', 'paciente')
+    .leftJoinAndSelect('paciente.persona', 'persona')
+    .leftJoinAndSelect('emergenciaPaciente.vehiculoXEmergenciaPaciente', 'vehiculoXEmergenciaPaciente')
+    .leftJoinAndSelect('vehiculoXEmergenciaPaciente.vehiculo', 'vehiculo')
+    .leftJoinAndSelect('vehiculoXEmergenciaPaciente.hospital', 'hospital')
+    .leftJoinAndSelect('vehiculoXEmergenciaPaciente.voluntario', 'voluntario')
+    .getOne();
   }
 
   public async findByIds(ids: Array<number>): Promise<EmergenciaPaciente[]> {
@@ -21,25 +30,25 @@ export class EmergenciaPacienteService {
 
   public async findByName(name: string): Promise<EmergenciaPaciente | undefined> {
     return await this.emergenciaRepository
-      .createQueryBuilder('emergencia')
-      .where('emergencia.emergenciaNombre = :name', { name })
+      .createQueryBuilder('emergenciaPaciente')
+      .where('emergenciaPaciente.emergenciaNombre = :name', { name })
       .getOne();
   }
 
   public async listAll(): Promise<EmergenciaPaciente[]> {
     return await this.emergenciaRepository
-        .createQueryBuilder('emergencia')
+        .createQueryBuilder('emergenciaPaciente')
         .getMany();
   }
 
   public async findAll(): Promise<PaginationAwareObject> {
     return await this.emergenciaRepository
-      .createQueryBuilder('emergencia')
+      .createQueryBuilder('emergenciaPaciente')
       .paginate(10);
   }
 
-  public async create(emergencia: EmergenciaPaciente): Promise<EmergenciaPaciente> {
-    return await this.emergenciaRepository.save(emergencia);
+  public async create(emergenciaPaciente: EmergenciaPaciente): Promise<EmergenciaPaciente> {
+    return await this.emergenciaRepository.save(emergenciaPaciente);
   }
 
   public async update(updateEmergencia: EmergenciaPaciente): Promise<UpdateResult> {

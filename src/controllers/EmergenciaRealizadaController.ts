@@ -77,7 +77,7 @@ class EmergenciaRealizadaController {
     static show = async (req: Request, res: Response) => {
         const emergenciaRealizadaService = Container.get(EmergenciaRealizadaService);
         const voluntarioService = Container.get(VoluntarioService);
-        const pacienteService = Container.get(PacienteService);
+        const emergenciaPacienteService = Container.get(EmergenciaPacienteService);
         const id: string = String(req.params.id);
 
         const emergenciaRealizada = await emergenciaRealizadaService.findByIdWithRelation(id);
@@ -91,18 +91,25 @@ class EmergenciaRealizadaController {
         let emergenciaPacienteArray: EmergenciaPaciente[] = [];
 
         for (const emergenciaPacienteAux of rest.emergenciaPaciente) {
-            let paciente = await pacienteService.findById(emergenciaPacienteAux.paciente.id);
-            if (paciente) {
-                emergenciaPacienteAux.paciente = paciente;
-            }
-            for (const vehiculoXemergenciaPacienteAux of emergenciaPacienteAux.vehiculoXEmergenciaPaciente) {
-                let voluntario = await voluntarioService.findByIdWithRelation(vehiculoXemergenciaPacienteAux.voluntario.id);
-                if (voluntario) {
-                    vehiculoXemergenciaPacienteAux.voluntario = voluntario;
+            let emergenciaPacienteRelation = await emergenciaPacienteService.findById(emergenciaPacienteAux.id);
+            if (emergenciaPacienteRelation) {
+                for (const vehiculoXemergenciaPacienteAux of emergenciaPacienteRelation.vehiculoXEmergenciaPaciente) {
+                    let voluntario = await voluntarioService.findByIdWithRelation(vehiculoXemergenciaPacienteAux.voluntario.id);
+                    if (voluntario) {
+                        vehiculoXemergenciaPacienteAux.voluntario = voluntario;
+                    }
                 }
+                emergenciaPacienteArray.push(emergenciaPacienteRelation)
             }
-
-            emergenciaPacienteArray.push(emergenciaPacienteAux)
+            else {
+                for (const vehiculoXemergenciaPacienteAux of emergenciaPacienteAux.vehiculoXEmergenciaPaciente) {
+                    let voluntario = await voluntarioService.findByIdWithRelation(vehiculoXemergenciaPacienteAux.voluntario.id);
+                    if (voluntario) {
+                        vehiculoXemergenciaPacienteAux.voluntario = voluntario;
+                    }
+                }
+                emergenciaPacienteArray.push(emergenciaPacienteAux)
+            }
         }
         res.status(200).send({
             ...rest,
@@ -224,40 +231,92 @@ class EmergenciaRealizadaController {
             await voluntarioService.update(voluntario);
         }
 
+        let auxArrayVehiculosVaciosRegreso: PacienteVehiculoHospital[] = [];
+
 
         for (const pacienteVehiculoHospitalAux of pacienteVehiculoHospital) {
-            const paciente = new Paciente();
-            const persona = new Persona();
+            if (!pacienteVehiculoHospitalAux.vacio) {
+                const paciente = new Paciente();
+                const persona = new Persona();
 
-            persona.estadoPersona = true;
-            (pacienteVehiculoHospitalAux.firstName > '') ? persona.firstName = pacienteVehiculoHospitalAux.firstName : "";
-            (pacienteVehiculoHospitalAux.lastName > '') ? persona.lastName = pacienteVehiculoHospitalAux.lastName : "";
-            (pacienteVehiculoHospitalAux.genero > '') ? persona.genero = pacienteVehiculoHospitalAux.genero : "";
-            (pacienteVehiculoHospitalAux.documentoIdentificacion > '') ? persona.documentoIdentificacion = pacienteVehiculoHospitalAux.documentoIdentificacion : "";
-            (pacienteVehiculoHospitalAux.tipoDocumentoPersona > '') ? persona.tipoDocumentoPersona = pacienteVehiculoHospitalAux.tipoDocumentoPersona : "";
-            persona.estadoPersona = pacienteVehiculoHospitalAux.estadoPersona;
-            paciente.menorEdad = pacienteVehiculoHospitalAux.menorEdad;
-            (pacienteVehiculoHospitalAux.alergias > '') ? paciente.alergias = pacienteVehiculoHospitalAux.alergias : "";
-            paciente.identificado = pacienteVehiculoHospitalAux.identificado;
-            paciente.persona = persona;
+                persona.estadoPersona = true;
+                (pacienteVehiculoHospitalAux.firstName > '') ? persona.firstName = pacienteVehiculoHospitalAux.firstName : "";
+                (pacienteVehiculoHospitalAux.lastName > '') ? persona.lastName = pacienteVehiculoHospitalAux.lastName : "";
+                (pacienteVehiculoHospitalAux.genero > '') ? persona.genero = pacienteVehiculoHospitalAux.genero : "";
+                (pacienteVehiculoHospitalAux.documentoIdentificacion > '') ? persona.documentoIdentificacion = pacienteVehiculoHospitalAux.documentoIdentificacion : "";
+                (pacienteVehiculoHospitalAux.tipoDocumentoPersona > '') ? persona.tipoDocumentoPersona = pacienteVehiculoHospitalAux.tipoDocumentoPersona : "";
+                persona.estadoPersona = pacienteVehiculoHospitalAux.estadoPersona;
+                paciente.menorEdad = pacienteVehiculoHospitalAux.menorEdad;
+                (pacienteVehiculoHospitalAux.alergias > '') ? paciente.alergias = pacienteVehiculoHospitalAux.alergias : "";
+                paciente.identificado = pacienteVehiculoHospitalAux.identificado;
+                paciente.persona = persona;
 
-            const personErrors = await validate(persona);
+                const personErrors = await validate(persona);
 
-            if (personErrors.length > 0) {
-                res.status(400).send(personErrors);
-                return;
+                if (personErrors.length > 0) {
+                    res.status(400).send(personErrors);
+                    return;
+                }
+                const emergenciaPaciente = new EmergenciaPaciente();
+                emergenciaPaciente.paciente = paciente;
+                pacienteVehiculoHospitalAux.tratamientosRealizados ? emergenciaPaciente.tratamientosRealizados = pacienteVehiculoHospitalAux.tratamientosRealizados : "";
+                pacienteVehiculoHospitalAux.diagnostico ? emergenciaPaciente.diagnostico = pacienteVehiculoHospitalAux.diagnostico : "";
+                pacienteVehiculoHospitalAux.prendaSuperior ? emergenciaPaciente.prendaSuperior = pacienteVehiculoHospitalAux.prendaSuperior : "";
+                pacienteVehiculoHospitalAux.prendaInferior ? emergenciaPaciente.prendaInferior = pacienteVehiculoHospitalAux.prendaInferior : "";
+                pacienteVehiculoHospitalAux.calzado ? emergenciaPaciente.calzado = pacienteVehiculoHospitalAux.calzado : "";
+                pacienteVehiculoHospitalAux.estatura ? emergenciaPaciente.estatura = pacienteVehiculoHospitalAux.estatura : "";
+                pacienteVehiculoHospitalAux.peloColorEstilo ? emergenciaPaciente.peloColorEstilo = pacienteVehiculoHospitalAux.peloColorEstilo : "";
+                pacienteVehiculoHospitalAux.comentarioSenialEspecial ? emergenciaPaciente.comentarioSenialEspecial = pacienteVehiculoHospitalAux.comentarioSenialEspecial : "";
+
+                const vehiculoXemergenciaPaciente = new VehiculoXEmergenciaPaciente();
+                const voluntario = await voluntarioService.findById(pacienteVehiculoHospitalAux.voluntarioId);
+                const vehiculo = await vehiculoService.findById(pacienteVehiculoHospitalAux.vehiculoId);
+                const hospital = await hospitalService.findById(pacienteVehiculoHospitalAux.hospitalId);
+
+                if (voluntario) {
+                    vehiculoXemergenciaPaciente.voluntario = voluntario;
+                }
+                if (vehiculo) {
+                    vehiculoXemergenciaPaciente.vehiculo = vehiculo;
+                }
+                if (hospital) {
+                    vehiculoXemergenciaPaciente.hospital = hospital;
+                }
+
+                paciente.fechaCreacion = new Date(fechaRealizada.substring(6, 10) + '-' + fechaRealizada.substring(3, 5) + '-' + fechaRealizada.substring(0, 2));
+                const savedPaciente = await pacienteService.create(paciente);
+
+                emergenciaPaciente.paciente = savedPaciente;
+                emergenciaPaciente.emergenciaRealizada = savedEmergenciaRealizada;
+                vehiculoXemergenciaPaciente.horaSalida = new Date(pacienteVehiculoHospitalAux.fechaSalida.substring(6, 10) + '-' + pacienteVehiculoHospitalAux.fechaSalida.substring(3, 5) + '-' + pacienteVehiculoHospitalAux.fechaSalida.substring(0, 2) + 'T' + pacienteVehiculoHospitalAux.horaSalida + ':00');
+                vehiculoXemergenciaPaciente.horaRegreso = new Date(pacienteVehiculoHospitalAux.fechaRegreso.substring(6, 10) + '-' + pacienteVehiculoHospitalAux.fechaRegreso.substring(3, 5) + '-' + pacienteVehiculoHospitalAux.fechaRegreso.substring(0, 2) + 'T' + pacienteVehiculoHospitalAux.horaRegreso + ':00');
+
+                let auxArray: VehiculoXEmergenciaPaciente[] = [];
+                auxArray.push(vehiculoXemergenciaPaciente);
+                emergenciaPaciente.vehiculoXEmergenciaPaciente = auxArray;
+                const savedEmergenciaPaciente = await emergenciaPacienteService.create(emergenciaPaciente);
+                vehiculoXemergenciaPaciente.emergenciaPaciente = savedEmergenciaPaciente;
+                const savedVehiculoXemergenciaPaciente = await vehiculoXemergenciaPacienteServicio.create(vehiculoXemergenciaPaciente);
+
+                if (!savedVehiculoXemergenciaPaciente) {
+                    res.status(400).json({ message: 'No se pudo crear la emergencia realizada 3' })
+                    return;
+                }
             }
-            const emergenciaPaciente = new EmergenciaPaciente();
-            emergenciaPaciente.paciente = paciente;
-            pacienteVehiculoHospitalAux.tratamientosRealizados ? emergenciaPaciente.tratamientosRealizados = pacienteVehiculoHospitalAux.tratamientosRealizados : "";
-            pacienteVehiculoHospitalAux.diagnostico ? emergenciaPaciente.diagnostico = pacienteVehiculoHospitalAux.diagnostico : "";
-            pacienteVehiculoHospitalAux.prendaSuperior ? emergenciaPaciente.prendaSuperior = pacienteVehiculoHospitalAux.prendaSuperior : "";
-            pacienteVehiculoHospitalAux.prendaInferior ? emergenciaPaciente.prendaInferior = pacienteVehiculoHospitalAux.prendaInferior : "";
-            pacienteVehiculoHospitalAux.calzado ? emergenciaPaciente.calzado = pacienteVehiculoHospitalAux.calzado : "";
-            pacienteVehiculoHospitalAux.estatura ? emergenciaPaciente.estatura = pacienteVehiculoHospitalAux.estatura : "";
-            pacienteVehiculoHospitalAux.peloColorEstilo ? emergenciaPaciente.peloColorEstilo = pacienteVehiculoHospitalAux.peloColorEstilo : "";
-            pacienteVehiculoHospitalAux.comentarioSenialEspecial ? emergenciaPaciente.comentarioSenialEspecial = pacienteVehiculoHospitalAux.comentarioSenialEspecial : "";
+            else {
+                auxArrayVehiculosVaciosRegreso.push(pacienteVehiculoHospitalAux);
 
+            }
+
+        }
+
+
+        const emergenciaPaciente = new EmergenciaPaciente();
+        emergenciaPaciente.vehiculoXEmergenciaPaciente = [];
+        emergenciaPaciente.emergenciaRealizada = savedEmergenciaRealizada;
+        const savedEmergenciaPaciente = await emergenciaPacienteService.create(emergenciaPaciente);
+
+        for (const pacienteVehiculoHospitalAux of auxArrayVehiculosVaciosRegreso) {
             const vehiculoXemergenciaPaciente = new VehiculoXEmergenciaPaciente();
             const voluntario = await voluntarioService.findById(pacienteVehiculoHospitalAux.voluntarioId);
             const vehiculo = await vehiculoService.findById(pacienteVehiculoHospitalAux.vehiculoId);
@@ -272,27 +331,16 @@ class EmergenciaRealizadaController {
             if (hospital) {
                 vehiculoXemergenciaPaciente.hospital = hospital;
             }
-
-            paciente.fechaCreacion = new Date(fechaRealizada.substring(6, 10) + '-' + fechaRealizada.substring(3, 5) + '-' + fechaRealizada.substring(0, 2));
-            const savedPaciente = await pacienteService.create(paciente);
-
-            emergenciaPaciente.paciente = savedPaciente;
-            emergenciaPaciente.emergenciaRealizada = savedEmergenciaRealizada;
-            vehiculoXemergenciaPaciente.horaSalida = new Date(fechaRealizada.substring(6, 10) + '-' + fechaRealizada.substring(3, 5) + '-' + fechaRealizada.substring(0, 2) + 'T' + pacienteVehiculoHospitalAux.horaSalida + ':00');
-            vehiculoXemergenciaPaciente.horaRegreso = new Date(fechaRealizada.substring(6, 10) + '-' + fechaRealizada.substring(3, 5) + '-' + fechaRealizada.substring(0, 2) + 'T' + pacienteVehiculoHospitalAux.horaRegreso + ':00');
-
-            let auxArray: VehiculoXEmergenciaPaciente[] = [];
-            auxArray.push(vehiculoXemergenciaPaciente);
-            emergenciaPaciente.vehiculoXEmergenciaPaciente = auxArray;
-            const savedEmergenciaPaciente = await emergenciaPacienteService.create(emergenciaPaciente);
             vehiculoXemergenciaPaciente.emergenciaPaciente = savedEmergenciaPaciente;
+            vehiculoXemergenciaPaciente.horaSalida = new Date(pacienteVehiculoHospitalAux.fechaSalida.substring(6, 10) + '-' + pacienteVehiculoHospitalAux.fechaSalida.substring(3, 5) + '-' + pacienteVehiculoHospitalAux.fechaSalida.substring(0, 2) + 'T' + pacienteVehiculoHospitalAux.horaSalida + ':00');
+            vehiculoXemergenciaPaciente.horaRegreso = new Date(pacienteVehiculoHospitalAux.fechaRegreso.substring(6, 10) + '-' + pacienteVehiculoHospitalAux.fechaRegreso.substring(3, 5) + '-' + pacienteVehiculoHospitalAux.fechaRegreso.substring(0, 2) + 'T' + pacienteVehiculoHospitalAux.horaRegreso + ':00');
+
             const savedVehiculoXemergenciaPaciente = await vehiculoXemergenciaPacienteServicio.create(vehiculoXemergenciaPaciente);
 
             if (!savedVehiculoXemergenciaPaciente) {
-                res.status(400).json({ message: 'No se pudo crear la emergencia realizada 3' })
+                res.status(400).json({ message: 'No se pudo crear la emergencia realizada 4' })
                 return;
             }
-
         }
 
         res.status(201).send('Emergencia realizada creada correctamente ');
