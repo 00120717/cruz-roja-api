@@ -144,6 +144,7 @@ export class EmergenciaRealizadaService {
     .leftJoinAndSelect('seccional.departamentoXmunicipio', 'departamentoXmunicipio')
     .leftJoinAndSelect('departamentoXmunicipio.departamento', 'departamento')
     .leftJoinAndSelect('departamentoXmunicipio.municipio', 'municipio')
+    .groupBy('emergenciaRealizada.id')
       .paginate(10);
   }
 
