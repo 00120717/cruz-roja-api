@@ -14,8 +14,8 @@ import { PersonaService } from "../services/PersonaService";
 class VoluntarioController {
     static fetch = async (req: Request, res: Response) => {
         const voluntarioService = Container.get(VoluntarioService);
-        const students = await voluntarioService.findAll();
-        res.status(200).send(students);
+        const voluntarios = await voluntarioService.findAll();
+        res.status(200).send(voluntarios);
     }
 
     static list = async (req: Request, res: Response) => {
@@ -199,9 +199,9 @@ class VoluntarioController {
         voluntario.cuerpoFilial = cuerpoFilial;
         voluntario.sede = sede;
 
-        const studentErrors = await validate(voluntario);
-        if (studentErrors.length > 0) {
-            res.status(400).send(studentErrors);
+        const voluntarioErrors = await validate(voluntario);
+        if (voluntarioErrors.length > 0) {
+            res.status(400).send(voluntarioErrors);
             return;
         }
 
@@ -328,9 +328,9 @@ class VoluntarioController {
         voluntario.sede = sede;
         voluntario.tipoVoluntario = tipoVoluntario;
 
-        const studentErrors = await validate(voluntario);
-        if (studentErrors.length > 0) {
-            res.status(400).send(studentErrors);
+        const voluntarioErrors = await validate(voluntario);
+        if (voluntarioErrors.length > 0) {
+            res.status(400).send(voluntarioErrors);
             return;
         }
 
@@ -400,7 +400,7 @@ class VoluntarioController {
 
         const modules = {}
 
-        const studentData = {
+        const voluntarioData = {
             ...rest,
             ...persona,
             id: rest.id,
@@ -410,7 +410,7 @@ class VoluntarioController {
         }
 
         res.status(200).send({
-            ...studentData,
+            ...voluntarioData,
             modules,
         });
     }

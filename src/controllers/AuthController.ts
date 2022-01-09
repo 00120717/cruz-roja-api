@@ -3,6 +3,7 @@ import * as jwt from 'jsonwebtoken';
 import config from './../../config/config';
 import { UsuarioService } from '../services/UsuarioService';
 import { Container } from "typedi";
+import { VoluntarioService } from '../services/VoluntarioService';
 
 class AuthController {
   static login = async (req: Request, res: Response) => {
@@ -42,66 +43,27 @@ class AuthController {
 
   }
 
-  static loginStudent = async (req: Request, res: Response) => {
-    //const studentService = Container.get(StudentService);
+  static loginVoluntario = async (req: Request, res: Response) => {
+    const voluntarioService = Container.get(VoluntarioService);
     const { code }: { code: string } = req.body;
     if (!code) {
-      res.status(400).json({ message: 'El código del estudiante es requerido' });
+      res.status(400).json({ message: 'El código del voluntario es requerido' });
     }
 
-    //const student = await studentService.findByCode(code);
-    /*if (!student) {
+    const voluntario = await voluntarioService.findByCode(code);
+    if (!voluntario) {
       res.send(400).json({ message: 'El código del estudiante es incorrecto' });
       return;
     }
 
     const token = jwt.sign(
-      { studentId: student.id, code: student.code, isActive: student.person.status },
+      { voluntarioId: voluntario.id, code: voluntario.voluntarioCodigoCarnet, isActive: voluntario.persona.estadoPersona },
       config.jwtSecret,
       { expiresIn: '1h' }
     );
 
-    res.status(200).json({ token, type: 'Bearer', firstTime: student.firstTime });*/
+    res.status(200).json({ token, type: 'Bearer', voluntarioCodigoCarnet: voluntario.voluntarioCodigoCarnet });
   }
-
-  // static changePassword = async (req: Request, res: Response) => {
-  //   //Get ID from JWT
-  //   const id = res.locals.jwtPayload.userId;
-
-  //   //Get parameters from the body
-  //   const { oldPassword, newPassword } = req.body;
-  //   if (!(oldPassword && newPassword)) {
-  //     res.sendStatus(400);
-  //     return;
-  //   }
-
-  //   const userRepository = getRepository(User);
-  //   let user: User;
-  //   try {
-  //     user = await userRepository.findOneOrFail(id);
-  //   } catch (error) {
-  //     res.sendStatus(401);
-  //     return;
-  //   }
-
-  //   // Check if old password matchs
-  //   if (!user.checkIfUnencryptedPasswordIsValid(oldPassword)) {
-  //     res.sendStatus(401);
-  //     return;
-  //   }
-
-  //   //Validate model (password length)
-  //   user.password = newPassword;
-  //   const errors = await validate(user);
-  //   if (errors.length > 0) {
-  //     res.status(400).send(errors);
-  //   }
-
-  //   user.hashPassword();
-  //   userRepository.save(user);
-
-  //   res.sendStatus(204);
-  // };
 }
 
 export default AuthController;

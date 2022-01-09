@@ -2,7 +2,7 @@ import { NextFunction, Response, Request } from 'express';
 import * as jwt from 'jsonwebtoken';
 import config from '../../config/config';
 
-export const checkStudentJWT = (req: Request, res: Response, next: NextFunction) => {
+export const checkVoluntarioJWT = (req: Request, res: Response, next: NextFunction) => {
   let token = <string>req.headers['authorization'];
   let jwtPayload;
 
@@ -17,8 +17,8 @@ export const checkStudentJWT = (req: Request, res: Response, next: NextFunction)
     res.sendStatus(401);
     return;
   }
-  const { studentId, code } = jwtPayload;
-  const newToken = jwt.sign({ studentId, code }, config.jwtSecret, {
+  const { voluntarioId, code } = jwtPayload;
+  const newToken = jwt.sign({ voluntarioId, code }, config.jwtSecret, {
     expiresIn: '1h',
   })
   res.setHeader('token', newToken);

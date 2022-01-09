@@ -1,4 +1,3 @@
-//import { checkStudentJWT } from '../middlewares/checkStudentJWT';
 import { Router } from 'express';
 import AdminRouter from './api/admin';
 import AuthRouter from './api/AuthRouter';
