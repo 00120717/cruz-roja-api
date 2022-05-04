@@ -144,6 +144,9 @@ class EmergenciaRealizadaController {
             telefono,
             emisorEmergencia,
             comentario,
+            ubicacionReferencia,
+            latitud,
+            longitud,
             pacienteVehiculoHospital
         }: {
             identificadorFormulario: string,
@@ -156,6 +159,9 @@ class EmergenciaRealizadaController {
             telefono: string,
             emisorEmergencia: string,
             comentario: string,
+            ubicacionReferencia: string,
+            latitud: number,
+            longitud: number,
             pacienteVehiculoHospital: Array<PacienteVehiculoHospital>
         } = req.body;
 
@@ -189,6 +195,9 @@ class EmergenciaRealizadaController {
         emergenciaRealizada.fechaRealizada = new Date(fechaRealizada.substring(6, 10) + '-' + fechaRealizada.substring(3, 5) + '-' + fechaRealizada.substring(0, 2));
         emergenciaRealizada.fechaHoraLlamada = new Date(fechaRealizada.substring(6, 10) + '-' + fechaRealizada.substring(3, 5) + '-' + fechaRealizada.substring(0, 2) + 'T' + fechaHoraLlamada + ':00');
         emergenciaRealizada.emergencia = emergencia;
+        emergenciaRealizada.ubicacionReferencia = ubicacionReferencia;
+        emergenciaRealizada.latitud = latitud;
+        emergenciaRealizada.longitud = longitud;
 
         const emergenciaRealizadaErrors = await validate(emergenciaRealizada);
         if (emergenciaRealizadaErrors.length > 0) {

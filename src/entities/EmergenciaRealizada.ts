@@ -47,6 +47,19 @@ export class EmergenciaRealizada {
   @IsString()
   comentario: string;
 
+  @Column({ name: 'ubicacion_referencia', type: 'text' })
+  @IsOptional()
+  @IsString()
+  ubicacionReferencia: string;
+
+  @Column({ name: 'latitud', type: 'float' })
+  @IsOptional()
+  latitud: number;
+
+  @Column({ name: 'longitud', type: 'float' })
+  @IsOptional()
+  longitud: number;
+
   @ManyToOne(
     (type) => Emergencia,
     (emergencia) => emergencia.emergenciasRealizadas
