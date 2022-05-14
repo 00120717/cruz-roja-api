@@ -367,6 +367,74 @@ class EmergenciaRealizadaController {
         }
         res.status(204).send();
     }
+
+    static update = async (req: Request, res: Response) => {
+        const emergenciaRealizadaService = Container.get(EmergenciaRealizadaService);
+        //const voluntarioService = Container.get(VoluntarioService);
+        //const seccionalService = Container.get(SeccionalService);
+        const emergenciaService = Container.get(EmergenciaService);
+        const id: number = Number(req.params.id);
+        const {
+            identificadorFormulario,
+            fechaRealizada,
+            fechaHoraLlamada,
+            emisorEmergencia,
+            telefono,
+            comentario,
+            emergenciaId,
+            latitud,
+            longitud,
+            ubicacionExacta,
+            ubicacionReferencia,
+            //voluntarioId,
+            //seccionalId
+        }: {
+            identificadorFormulario: string,
+            fechaRealizada: string,
+            fechaHoraLlamada: string,
+            emisorEmergencia: string,
+            telefono: string,
+            comentario: string,
+            emergenciaId: number,
+            latitud: number,
+            longitud: number,
+            ubicacionExacta: string,
+            ubicacionReferencia: string,
+            //voluntarioId: Array<number>,
+            //seccionalId: Array<number>     
+        } = req.body;
+
+        const emergencia = await emergenciaService.findById(emergenciaId);
+        if (!emergencia) {
+            res.status(400).json({ message: 'La emergencia que intenta asignar no existe' });
+            return;
+        }
+
+        const emergenciaRealizada = await emergenciaRealizadaService.findById(id.toString());
+        if (!emergenciaRealizada) {
+            res.status(404).json({ message: 'Emergencia Realizada no encontrada ' });
+            return;
+        }
+
+        emergenciaRealizada.identificadorFormulario = identificadorFormulario;
+        emergenciaRealizada.fechaRealizada = new Date(fechaRealizada.substring(6, 10) + '-' + fechaRealizada.substring(3, 5) + '-' + fechaRealizada.substring(0, 2));
+        emergenciaRealizada.fechaHoraLlamada = new Date(fechaRealizada.substring(6, 10) + '-' + fechaRealizada.substring(3, 5) + '-' + fechaRealizada.substring(0, 2) + 'T' + fechaHoraLlamada + ':00');
+        emergenciaRealizada.emisorEmergencia = emisorEmergencia;
+        emergenciaRealizada.telefono = telefono;
+        emergenciaRealizada.comentario = comentario;
+        emergenciaRealizada.emergencia = emergencia;
+        emergenciaRealizada.latitud = latitud;
+        emergenciaRealizada.longitud = longitud;
+        emergenciaRealizada.ubicacionExacta = ubicacionExacta;
+        emergenciaRealizada.ubicacionReferencia = ubicacionReferencia;
+        
+        try {
+            await emergenciaRealizadaService.update(emergenciaRealizada);
+        } catch (e) {
+            res.status(400).json({ message: 'No se pudo actualizar la Emergencia realizada' });
+            return;
+        }
+    }
 }
 
 export default EmergenciaRealizadaController;
