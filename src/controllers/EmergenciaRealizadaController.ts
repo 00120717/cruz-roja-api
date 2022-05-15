@@ -434,6 +434,7 @@ class EmergenciaRealizadaController {
             res.status(400).json({ message: 'No se pudo actualizar la Emergencia realizada' });
             return;
         }
+        res.status(200).json({ message: 'Emergencia Realizada actualizada' });
     }
 }
 
