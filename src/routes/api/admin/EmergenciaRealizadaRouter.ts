@@ -9,6 +9,7 @@ router.get('/list-reporte/', EmergenciaRealizadaController.listAll);
 router.get('/list-reporte-fecha-ubicacion/:id/:fechaInicio/:fechaFin', EmergenciaRealizadaController.listFechaUbicacion);
 router.get('/list-reporte-fecha-tipo/:id/:fechaInicio/:fechaFin', EmergenciaRealizadaController.listFechaTipo);
 router.get('/:id', EmergenciaRealizadaController.show);
+router.put('/:id', EmergenciaRealizadaController.update);
 router.delete('/:id', EmergenciaRealizadaController.destroy);
 
 export default router;
