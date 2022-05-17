@@ -381,7 +381,7 @@ class EmergenciaRealizadaController {
             emisorEmergencia,
             telefono,
             comentario,
-            emergenciaId,
+            idEmergencia,
             latitud,
             longitud,
             ubicacionExacta,
@@ -395,7 +395,7 @@ class EmergenciaRealizadaController {
             emisorEmergencia: string,
             telefono: string,
             comentario: string,
-            emergenciaId: number,
+            idEmergencia: number,
             latitud: number,
             longitud: number,
             ubicacionExacta: string,
@@ -404,7 +404,7 @@ class EmergenciaRealizadaController {
             //seccionalId: Array<number>     
         } = req.body;
 
-        const emergencia = await emergenciaService.findById(emergenciaId);
+        const emergencia = await emergenciaService.findById(idEmergencia);
         if (!emergencia) {
             res.status(400).json({ message: 'La emergencia que intenta asignar no existe' });
             return;
