@@ -28,7 +28,7 @@ class EmergenciaRealizadaController {
         let aux = emergenciasRealizadas.data.map(att => {
             let { ...rest } = att;
             return {
-                fechaRealizada: rest.fechaRealizada.toISOString().substring(8, 10) + '/' + rest.fechaRealizada.toISOString().substring(5, 7) + '/' + rest.fechaRealizada.toISOString().substring(0, 4),
+                fechaRealizada: rest.fechaRealizada.toISOString(),
                 fechaHoraLlamada: rest.fechaHoraLlamada.toISOString().substring(11, 16),
                 ...rest
             };
@@ -192,8 +192,8 @@ class EmergenciaRealizadaController {
         emergenciaRealizada.ubicacionExacta = ubicacionExacta;
         emergenciaRealizada.telefono = telefono;
         emergenciaRealizada.emisorEmergencia = emisorEmergencia;
-        emergenciaRealizada.fechaRealizada = new Date(fechaRealizada.substring(6, 10) + '-' + fechaRealizada.substring(3, 5) + '-' + fechaRealizada.substring(0, 2));
-        emergenciaRealizada.fechaHoraLlamada = new Date(fechaRealizada.substring(6, 10) + '-' + fechaRealizada.substring(3, 5) + '-' + fechaRealizada.substring(0, 2) + 'T' + fechaHoraLlamada + ':00');
+        emergenciaRealizada.fechaRealizada = new Date(fechaRealizada);
+        emergenciaRealizada.fechaHoraLlamada = new Date(fechaRealizada + 'T' + fechaHoraLlamada + ':00');
         emergenciaRealizada.emergencia = emergencia;
         emergenciaRealizada.ubicacionReferencia = ubicacionReferencia;
         emergenciaRealizada.latitud = latitud;
@@ -221,7 +221,7 @@ class EmergenciaRealizadaController {
 
         for (const seccional of seccionales) {
             const emergenciaSeccional = new EmergenciaSeccional();
-            emergenciaSeccional.fechaInicio = new Date(fechaRealizada.substring(6, 10) + '-' + fechaRealizada.substring(3, 5) + '-' + fechaRealizada.substring(0, 2));
+            emergenciaSeccional.fechaInicio = new Date(fechaRealizada);
             emergenciaSeccional.seccional = seccional;
             emergenciaSeccional.emergenciaRealizada = savedEmergenciaRealizada;
             await emergenciaSeccionalService.create(emergenciaSeccional);
@@ -292,13 +292,13 @@ class EmergenciaRealizadaController {
                     vehiculoXemergenciaPaciente.hospital = hospital;
                 }
 
-                paciente.fechaCreacion = new Date(fechaRealizada.substring(6, 10) + '-' + fechaRealizada.substring(3, 5) + '-' + fechaRealizada.substring(0, 2));
+                paciente.fechaCreacion = new Date(fechaRealizada);
                 const savedPaciente = await pacienteService.create(paciente);
 
                 emergenciaPaciente.paciente = savedPaciente;
                 emergenciaPaciente.emergenciaRealizada = savedEmergenciaRealizada;
-                vehiculoXemergenciaPaciente.horaSalida = new Date(pacienteVehiculoHospitalAux.fechaSalida.substring(6, 10) + '-' + pacienteVehiculoHospitalAux.fechaSalida.substring(3, 5) + '-' + pacienteVehiculoHospitalAux.fechaSalida.substring(0, 2) + 'T' + pacienteVehiculoHospitalAux.horaSalida + ':00');
-                vehiculoXemergenciaPaciente.horaRegreso = new Date(pacienteVehiculoHospitalAux.fechaRegreso.substring(6, 10) + '-' + pacienteVehiculoHospitalAux.fechaRegreso.substring(3, 5) + '-' + pacienteVehiculoHospitalAux.fechaRegreso.substring(0, 2) + 'T' + pacienteVehiculoHospitalAux.horaRegreso + ':00');
+                vehiculoXemergenciaPaciente.horaSalida = new Date(pacienteVehiculoHospitalAux.fechaSalida + 'T' + pacienteVehiculoHospitalAux.horaSalida + ':00');
+                vehiculoXemergenciaPaciente.horaRegreso = new Date(pacienteVehiculoHospitalAux.fechaRegreso + 'T' + pacienteVehiculoHospitalAux.horaRegreso + ':00');
 
                 let auxArray: VehiculoXEmergenciaPaciente[] = [];
                 auxArray.push(vehiculoXemergenciaPaciente);
@@ -341,8 +341,8 @@ class EmergenciaRealizadaController {
                 vehiculoXemergenciaPaciente.hospital = hospital;
             }
             vehiculoXemergenciaPaciente.emergenciaPaciente = savedEmergenciaPaciente;
-            vehiculoXemergenciaPaciente.horaSalida = new Date(pacienteVehiculoHospitalAux.fechaSalida.substring(6, 10) + '-' + pacienteVehiculoHospitalAux.fechaSalida.substring(3, 5) + '-' + pacienteVehiculoHospitalAux.fechaSalida.substring(0, 2) + 'T' + pacienteVehiculoHospitalAux.horaSalida + ':00');
-            vehiculoXemergenciaPaciente.horaRegreso = new Date(pacienteVehiculoHospitalAux.fechaRegreso.substring(6, 10) + '-' + pacienteVehiculoHospitalAux.fechaRegreso.substring(3, 5) + '-' + pacienteVehiculoHospitalAux.fechaRegreso.substring(0, 2) + 'T' + pacienteVehiculoHospitalAux.horaRegreso + ':00');
+            vehiculoXemergenciaPaciente.horaSalida = new Date(pacienteVehiculoHospitalAux.fechaSalida + 'T' + pacienteVehiculoHospitalAux.horaSalida + ':00');
+            vehiculoXemergenciaPaciente.horaRegreso = new Date(pacienteVehiculoHospitalAux.fechaRegreso + 'T' + pacienteVehiculoHospitalAux.horaRegreso + ':00');
 
             const savedVehiculoXemergenciaPaciente = await vehiculoXemergenciaPacienteServicio.create(vehiculoXemergenciaPaciente);
 
@@ -390,7 +390,7 @@ class EmergenciaRealizadaController {
             //seccionalId
         }: {
             identificadorFormulario: string,
-            fechaRealizada: string,
+            fechaRealizada: Date,
             fechaHoraLlamada: string,
             emisorEmergencia: string,
             telefono: string,
@@ -417,8 +417,8 @@ class EmergenciaRealizadaController {
         }
 
         emergenciaRealizada.identificadorFormulario = identificadorFormulario;
-        emergenciaRealizada.fechaRealizada = new Date(fechaRealizada.substring(6, 10) + '-' + fechaRealizada.substring(3, 5) + '-' + fechaRealizada.substring(0, 2));
-        emergenciaRealizada.fechaHoraLlamada = new Date(fechaRealizada.substring(6, 10) + '-' + fechaRealizada.substring(3, 5) + '-' + fechaRealizada.substring(0, 2) + 'T' + fechaHoraLlamada + ':00');
+        emergenciaRealizada.fechaRealizada = new Date(fechaRealizada);
+        emergenciaRealizada.fechaHoraLlamada = new Date(fechaRealizada + 'T' + fechaHoraLlamada + ':00');
         emergenciaRealizada.emisorEmergencia = emisorEmergencia;
         emergenciaRealizada.telefono = telefono;
         emergenciaRealizada.comentario = comentario;
